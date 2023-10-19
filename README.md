@@ -1,2 +1,2 @@
-# cashier-blasor
+# cashier-blazor
 Cashier implemented in Blazor
