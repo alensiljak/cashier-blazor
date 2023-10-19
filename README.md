@@ -11,3 +11,7 @@ dotnet run
 ```sh
 dotnet publish -c Release
 ```
+
+The (temporary) production application is at
+
+https://cashier-blazor.netlify.app
