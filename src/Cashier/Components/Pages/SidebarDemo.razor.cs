@@ -2,7 +2,6 @@
 using Cashier.Components.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Microsoft.Fast.Components.FluentUI.DesignTokens;
 
 namespace Cashier.Components.Pages
 {
@@ -10,9 +9,6 @@ namespace Cashier.Components.Pages
     {
         [Inject]
         private IDialogService? MyDialogService { get; set; }
-
-        // [Inject]
-        // private BaseLayerLuminance BaseLayerLuminance { get; set; } = default!;
 
         private IDialogReference? _dialog;
 
@@ -28,28 +24,18 @@ namespace Cashier.Components.Pages
             // Your initialization code goes here
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            // if (firstRender)
-            // {
-            //     //Set to dark mode
-	        //     await BaseLayerLuminance.SetValueFor(refCard!.Element, (float)StandardLuminance.DarkMode);
-                
-            //     StateHasChanged();
-            // }
-        }
-
         private async Task ShowPanel()
         {
             Console.WriteLine("yo!");
 
-            _dialog = await MyDialogService.ShowPanelAsync<SimplePanel>(simplePerson, new DialogParameters<SimplePerson>()
+            _dialog = await MyDialogService.ShowPanelAsync<SimplePanel>(simplePerson, 
+                new DialogParameters<SimplePerson>()
             {
                 Content = simplePerson,
                 Alignment = HorizontalAlignment.Left,
                 Title = "Hello!",
-                PrimaryAction = "Yes",
-                SecondaryAction = "No",
+                // PrimaryAction = "Yes",
+                // SecondaryAction = "No",
             });
             DialogResult result = await _dialog.Result;
             HandlePanel(result);
@@ -78,7 +64,8 @@ namespace Cashier.Components.Pages
         {
             // DemoLogger.WriteLine($"Open right panel");
 
-            _dialog = await MyDialogService.ShowPanelAsync<SimplePanel>(simplePerson, new DialogParameters<SimplePerson>()
+            _dialog = await MyDialogService.ShowPanelAsync<SimplePanel>(simplePerson, 
+                new DialogParameters<SimplePerson>()
             {
                 Content = simplePerson,
                 Alignment = HorizontalAlignment.Right,
