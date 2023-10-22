@@ -2,6 +2,7 @@
 using Cashier.Components.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
+using Microsoft.Fast.Components.FluentUI.DesignTokens;
 
 namespace Cashier.Components.Pages
 {
@@ -10,7 +11,12 @@ namespace Cashier.Components.Pages
         [Inject]
         private IDialogService? MyDialogService { get; set; }
 
+        [Inject]
+        private BaseLayerLuminance BaseLayerLuminance { get; set; } = default!;
+
         private IDialogReference? _dialog;
+
+        private FluentCard? refCard;
 
         private readonly SimplePerson simplePerson = new()
         {
@@ -19,18 +25,19 @@ namespace Cashier.Components.Pages
             Age = 42,
         };
 
-        // protected override async Task OnInitializedAsync()
-        // {
-        //     // Your initialization code goes here
-        // }
+        protected override async Task OnInitializedAsync()
+        {
+            // Your initialization code goes here
+        }
 
-        // protected override async Task OnAfterRenderAsync(bool firstRender)
-        // {
-        //     if (firstRender)
-        //     {
-        //         // @* await BaseLayerLuminance.SetValueFor() = StandardLuminance.DarkMode; *@
-        //     }
-        // }
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                //Set to dark mode
+	            await BaseLayerLuminance.SetValueFor(refCard!.Element, (float)StandardLuminance.DarkMode);
+            }
+        }
 
         private async Task ShowPanel()
         {
