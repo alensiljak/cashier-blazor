@@ -11,17 +11,15 @@ namespace Cashier.Components.Pages
         [Inject]
         private IDialogService? MyDialogService { get; set; }
 
-        [Inject]
-        private BaseLayerLuminance BaseLayerLuminance { get; set; } = default!;
+        // [Inject]
+        // private BaseLayerLuminance BaseLayerLuminance { get; set; } = default!;
 
         private IDialogReference? _dialog;
 
-        private FluentCard? refCard;
-
         private readonly SimplePerson simplePerson = new()
         {
-            Firstname = "Steve",
-            Lastname = "Roth",
+            Firstname = "Alen",
+            Lastname = "Batman",
             Age = 42,
         };
 
@@ -32,11 +30,13 @@ namespace Cashier.Components.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
-            {
-                //Set to dark mode
-	            await BaseLayerLuminance.SetValueFor(refCard!.Element, (float)StandardLuminance.DarkMode);
-            }
+            // if (firstRender)
+            // {
+            //     //Set to dark mode
+	        //     await BaseLayerLuminance.SetValueFor(refCard!.Element, (float)StandardLuminance.DarkMode);
+                
+            //     StateHasChanged();
+            // }
         }
 
         private async Task ShowPanel()
