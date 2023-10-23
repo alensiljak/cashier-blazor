@@ -1,7 +1,7 @@
 ﻿@page "/"
 
-<FluentHeader>
-    <FluentIcon Icon="Cashier.Code.LucideIcons24.Menu" Slot="start" />
+<FluentHeader class="glossy">
+    <FluentIcon Icon="Cashier.Code.LucideIcons24.Menu"  />
      Hi
     <FluentIcon Icon="Cashier.Code.LucideIcons24.MoreVertical" Slot="end" />
 </FluentHeader>
@@ -24,6 +24,18 @@
     <li><a href="/sidebar-demo">Sidebar Demo</a></li>
 </ul>
 
+<FluentBodyContent>
+    This is fluent body content.
+</FluentBodyContent>
+
 @code {
-    
+        protected override async Task OnInitializedAsync()
+        {
+            // Your initialization code goes here
+
+            var x = Color.Accent;
+            Console.WriteLine("accent:", x);
+
+        }
+
 }
