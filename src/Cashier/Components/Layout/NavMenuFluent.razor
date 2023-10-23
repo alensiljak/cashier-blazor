@@ -1,19 +1,28 @@
+@using Cashier.Code
 @using Cashier.Components.Components
 
-<NavHeader />
+<div class="main" style="background-color: @bgColour;">
+    <NavHeader />
 
-<FluentNavMenu>
-    <FluentNavLink>Home</FluentNavLink>
-    <FluentNavLink>Journal</FluentNavLink>
-    <FluentNavLink>Favourites</FluentNavLink>
-    <FluentNavLink>Accounts</FluentNavLink>
-    <FluentNavLink>Payees</FluentNavLink>
-    <FluentNavLink>Asset Allocation</FluentNavLink>
-    <FluentNavLink>Scheduled Transactions</FluentNavLink>
-    <!-- separator -->
-    <FluentNavLink>CashierSync</FluentNavLink>
-    <FluentNavLink>Cloud Backup</FluentNavLink>
-    <FluentNavLink>Settings</FluentNavLink>
-    <FluentNavLink>Help</FluentNavLink>
-    <FluentNavLink>About</FluentNavLink>
-</FluentNavMenu>
+    <FluentNavMenu>
+        <FluentNavLink>🏠 Home</FluentNavLink>
+        <FluentNavLink>📜 Journal</FluentNavLink>
+        <FluentNavLink>⭐ Favourites</FluentNavLink>
+        <FluentNavLink>🏦 Accounts</FluentNavLink>
+        <FluentNavLink>👥 Payees</FluentNavLink>
+        <FluentNavLink>📊 Asset Allocation</FluentNavLink>
+        <FluentNavLink>📆 Scheduled Transactions</FluentNavLink>
+
+        <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+
+        <FluentNavLink>🔄️ CashierSync</FluentNavLink>
+        <FluentNavLink>☁️ Cloud Backup</FluentNavLink>
+        <FluentNavLink>⚙️ Settings</FluentNavLink>
+        <FluentNavLink>❔ Help</FluentNavLink>
+        <FluentNavLink>ℹ️ About</FluentNavLink>
+    </FluentNavMenu>
+</div>
+
+@code {
+    const string bgColour = Palette.Dark;
+}

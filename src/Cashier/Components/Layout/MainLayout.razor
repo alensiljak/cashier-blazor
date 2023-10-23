@@ -2,20 +2,27 @@
 @using Cashier.Components.Layout
 
 <div class="page">
-    <nav class="sidebar">
+    @* <nav class="sidebar"> *@
+    <nav>
         @* <NavMenu /> *@
         <NavMenuFluent />
     </nav>
 
     <main>
-        <div class="top-row px-4" data-bs-theme="dark">
+        @* <div class="top-row px-4" data-bs-theme="dark">
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+        </div> *@
 
-        <article class="content px-4">
-            @Body
-        </article>
+        <nav>
+            :
+        </nav>
+
+        <div class="content">
+            <article class="content px-4">
+                @Body
+            </article>
+        </div>
+        <FluentDialogProvider />
+
     </main>
 </div>
-
-<FluentDialogProvider />
