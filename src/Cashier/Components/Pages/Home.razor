@@ -1,10 +1,17 @@
 ﻿@page "/"
 
-<FluentHeader class="glossy">
-    <FluentIcon Icon="Cashier.Code.LucideIcons24.Menu"  />
-     Hi
-    <FluentIcon Icon="Cashier.Code.LucideIcons24.MoreVertical" Slot="end" />
-</FluentHeader>
+@using Microsoft.Fast.Components.FluentUI.DesignTokens
+
+<FluentDesignSystemProvider AccentBaseColor=@Palette.Primary BaseLayerLuminance="1" TextColor=@Palette.Info>
+    <FluentHeader class="glossy">
+        <FluentIcon Icon="Cashier.Code.LucideIcons24.Menu" />
+        <div style="color: @Palette.Info;">
+        Hi!!!
+        </div>
+        <FluentLabel Color="@Color.Accent">Label</FluentLabel>
+        <FluentIcon Icon="Cashier.Code.LucideIcons24.MoreVertical" Slot="end" />
+    </FluentHeader>
+</FluentDesignSystemProvider>
 
 <FluentToolbar Orientation="Orientation.Horizontal">
     <FluentIcon Title="Front" Icon="Cashier.Code.LucideIcons24.Star" Slot="start" Color="Color.Accent" />
@@ -13,6 +20,8 @@
 </FluentToolbar>
 
 <PageTitle>Home</PageTitle>
+
+<article class="content">
 
 <h1>Hello, world!</h1>
 
@@ -27,15 +36,28 @@
 <FluentBodyContent>
     This is fluent body content.
 </FluentBodyContent>
+</article>
 
 @code {
-        protected override async Task OnInitializedAsync()
-        {
-            // Your initialization code goes here
+    @* [Inject]
+private AccentBaseColor AccentBaseColor { get; set; } = default!; *@
 
-            var x = Color.Accent;
-            Console.WriteLine("accent:", x);
+    @* private FluentHeader? refHeader; *@
 
-        }
+    protected override async Task OnInitializedAsync()
+    {
+        // Your initialization code goes here
 
+        var x = Color.Accent;
+        Console.WriteLine("accent:", x);
+
+    }
+
+    @* protected override async Task OnAfterRenderAsync(bool firstRender)
+{
+if (firstRender)
+{
+await AccentBaseColor.SetValueFor(refHeader!.Element, Palette.Accent.ToSwatch());
+}
+} *@
 }
