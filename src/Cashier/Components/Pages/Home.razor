@@ -2,11 +2,11 @@
 
 @using Microsoft.Fast.Components.FluentUI.DesignTokens
 
-<FluentDesignSystemProvider AccentBaseColor=@Palette.Primary BaseLayerLuminance="1" TextColor=@Palette.Info>
+<FluentDesignSystemProvider AccentBaseColor=@Palette.Primary BaseLayerLuminance="1">
     <FluentHeader class="glossy">
-        <FluentIcon Icon="Cashier.Code.LucideIcons24.Menu" />
+        <FluentIcon Icon="Cashier.Code.LucideIcons24.Menu" Slot="start" />
         <div style="color: @Palette.Info;">
-        Hi!!!
+                Hi!!!
         </div>
         <FluentLabel Color="@Color.Accent">Label</FluentLabel>
         <FluentIcon Icon="Cashier.Code.LucideIcons24.MoreVertical" Slot="end" />
@@ -16,26 +16,26 @@
 <FluentToolbar Orientation="Orientation.Horizontal">
     <FluentIcon Title="Front" Icon="Cashier.Code.LucideIcons24.Star" Slot="start" Color="Color.Accent" />
     <FluentIcon Title="Back" Icon="Cashier.Code.LucideIcons24.Settings" Slot="end" Color="Color.Accent" />
-    <FluentLabel>Hello!</FluentLabel>
+    <FluentLabel Color="Color.Success">Hello!</FluentLabel>
 </FluentToolbar>
 
 <PageTitle>Home</PageTitle>
 
 <article class="content">
 
-<h1>Hello, world!</h1>
+    <h1>Hello, world!</h1>
 
-<p>Welcome to the new Cashier app.</p>
+    <p>Welcome to the new Cashier app.</p>
 
-<p>Interesting links:</p>
+    <p>Interesting links:</p>
 
-<ul>
-    <li><a href="/sidebar-demo">Sidebar Demo</a></li>
-</ul>
+    <ul>
+        <li><a href="/sidebar-demo">Sidebar Demo</a></li>
+    </ul>
 
-<FluentBodyContent>
-    This is fluent body content.
-</FluentBodyContent>
+    <FluentBodyContent>
+        This is fluent body content.
+    </FluentBodyContent>
 </article>
 
 @code {
