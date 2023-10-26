@@ -1,7 +1,8 @@
 <div class="main" style="background-color: @bgColour;">
     <NavHeader />
 
-    <FluentDesignSystemProvider AccentBaseColor=@Palette.Primary BaseLayerLuminance="0" FillColor=@Palette.Info>
+    <FluentDesignSystemProvider AccentBaseColor=@Palette.Primary BaseLayerLuminance="0">
+    @* FillColor=@Palette.Info *@
 
         <FluentNavMenu>
             @* Width="150" *@
@@ -15,8 +16,8 @@
 
             <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
 
-            <FluentNavLink>🔄️ CashierSync</FluentNavLink>
-            <FluentNavLink>☁️ Cloud Backup</FluentNavLink>
+            @* <FluentNavLink>🔄️ CashierSync</FluentNavLink> *@
+            <FluentNavLink Href="/cloud-backup">☁️ Cloud Backup</FluentNavLink>
             <FluentNavLink Icon="@(new LucideIcons20.Settings())">Settings</FluentNavLink>
             <FluentNavLink>❔ Help</FluentNavLink>
             <FluentNavLink>ℹ️ About</FluentNavLink>
