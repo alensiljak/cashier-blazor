@@ -12,13 +12,18 @@ npm run build
 
 Open a terminal window in `src/Cashier`. Execute 
 ```sh
+dotnet watch
+```
+to utilize the hot reload for Blazor WebAssembly.
+
+Other options are:
+```sh
 dotnet run
 ```
 or
 ```sh
 dotnet watch run
 ```
-for realtime updates with the changes made to the code.
 
 # Testing
 TODO: bUnit + Playwright
