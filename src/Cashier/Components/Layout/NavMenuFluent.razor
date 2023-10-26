@@ -2,11 +2,11 @@
     <NavHeader />
 
     <FluentNavMenu> @* Width="150" *@
-        <FluentNavLink Icon="@(new LucideIcons20.Home())" Href="/">Home</FluentNavLink>
-        <FluentNavLink>📜 Journal</FluentNavLink>
-        <FluentNavLink>⭐ Favourites</FluentNavLink>
-        <FluentNavLink>🏦 Accounts</FluentNavLink>
-        <FluentNavLink>👥 Payees</FluentNavLink>
+        <FluentNavLink Href="/" Icon="@(new LucideIcons20.Home())" Match="NavLinkMatch.All">Home</FluentNavLink>
+        <FluentNavLink Href="/journal" Icon="@(new LucideIcons20.Scroll())">Journal</FluentNavLink>
+        <FluentNavLink Href="/favourites">⭐ Favourites</FluentNavLink>
+        <FluentNavLink Href="/accounts">🏦 Accounts</FluentNavLink>
+        <FluentNavLink Href="/payees">👥 Payees</FluentNavLink>
         <FluentNavLink>📊 Asset Allocation</FluentNavLink>
         <FluentNavLink>📆 Scheduled Transactions</FluentNavLink>
 
