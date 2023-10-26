@@ -1,23 +1,27 @@
 <div class="main" style="background-color: @bgColour;">
     <NavHeader />
 
-    <FluentNavMenu> @* Width="150" *@
-        <FluentNavLink Href="/" Icon="@(new LucideIcons20.Home())" Match="NavLinkMatch.All">Home</FluentNavLink>
-        <FluentNavLink Href="/journal" Icon="@(new LucideIcons20.Scroll())">Journal</FluentNavLink>
-        <FluentNavLink Href="/favourites">⭐ Favourites</FluentNavLink>
-        <FluentNavLink Href="/accounts">🏦 Accounts</FluentNavLink>
-        <FluentNavLink Href="/payees">👥 Payees</FluentNavLink>
-        <FluentNavLink>📊 Asset Allocation</FluentNavLink>
-        <FluentNavLink>📆 Scheduled Transactions</FluentNavLink>
+    <FluentDesignSystemProvider AccentBaseColor=@Palette.Primary BaseLayerLuminance="0" FillColor=@Palette.Info>
 
-        <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+        <FluentNavMenu>
+            @* Width="150" *@
+            <FluentNavLink Href="/" Icon="@(new LucideIcons20.Home())" Match="NavLinkMatch.All">Home</FluentNavLink>
+            <FluentNavLink Href="/journal" Icon="@(new LucideIcons20.Scroll())">Journal</FluentNavLink>
+            <FluentNavLink Href="/favourites">⭐ Favourites</FluentNavLink>
+            <FluentNavLink Href="/accounts">🏦 Accounts</FluentNavLink>
+            <FluentNavLink Href="/payees">👥 Payees</FluentNavLink>
+            <FluentNavLink>📊 Asset Allocation</FluentNavLink>
+            <FluentNavLink>📆 Scheduled Transactions</FluentNavLink>
 
-        <FluentNavLink>🔄️ CashierSync</FluentNavLink>
-        <FluentNavLink>☁️ Cloud Backup</FluentNavLink>
-        <FluentNavLink Icon="@(new LucideIcons20.Settings())">Settings</FluentNavLink>
-        <FluentNavLink>❔ Help</FluentNavLink>
-        <FluentNavLink>ℹ️ About</FluentNavLink>
-    </FluentNavMenu>
+            <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+
+            <FluentNavLink>🔄️ CashierSync</FluentNavLink>
+            <FluentNavLink>☁️ Cloud Backup</FluentNavLink>
+            <FluentNavLink Icon="@(new LucideIcons20.Settings())">Settings</FluentNavLink>
+            <FluentNavLink>❔ Help</FluentNavLink>
+            <FluentNavLink>ℹ️ About</FluentNavLink>
+        </FluentNavMenu>
+    </FluentDesignSystemProvider>
 </div>
 
 @code {
