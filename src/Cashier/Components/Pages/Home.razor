@@ -40,25 +40,9 @@
 </article>
 
 @code {
-    @* [Inject]
-private AccentBaseColor AccentBaseColor { get; set; } = default!; *@
-
-    @* private FluentHeader? refHeader; *@
-
     protected override async Task OnInitializedAsync()
     {
         // Your initialization code goes here
 
-        var x = Color.Accent;
-        Console.WriteLine("accent:", x);
-
     }
-
-    @* protected override async Task OnAfterRenderAsync(bool firstRender)
-{
-if (firstRender)
-{
-await AccentBaseColor.SetValueFor(refHeader!.Element, Palette.Accent.ToSwatch());
-}
-} *@
 }

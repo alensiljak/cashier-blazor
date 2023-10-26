@@ -1,4 +1,9 @@
 ﻿@page "/data-demo"
+@using BlazorDexie.JsModule
+@using Cashier.Data
+@using Cashier.Domain
+
+@inject IJSRuntime jsRuntime
 
 <FluentDesignSystemProvider AccentBaseColor=@Palette.Primary BaseLayerLuminance="1" FillColor=@Palette.Info>
 
@@ -9,8 +14,26 @@
 </FluentDesignSystemProvider>
 
 <article class="content">
+    <p>This is a demo page for manipulating the IndexedDb data store.</p>
+
 </article>
 
 @code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        var moduleFactory = new EsModuleFactory(jsRuntime);
+        var db = new CashierDb(moduleFactory);
+
+        await db.Accounts.BulkPut(new Account[]
+        {
+                new Account { Id = 1, Name = "Assets"},
+                new Account { Id = 2, Name = "Expenses"}
+        });
+
+        var accounts = await db.Accounts.ToArray();
+
+        Console.WriteLine(accounts.Length);
+    }
 
 }
