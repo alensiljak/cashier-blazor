@@ -24,6 +24,10 @@ or
 dotnet watch run
 ```
 
+## Debugging
+To debug the Blazor application, select Edge as the browser in Visual Studio. Run/Debug the Cashier
+profile from Visual Studio.
+
 # Testing
 TODO: bUnit + Playwright
 

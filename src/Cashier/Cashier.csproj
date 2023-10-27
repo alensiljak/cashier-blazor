@@ -17,6 +17,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="bunit" Version="1.24.10" />
+		<PackageReference Include="IndexedDB.Blazor" Version="1.1.1" />
+		<!--<PackageReference Include="DexieNET" Version="1.0.0" />-->
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0-rc.2.23480.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0-rc.2.23480.2" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Fast.Components.FluentUI" Version="3.2.2" />
@@ -28,12 +30,12 @@
 	</ItemGroup>
 
 	<!-- For Debug configuration, use ProjectReference -->
-	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+	<!--<ItemGroup Condition="'$(Configuration)'=='Debug'">
 		<ProjectReference Include="..\..\..\BlazorDexie\BlazorDexie\BlazorDexie.csproj" />
-	</ItemGroup>
+	</ItemGroup>-->
 	<!-- For non-Debug configuration, use PackageReference -->
-	<ItemGroup Condition="'$(Configuration)'!='Debug'">
+	<!--<ItemGroup Condition="'$(Configuration)'!='Debug'">
 		<PackageReference Include="BlazorDexie" Version="1.1.2" />
-	</ItemGroup>
+	</ItemGroup>-->
 
 </Project>

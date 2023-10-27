@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Cashier.Components;
 using Microsoft.Fast.Components.FluentUI;
+using IndexedDB.Blazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -14,5 +15,8 @@ builder.Services.AddFluentUIComponents(options =>
 {
     options.HostingModel = BlazorHostingModel.WebAssembly;
 });
+
+// IndexedDb support
+builder.Services.AddSingleton<IIndexedDbFactory, IndexedDbFactory>();
 
 await builder.Build().RunAsync();
