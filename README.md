@@ -7,16 +7,15 @@ Clone the repository.
 Prepare the JS client libraries. In `npm` directory, run
 ```sh
 npm i
-npm run build
+copy_libs.cmd
 ```
-
-Open a terminal window in `src/Cashier`. Execute 
+Then go to `src/Cashier` and execute 
 ```sh
 dotnet watch
 ```
 to utilize the hot reload for Blazor WebAssembly.
 
-Other options are:
+Other potential options are:
 ```sh
 dotnet run
 ```
@@ -30,10 +29,8 @@ TODO: bUnit + Playwright
 
 # Publish
 
-The JavaScript libraries need to be bundled first. In `npm` directory, run
-```sh
-npm run build
-```
+Run the `publish.cmd` script. It will copy the JavaScript libraries and
+run the command below.
 
 Build the optimized, Release, version of Cashier Blazor Webassembly app:
 ```sh

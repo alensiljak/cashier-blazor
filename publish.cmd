@@ -1,8 +1,7 @@
 :: JavaScript
 pushd src\npm
-
-npm run build
-
+::npm run build
+call copy_libs.cmd
 popd
 
 :: Blazor

@@ -7,7 +7,8 @@
 /src/Cashier/obj/
 
 # Vendor JS file
-/src/Cashier/wwwroot/js/vendor.min.js
+#/src/Cashier/wwwroot/js/vendor.min.js
+/src/Cashier/wwwroot/js/dexie.min.js
 
 # npm
 /src/npm/node_modules/
