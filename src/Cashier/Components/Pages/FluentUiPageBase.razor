@@ -1,0 +1,21 @@
+﻿@using Microsoft.Fast.Components.FluentUI.DesignTokens
+
+@code {
+    [Inject]
+    private BaseLayerLuminance BaseLayerLuminance { get; set; } = default!;
+
+    [Inject]
+    private AccentBaseColor AccentBaseColor { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Set the theme.
+            await BaseLayerLuminance.WithDefault((float)0.0);
+
+            await AccentBaseColor.WithDefault(Palette.Primary.ToSwatch());
+        }
+    }
+
+}

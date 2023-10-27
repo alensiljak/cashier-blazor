@@ -21,6 +21,15 @@ namespace Cashier.Code
         public const string TropicalRainForest = "#076461";
     }
 
+    /// <summary>
+    /// --neutral-fill-layer-rest is the background colour of the page. Use the DarkPage colour for that.
+    /// </summary>
+    public static class QuasarPaletteDark
+    {
+        public const string Dark = "#1d1f20";
+        public const string DarkPage = "#121212";
+    }
+
     public static class Palette
     {
         public const string Primary = ColourPalette.TropicalRainForest;

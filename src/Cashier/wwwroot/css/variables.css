@@ -13,11 +13,10 @@
     --presence-oof: #c239b3;
     --presence-unknown: #d13438;
     --highlight-bg: #fff3cd; */
-
     /* --fill-color: orange; */
-
     /* --accent-fill-color: yellow; */
     /* --neutral-base-color: green; */
+    --neutral-fill-layer-rest: #121212;
 }
 
 /* :host {
