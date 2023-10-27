@@ -129,3 +129,8 @@ code {
     rgba(0, 0, 0, 0.04)
   ) !important;
 }
+
+#contextMenu:hover {
+    border-radius: 50%;
+    outline: 2px solid orange;
+}

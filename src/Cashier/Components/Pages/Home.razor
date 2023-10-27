@@ -2,14 +2,20 @@
 
 @using Microsoft.Fast.Components.FluentUI.DesignTokens
 
-<FluentDesignSystemProvider AccentBaseColor=@Palette.Primary BaseLayerLuminance="1" FillColor=@Palette.Info>
+<FluentDesignSystemProvider AccentBaseColor=@Palette.Primary BaseLayerLuminance="0" FillColor=@Palette.Info>
     <FluentHeader class="glossy">
         <FluentIcon Icon="Cashier.Code.LucideIcons24.Menu" Slot="start" />
         <div style="color: @Palette.Info;">
                 Hi!!!
         </div>
         <FluentLabel Color="@Color.Accent">Label</FluentLabel>
-        <FluentIcon Icon="Cashier.Code.LucideIcons24.MoreVertical" Slot="end" />
+
+        <FluentIcon Id="contextMenu" Icon="Cashier.Code.LucideIcons24.MoreVertical" Slot="end"
+            @onclick="@(() => contextMenuOpen = !contextMenuOpen)"/>
+        <FluentMenu Anchor="contextMenu" @bind-Open="contextMenuOpen">
+            <FluentMenuItem>Item</FluentMenuItem>
+            <FluentMenuItem>Item 2</FluentMenuItem>
+        </FluentMenu>
     </FluentHeader>
 </FluentDesignSystemProvider>
 
@@ -40,6 +46,8 @@
 </article>
 
 @code {
+    private bool contextMenuOpen { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         // Your initialization code goes here

@@ -1,8 +1,8 @@
 :: JavaScript
-pushd src\npm
+::pushd src\npm
 ::npm run build
-call copy_libs.cmd
-popd
+::call copy_libs.cmd
+::popd
 
 :: Blazor
 pushd src\Cashier
