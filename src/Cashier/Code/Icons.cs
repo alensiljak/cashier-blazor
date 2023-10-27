@@ -42,6 +42,20 @@ namespace Cashier.Code
 
     public static class LucideIcons20
     {
+        public class CalendarClock : Icon
+        {
+            public CalendarClock() : base("CalendarClock", IconVariant.Regular, IconSize.Size20,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-calendar-clock\"><path d=\"M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5\"/><path d=\"M16 2v4\"/><path d=\"M8 2v4\"/><path d=\"M3 10h5\"/><path d=\"M17.5 17.5 16 16.25V14\"/><path d=\"M22 16a6 6 0 1 1-12 0 6 6 0 0 1 12 0Z\"/></svg>")
+            { }
+        }
+
+        public class HelpCircle : Icon
+        {
+            public HelpCircle() : base("HelpCircle", IconVariant.Regular, IconSize.Size20,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-help-circle\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3\"/><path d=\"M12 17h.01\"/></svg>")
+            { }
+        }
+
         public class Home : Icon
         {
             public Home() : base("Home", IconVariant.Regular, IconSize.Size20,
@@ -49,10 +63,24 @@ namespace Cashier.Code
             { }
         }
 
+        public class Info : Icon
+        {
+            public Info() : base("Info", IconVariant.Regular, IconSize.Size20,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-info\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 16v-4\"/><path d=\"M12 8h.01\"/></svg>")
+            { }
+        }
+
         public class Landmark : Icon
         {
             public Landmark() : base("Landmark", IconVariant.Regular, IconSize.Size20,
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-landmark\"><line x1=\"3\" x2=\"21\" y1=\"22\" y2=\"22\"/><line x1=\"6\" x2=\"6\" y1=\"18\" y2=\"11\"/><line x1=\"10\" x2=\"10\" y1=\"18\" y2=\"11\"/><line x1=\"14\" x2=\"14\" y1=\"18\" y2=\"11\"/><line x1=\"18\" x2=\"18\" y1=\"18\" y2=\"11\"/><polygon points=\"12 2 20 7 4 7\"/></svg>")
+            { }
+        }
+
+        public class PieChart : Icon
+        {
+            public PieChart() : base("PieChart", IconVariant.Regular, IconSize.Size20,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-pie-chart\"><path d=\"M21.21 15.89A10 10 0 1 1 8 2.83\"/><path d=\"M22 12A10 10 0 0 0 12 2v10z\"/></svg>")
             { }
         }
 
@@ -74,6 +102,13 @@ namespace Cashier.Code
         {
             public Star() : base("Star", IconVariant.Regular, IconSize.Size20,
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-star\"><polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"/></svg>")
+            { }
+        }
+
+        public class UploadCloud : Icon
+        {
+            public UploadCloud() : base("UploadCloud", IconVariant.Regular, IconSize.Size20,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-upload-cloud\"><path d=\"M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242\"/><path d=\"M12 12v9\"/><path d=\"m16 16-4-4-4 4\"/></svg>")
             { }
         }
 
