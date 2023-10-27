@@ -22,6 +22,17 @@
 
     protected override async Task OnInitializedAsync()
     {
+        try
+        {
+            await runDataDemo();
+        } catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task runDataDemo()
+    {
         var moduleFactory = new EsModuleFactory(jsRuntime);
         var db = new CashierDb(moduleFactory);
 
@@ -35,5 +46,4 @@
 
         Console.WriteLine(accounts.Length);
     }
-
 }
