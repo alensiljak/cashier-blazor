@@ -9,18 +9,31 @@
     </div>
 </GestureContainer>
 
+<div>
+    <h3>Message:</h3>
+    <p>@message</p>
+</div>
+
 @code {
+    private string message = "swipe sideways";
+
     private Task OnSwipe(GestureContainer.SwipeDirection swipeDirection)
     {
         switch(swipeDirection) {
             case GestureContainer.SwipeDirection.Left:
-                Console.WriteLine("swiped left");
+                message = "swiped left!";
+                Console.WriteLine(message);
                 break;
             case GestureContainer.SwipeDirection.Right:
-                Console.WriteLine("swiped right");
+                message = "swiped right!";
+                Console.WriteLine(message);
+                break;
+            default:
+                message = string.Empty;
                 break;
         }
-        
+        StateHasChanged();
+
         return Task.CompletedTask;
     }
 }
