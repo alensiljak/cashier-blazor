@@ -19,10 +19,10 @@ namespace Cashier.Components.Pages
             Age = 42,
         };
 
-        protected override async Task OnInitializedAsync()
-        {
-            // Your initialization code goes here
-        }
+        //protected override async Task OnInitializedAsync()
+        //{
+        //    // Your initialization code goes here
+        //}
 
         private async Task ShowPanel()
         {

@@ -1,0 +1,71 @@
+﻿@page "/responsive-side-navigation"
+
+<h3>ResponsiveSideNavigation</h3>
+
+<p>The instructions are 
+    <a href="https://webdesign.tutsplus.com/making-a-sliding-side-navigation-menu-for-responsive-designs--cms-28400t">here</a>.</p>
+
+<div style="display:flex; flex-direction: row;">
+    <div id="sideNavigation" class="sidenav" @ref=left style="background-color: deepskyblue; width: @leftWidth;">
+        left div
+        <a href="#" class="close-btn" @onclick="ToggleMenu">&times;</a>
+
+        <a href="#">About</a>
+
+        <a href="#">Features</a>
+
+        <a href="#">Contact Us</a>
+    </div>
+    <section id="main" style="background-color: saddlebrown; margin-left: @leftWidth;">
+        section
+    </section>
+@*     <main>
+        Main content?
+    </main>
+ *@@*     <div @ref=right style="background-color: saddlebrown; width: 150px; height: 150px; ">
+        right div
+    </div>
+ *@</div>
+
+ <div style="height: 150px;">
+     breaker
+ </div>
+
+<FluentButton @onclick="ToggleMenu">Toggle</FluentButton>
+
+@code {
+    protected ElementReference left { get; set; }
+    private string leftWidth = "0";
+
+    protected ElementReference right { get; set; }
+
+    bool on = false;
+
+    private void ToggleMenu()
+    {
+        Console.WriteLine("toggling");
+
+        on = !on;
+
+        if(on)
+        {
+            turnOn();
+        } else
+        {
+            turnOff();
+        }
+
+    }
+
+    private void turnOn()
+    {
+        leftWidth = "250px";
+
+    }
+
+    private void turnOff()
+    {
+        leftWidth = "0";
+
+    }
+}
