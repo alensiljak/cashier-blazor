@@ -1,0 +1,26 @@
+﻿@page "/gestures-demo"
+@using Cashier.Components.Components
+
+<h3>GesturesDemo</h3>
+
+<GestureContainer OnSwipeAsync="@OnSwipe">
+    <div style="width: 250px; height: 250px; background-color: green;">
+        Swipe here
+    </div>
+</GestureContainer>
+
+@code {
+    private Task OnSwipe(GestureContainer.SwipeDirection swipeDirection)
+    {
+        switch(swipeDirection) {
+            case GestureContainer.SwipeDirection.Left:
+                Console.WriteLine("swiped left");
+                break;
+            case GestureContainer.SwipeDirection.Right:
+                Console.WriteLine("swiped right");
+                break;
+        }
+        
+        return Task.CompletedTask;
+    }
+}
