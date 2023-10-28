@@ -8,13 +8,14 @@
     <base href="/" />
     <link rel="icon" type="image/png" href="favicon.png" />
 
-    <!-- <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" /> -->
+    <!-- FluentUI -->
     <link rel="stylesheet" href="_content/Microsoft.Fast.Components.FluentUI/css/reboot.css" />
     <!-- <link href="_content/Microsoft.Fast.Components.FluentUI/css/variables.css" rel="stylesheet" /> -->
     <link rel="stylesheet" href="css/variables.css" />
+    <!-- custom -->
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="Cashier.styles.css" />
-    
+
     <link href="manifest.webmanifest" rel="manifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
@@ -34,12 +35,13 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-    <!-- <script src="https://unpkg.com/lucide@latest"></script> -->
-    <!-- <script src="js/dexie.min.js"></script> -->
-    <script src="_content/TG.Blazor.IndexedDB/indexedDb.Blazor.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
-    <!-- <script src="js/site.js"></script> -->
+    <!-- indexeddb -->
+    <script src="_content/TG.Blazor.IndexedDB/indexedDb.Blazor.js"></script>
+    <!-- Fluent UI theme -->
+    <script src="js/site.js"></script>
     <script src="/js/theme.js" type="module"></script>
+    <!-- PWA web worker -->
     <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>
 
