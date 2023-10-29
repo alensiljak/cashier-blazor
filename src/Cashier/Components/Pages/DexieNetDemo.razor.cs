@@ -1,5 +1,4 @@
-﻿using Cashier.Data;
-using Cashier.Domain;
+﻿using Cashier.Domain;
 using DexieNET;
 
 namespace Cashier.Components.Pages
@@ -53,6 +52,11 @@ namespace Cashier.Components.Pages
         {
             LogMessage("Good Transaction");
 
+            await Dexie.Transaction(async tx =>
+            {
+                var key = await Dexie.Xacts().Add(new Xact("2023-11-01", "Halloween"));
+                var xact = await Dexie.Xacts().Get(key);
+            });
         }
 
         private async Task FailedTransaction()

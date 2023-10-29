@@ -9,7 +9,7 @@ namespace Cashier.Data
 namespace Cashier.Domain
 {
     public partial record AssetAllocation(
-        string FullName
+        [property: Index(IsPrimary = true)] string FullName
     ) : ICashierDB;
 
     public partial record Account
@@ -24,18 +24,22 @@ namespace Cashier.Domain
 
     [Schema(PrimaryKeyGuid = false)]
     public partial record ScheduledXact(
+        [property: Index] string NextDate
+    ) : ICashierDB;
 
+    public partial record Setting(
+        [property: Index(IsPrimary = true)] string Key
     ) : ICashierDB;
 
     [Schema(PrimaryKeyGuid = false)]
     public partial record Xact
     (
         //[property: Index(IsAuto = true, IsPrimary = true, IsUnique = true)] long? Id,
-        string? Date,
-        [property: Index] string? Payee
+        [property: Index] string? Date,
+        string? Payee
     ) : ICashierDB;
 
     public partial record LastXact(
-        string Payee
+        [property: Index] string Payee
     ) : ICashierDB;
 }

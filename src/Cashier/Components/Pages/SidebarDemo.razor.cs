@@ -28,7 +28,7 @@ namespace Cashier.Components.Pages
         {
             Console.WriteLine("yo!");
 
-            _dialog = await MyDialogService.ShowPanelAsync<SimplePanel>(simplePerson, 
+            _dialog = await MyDialogService!.ShowPanelAsync<SimplePanel>(simplePerson, 
                 new DialogParameters<SimplePerson>()
             {
                 Content = simplePerson,
