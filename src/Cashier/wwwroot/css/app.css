@@ -128,11 +128,6 @@ code {
   ) !important;
 }
 
-#contextMenu:hover {
-    border-radius: 50%;
-    outline: 2px solid orange;
-}
-
 article {
     margin: 0.5rem 0.5rem 0.5rem 0.5rem;
 }

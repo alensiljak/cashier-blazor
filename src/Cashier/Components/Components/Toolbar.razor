@@ -1,20 +1,84 @@
 ﻿<FluentDesignSystemProvider FillColor=@Palette.Info>
+    <FluentHeader class="glossy" Style="width: 100%;">
+        <div class="toolbar-content">
+            <MenuToggleButton />
 
-    <FluentHeader class="glossy" Style="align-items: center;">
-        <MenuToggleButton />
+            <div class="title">
+                <h4>
+                    @ChildContent
+                </h4>
+            </div>
 
-        <h4>
-        @ChildContent
-        </h4>
-
+@*             <div class="spacer">
+                test
+            </div>
+ *@
+            <div class="contextMenu">
+                <FluentIcon Id="contextMenu" Icon="Cashier.Code.LucideIcons24.MoreVertical" 
+                            @onclick="@(() => contextMenuOpen = !contextMenuOpen)" />
+                <FluentMenu Anchor="contextMenu" @bind-Open="contextMenuOpen">
+                    @ContextMenu
+                </FluentMenu>
+            </div>
+        </div>
     </FluentHeader>
 
-    @* <h3>Cashier Toolbar</h3> *@
-
 </FluentDesignSystemProvider>
+
+<style>
+    div.toolbar-content {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        overflow-y: visible; /* to show the menu items */
+
+        /* background-color: darkgoldenrod; */
+    }
+
+    div.title {
+        flex-grow: 1;
+
+        /* background-color: saddlebrown; */
+    }
+
+/*     div.spacer {
+        flex-grow: 1;
+
+        background-color: darkblue;
+    }
+ */
+    div.contextMenu {
+        margin-top: 0;
+        min-width: 2.4em;
+        min-height: 2.4em;
+        text-align: center;
+        overflow: visible;
+        padding: 0.2rem;
+        padding-top: 0.5rem;
+
+        border-radius: 50%;
+
+        display: flex;
+        justify-content: center;
+
+        /* background-color: green; */
+    }
+
+    div.contextMenu:hover {
+        /* outline: 2px solid orange; */
+        background-color: rgba(255, 255, 0, 0.1);
+    }
+
+</style>
 
 @code {
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment ContextMenu { get; set; }
+
+    private bool contextMenuOpen { get; set; }
 
 }

@@ -4,24 +4,25 @@
 @using Microsoft.Fast.Components.FluentUI.DesignTokens
 @using Cashier.Components.Components
 
-<Toolbar>Cashier!!!</Toolbar>
-
-<FluentDesignSystemProvider FillColor=@Palette.Info>
-    <FluentHeader class="glossy">
-        <FluentIcon Icon="Cashier.Code.LucideIcons24.Menu" Slot="start" />
-        <div style="color: @Palette.Info;">
-                Hi!!!
-        </div>
-        <FluentLabel Color="@Color.Accent">Label</FluentLabel>
-
-        <FluentIcon Id="contextMenu" Icon="Cashier.Code.LucideIcons24.MoreVertical" Slot="end"
-            @onclick="@(() => contextMenuOpen = !contextMenuOpen)"/>
-        <FluentMenu Anchor="contextMenu" @bind-Open="contextMenuOpen">
-            <FluentMenuItem>Item</FluentMenuItem>
-            <FluentMenuItem>Item 2</FluentMenuItem>
-        </FluentMenu>
-    </FluentHeader>
-</FluentDesignSystemProvider>
+<Toolbar>
+    <ChildContent>
+        Cashier!!!
+    </ChildContent>
+    <ContextMenu>
+        <FluentMenuItem>
+            Item
+            <span slot="end">
+                <FluentIcon Title="Front" Icon="Cashier.Code.LucideIcons20.Star" Slot="end" Color="Color.Accent" />
+            </span>
+        </FluentMenuItem>
+        <FluentMenuItem>
+            Item 2
+            <span slot="end">
+                <FluentIcon Title="Front" Icon="Cashier.Code.LucideIcons20.HelpCircle" Slot="end" Color="Color.Accent" />
+            </span>
+        </FluentMenuItem>
+    </ContextMenu>
+</Toolbar>
 
 <FluentToolbar Orientation="Orientation.Horizontal">
     <FluentIcon Title="Front" Icon="Cashier.Code.LucideIcons24.Star" Slot="start" Color="Color.Accent" />
@@ -40,7 +41,9 @@
     <p>Interesting links:</p>
 
     <ul>
-        <li><a href="/sidebar-demo">Sidebar Demo</a></li>
+        <li>
+            <a href="/sidebar-demo">Sidebar Demo</a>
+        </li>
         <li><a href="/responsive-side-navigation">Responsive Side Navigation</a></li>
         <li><a href="/data-demo">Data Demo</a></li>
         <li><a href="/gestures-demo">Gestures Demo</a></li>
@@ -55,12 +58,4 @@
 </article>
 
 @code {
-    private bool contextMenuOpen { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        // Your initialization code goes here
-
-    }
-
 }
