@@ -2,36 +2,47 @@
 
 <h3>ResponsiveSideNavigation</h3>
 
-<p>The instructions are 
-    <a href="https://webdesign.tutsplus.com/making-a-sliding-side-navigation-menu-for-responsive-designs--cms-28400t">here</a>.</p>
+<p>
+    The instructions are
+    <a href="https://webdesign.tutsplus.com/making-a-sliding-side-navigation-menu-for-responsive-designs--cms-28400t">here</a>.
+</p>
 
-<div style="display:flex; flex-direction: row;">
-    <div id="sideNavigation" class="sidenav" @ref=left style="background-color: deepskyblue; width: @leftWidth;">
-        left div
-        <a href="#" class="close-btn" @onclick="ToggleMenu">&times;</a>
+<GestureContainer OnSwipeAsync="OnSwipe">
+    <div style="display:flex; flex-direction: row;">
+        <div id="sideNavigation" class="sidenav" @ref=left style="background-color: deepskyblue; width: @leftWidth;"
+             @onblur="ToggleMenu">
+            left div
+            @* <a href="#" class="close-btn" @onclick="ToggleMenu">&times;</a> *@
+            <FluentButton Class="close-btn" @onclick="ToggleMenu">&times;</FluentButton>
 
-        <a href="#">About</a>
+            <a href="#">About</a>
 
-        <a href="#">Features</a>
+            <a href="#">Features</a>
 
-        <a href="#">Contact Us</a>
-    </div>
-    <section id="main" style="background-color: saddlebrown; margin-left: @leftWidth;">
-        section
-    </section>
-@*     <main>
+            <a href="#">Contact Us</a>
+        </div>
+        <section id="main" style="background-color: saddlebrown; margin-left: @leftWidth;">
+            section
+        </section>
+        @*     <main>
         Main content?
-    </main>
- *@@*     <div @ref=right style="background-color: saddlebrown; width: 150px; height: 150px; ">
+        </main>
+        *@@*     <div @ref=right style="background-color: saddlebrown; width: 150px; height: 150px; ">
         right div
+        </div>
+        *@
     </div>
- *@</div>
 
- <div style="height: 150px;">
-     breaker
- </div>
+    <div style="height: 150px;">
+        breaker
+    </div>
 
-<FluentButton @onclick="ToggleMenu">Toggle</FluentButton>
+    <FluentButton @onclick="ToggleMenu">Toggle</FluentButton>
+
+    <div style="background-color: darkolivegreen">
+        Toggle with swipe
+    </div>
+</GestureContainer>
 
 @code {
     protected ElementReference left { get; set; }
@@ -41,16 +52,32 @@
 
     bool on = false;
 
+    private Task OnSwipe(GestureContainer.SwipeDirection swipeDirection)
+    {
+        if (on && swipeDirection == GestureContainer.SwipeDirection.Left)
+        {
+            ToggleMenu();
+        }
+        if (!on && swipeDirection == GestureContainer.SwipeDirection.Right)
+        {
+            ToggleMenu();
+        }
+        StateHasChanged();
+
+        return Task.CompletedTask;
+    }
+
     private void ToggleMenu()
     {
         Console.WriteLine("toggling");
 
         on = !on;
 
-        if(on)
+        if (on)
         {
             turnOn();
-        } else
+        }
+        else
         {
             turnOff();
         }
