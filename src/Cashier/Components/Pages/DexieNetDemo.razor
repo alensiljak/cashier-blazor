@@ -46,6 +46,15 @@
             {
                 <li>
                     Date: @xact.Date, Payee: @xact.Payee;
+                    @if(xact.postings != null)
+                    {
+                        <ul>
+                            @foreach (var posting in xact.postings)
+                            {
+                                <li>@posting.Account @posting.Money?.Amount @posting.Money?.Currency</li>
+                            }
+                        </ul>
+                    }
                 </li>
             }
         </ul>
@@ -54,21 +63,21 @@
     <hr />
 
     <div style="display: flex; column-gap: 50px">
-        <button class="btn btn-primary" style="flex: 0 1 auto" @onclick="PopulateDatabase">
+        <FluentButton @onclick="PopulateDatabase" Appearance="Appearance.Accent">
             PopulateDatabase
-        </button>
+        </FluentButton>
 
-        <button class="btn btn-secondary" style="flex: 0 1 auto" @onclick="GoodTransaction">
+        <FluentButton @onclick="GoodTransaction">
             GoodTransaction
-        </button>
+        </FluentButton>
 
-        <button class="btn btn-secondary" style="flex: 0 1 auto" @onclick="FailedTransaction">
+        <FluentButton @onclick="FailedTransaction">
             FailedTransaction
-        </button>
+        </FluentButton>
 
-        <button class="btn btn-secondary" style="flex: 0 1 auto" @onclick="ClearDatabase">
+        <FluentButton @onclick="ClearDatabase">
             ClearDatabase
-        </button>
+        </FluentButton>
     </div>
 </article>
 

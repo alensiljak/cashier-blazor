@@ -27,6 +27,8 @@ namespace Cashier.Components.Pages
 
         private async Task ClearDatabase()
         {
+            LogMessage("Clearing database...");
+
             await Dexie.Accounts().Clear();
             await Dexie.Xacts().Clear();
 
@@ -42,19 +44,25 @@ namespace Cashier.Components.Pages
             await Dexie.Accounts().Add(new Account("Expenses"));
             await Dexie.Accounts().Add(new Account("Income"));
 
-            await Dexie.Xacts().Add(new Xact("2023-10-29", "Oebb"));
-            await Dexie.Xacts().Add(new Xact("2023-10-30", "Drakon"));
+            await Dexie.Xacts().Add(new Xact("2023-10-29", "Oebb", null, null));
+
+            var postings = new Posting[]
+            {
+                new Posting("Expenses:Groceries", new Money(20, "EUR")),
+                new Posting("Assets:Checking", null)
+            };
+            await Dexie.Xacts().Add(new Xact("2023-10-30", "Drakon", null, postings));
 
             await LoadData();
         }
 
         private async Task GoodTransaction()
         {
-            LogMessage("Good Transaction");
+            LogMessage("Good transaction example");
 
             await Dexie.Transaction(async tx =>
             {
-                var key = await Dexie.Xacts().Add(new Xact("2023-11-01", "Halloween"));
+                var key = await Dexie.Xacts().Add(new Xact("2023-11-01", "Halloween", null, null));
                 var xact = await Dexie.Xacts().Get(key);
             });
 
@@ -63,14 +71,14 @@ namespace Cashier.Components.Pages
 
         private async Task FailedTransaction()
         {
-            LogMessage("Failed Transaction");
+            LogMessage("Failed transaction");
 
             try
             {
                 await Dexie.Transaction(async tx =>
                 {
                     await Dexie.Xacts().Clear();
-                    var key = await Dexie.Xacts().Add(new Xact("2023-10-18", "Supermarket"));
+                    var key = await Dexie.Xacts().Add(new Xact("2023-10-18", "Supermarket", null, null));
                     var xact = await Dexie.Xacts().Get(key);
                     // fail
                     await Dexie.Xacts().Add(xact);

@@ -29,17 +29,26 @@ namespace Cashier.Domain
     ) : ICashierDB;
 
     public partial record Setting(
-        [property: Index(IsPrimary = true)] string Key
+        [property: Index(IsPrimary = true)] string Key,
+        string Value
     ) : ICashierDB;
+
+    public partial record Posting(
+        string Account,
+        Money? Money
+    );
 
     [Schema(PrimaryKeyGuid = false)]
     public partial record Xact
     (
         [property: Index] string? Date,
-        string? Payee
+        string? Payee,
+        string? Note,
+        Posting[]? postings
     ) : ICashierDB;
 
     public partial record LastXact(
-        [property: Index] string Payee
+        [property: Index] string Payee,
+        Xact? Xact
     ) : ICashierDB;
 }
