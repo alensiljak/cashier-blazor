@@ -1,8 +1,17 @@
-﻿<div style="background-color: orange;">
-<h3>Cashier Toolbar</h3>
-    @ChildContent
+﻿<FluentDesignSystemProvider FillColor=@Palette.Info>
 
-</div>
+    <FluentHeader class="glossy" Style="align-items: center;">
+        <MenuToggleButton />
+
+        <h4>
+        @ChildContent
+        </h4>
+
+    </FluentHeader>
+
+    @* <h3>Cashier Toolbar</h3> *@
+
+</FluentDesignSystemProvider>
 
 @code {
     [Parameter]

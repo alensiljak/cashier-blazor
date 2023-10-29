@@ -18,7 +18,7 @@
     {
         base.OnInitialized();
 
-        appState.OnSidebarToggled += StateHasChanged;
+        // appState.OnSidebarToggled += StateHasChanged;
     }
 
     private void ToggleState()
@@ -28,6 +28,6 @@
 
     public void Dispose()
     {
-        appState.OnSidebarToggled -= StateHasChanged;
+        // appState.OnSidebarToggled -= StateHasChanged;
     }
 }

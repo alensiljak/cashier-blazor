@@ -1,0 +1,39 @@
+﻿@inject AppState appState
+
+<div class="container" @onclick="OnMenuClick">
+    <FluentIcon Icon="Cashier.Code.LucideIcons24.Menu" Class="icon" />
+</div>
+
+<style>
+    div.container {
+        margin-left: -16px;
+        margin-right: 10px;
+        cursor: pointer;
+        padding: 0;
+        min-height: 2.4em;
+        min-width: 2.4em;
+        border-radius: 50%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* background-color: lightgreen; */
+        /* color: red; */
+    }
+
+    .icon {
+        margin-top: 0.2rem;
+    }
+
+    h4 {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+</style>
+
+@code {
+    private void OnMenuClick() {
+        appState.ToggleSidebar();
+    }
+}
