@@ -1,29 +1,59 @@
 ﻿@inherits LayoutComponentBase
-@using Cashier.Components.Layout
 
-<div class="page">
-    @* <nav class="sidebar"> *@
-    <nav>
-        @* <NavMenu /> *@
-        <NavMenuFluent />
-    </nav>
+<GestureContainer OnSwipeAsync="OnSwipe">
+    <div style="display:flex; flex-direction: row;">
+        <nav class="sidenav" style="width: @sidebarSize;">
+            <NavMenuFluent />
+        </nav>
+        <main style="margin-left: @sidebarSize;">
+            <FluentButton @onclick="ToggleSidebar">Toggle</FluentButton>
 
-    <main>
-        @* <div class="top-row px-4" data-bs-theme="dark">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div> *@
+            @Body
 
-        @* <nav>
-            :
-        </nav> *@
+        </main>
+    </div>
+</GestureContainer>
 
-        @* <div class="content"> *@
-            @* <article> *@
-                @* class="content px-4" *@
-                @Body
-            @* </article> *@
-        @* </div> *@
-        <FluentDialogProvider />
+@code {
+    private const string VISIBLE = "250px";
+    private const string INVISIBLE = "0";
 
-    </main>
-</div>
+    private string sidebarSize = VISIBLE;
+
+    private Task OnSwipe(GestureContainer.SwipeDirection swipeDirection)
+    {
+        // if open, allow swiping left to close.
+        if (SidebarVisible && swipeDirection == GestureContainer.SwipeDirection.Left)
+        {
+            ToggleSidebar();
+        }
+        // if closed, allow swiping right to open.
+        if (!SidebarVisible && swipeDirection == GestureContainer.SwipeDirection.Right)
+        {
+            ToggleSidebar();
+        }
+        StateHasChanged();
+
+        return Task.CompletedTask;
+    }
+
+    private bool SidebarVisible
+    {
+        get
+        {
+            return sidebarSize == VISIBLE;
+        }
+    }
+
+    private void ToggleSidebar()
+    {
+        if (sidebarSize != VISIBLE)
+        {
+            sidebarSize = VISIBLE;
+        }
+        else
+        {
+            sidebarSize = INVISIBLE;
+        }
+    }
+}
