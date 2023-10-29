@@ -33,7 +33,7 @@
 
 @code {
     private int totalRecords { get; set; }
-    private List<Account> accounts { get; set; } = new List<Account>();
+    private List<Cashier.Domain.Account> accounts { get; set; } = new List<Cashier.Domain.Account>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,8 +70,8 @@
 
     private async Task createRecords() {
         using var db = await DbFactory.Create<CashierDb>();
-        db.Accounts.Add(new Account { Name = "Assets" });
-        db.Accounts.Add(new Account { Name = "Expenses" });
+        db.Accounts.Add(new Cashier.Domain.Account { Name = "Assets" });
+        db.Accounts.Add(new Cashier.Domain.Account { Name = "Expenses" });
 
         try
         {

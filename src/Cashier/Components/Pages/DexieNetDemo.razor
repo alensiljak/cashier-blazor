@@ -1,0 +1,77 @@
+﻿@page "/dexie-net-demo"
+
+@using DexieNET.Component
+@inherits DexieNET<CashierDB>
+
+
+<article>
+    <h3>DexieNetDemo</h3>
+
+    Accounts:
+    @if (accounts is null)
+    {
+        <p>Loading...</p>
+    }
+    else if (accounts.Count() == 0)
+    {
+        <p>No items...</p>
+    }
+    else
+    {
+        <ul style="list-style: square inside;">
+            @foreach (var friend in accounts)
+            {
+                <li>
+                    Name: @friend.Name, 
+                </li>
+            }
+        </ul>
+    }
+
+    <hr />
+
+    Xacts:
+    @if (xacts is null)
+    {
+        <p>Loading...</p>
+    }
+    else if (xacts.Count() == 0)
+    {
+        <p>No items...</p>
+    }
+    else
+    {
+        <ul style="list-style: square inside;">
+            @foreach (var xact in xacts)
+            {
+                <li>
+                    Date: @xact.Date, Payee: @xact.Payee;
+                </li>
+            }
+        </ul>
+    }
+
+    <hr />
+
+    <div style="display: flex; column-gap: 50px">
+        <button class="btn btn-primary" style="flex: 0 1 auto" @onclick="PopulateDatabase">
+            PopulateDatabase
+        </button>
+
+        <button class="btn btn-secondary" style="flex: 0 1 auto" @onclick="GoodTransaction">
+            GoodTransaction
+        </button>
+
+        <button class="btn btn-secondary" style="flex: 0 1 auto" @onclick="FailedTransaction">
+            FailedTransaction
+        </button>
+
+        <button class="btn btn-secondary" style="flex: 0 1 auto" @onclick="ClearDatabase">
+            ClearDatabase
+        </button>
+    </div>
+</article>
+
+@code {
+
+}
