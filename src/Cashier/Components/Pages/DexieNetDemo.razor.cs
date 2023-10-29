@@ -1,4 +1,5 @@
 ﻿using Cashier.Data;
+using Cashier.Domain;
 using DexieNET;
 
 namespace Cashier.Components.Pages
