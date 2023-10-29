@@ -12,7 +12,7 @@ namespace Cashier.Data
         public IndexedSet<Account> Accounts { get; set; }
         public IndexedSet<Payee> Payees { get; set; }
 
-        public IndexedSet<Xact> Xacts { get; set; }
+        public IndexedSet<Xact> Xacts { get; set; } = default;
 
         public IndexedSet<ScheduledXact> ScheduledXacts { get; set; }
 

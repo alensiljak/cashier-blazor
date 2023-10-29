@@ -1,12 +1,14 @@
 ﻿@inherits LayoutComponentBase
+@implements IDisposable
+@inject AppState appState
 
 <GestureContainer OnSwipeAsync="OnSwipe">
     <div style="display:flex; flex-direction: row;">
-        <nav class="sidenav" style="width: @sidebarSize;">
+        <nav class="sidenav" style="width: @appState.SidebarWidth;">
             <NavMenuFluent />
         </nav>
-        <main style="margin-left: @sidebarSize;">
-            <FluentButton @onclick="ToggleSidebar">Toggle</FluentButton>
+        <main style="margin-left: @appState.SidebarWidth;">
+            <FluentButton @onclick="appState.ToggleSidebar">Toggle</FluentButton>
 
             @Body
 
@@ -15,45 +17,32 @@
 </GestureContainer>
 
 @code {
-    private const string VISIBLE = "250px";
-    private const string INVISIBLE = "0";
 
-    private string sidebarSize = VISIBLE;
+    protected override void OnInitialized()
+    {
+        appState.OnSidebarToggled += StateHasChanged;
+    }
 
     private Task OnSwipe(GestureContainer.SwipeDirection swipeDirection)
     {
         // if open, allow swiping left to close.
-        if (SidebarVisible && swipeDirection == GestureContainer.SwipeDirection.Left)
+        if (appState.SidebarVisible && swipeDirection == GestureContainer.SwipeDirection.Left)
         {
-            ToggleSidebar();
+            appState.ToggleSidebar();
         }
         // if closed, allow swiping right to open.
-        if (!SidebarVisible && swipeDirection == GestureContainer.SwipeDirection.Right)
+        if (!appState.SidebarVisible && swipeDirection == GestureContainer.SwipeDirection.Right)
         {
-            ToggleSidebar();
+            appState.ToggleSidebar();
         }
         StateHasChanged();
 
         return Task.CompletedTask;
     }
 
-    private bool SidebarVisible
+    public void Dispose()
     {
-        get
-        {
-            return sidebarSize == VISIBLE;
-        }
-    }
-
-    private void ToggleSidebar()
-    {
-        if (sidebarSize != VISIBLE)
-        {
-            sidebarSize = VISIBLE;
-        }
-        else
-        {
-            sidebarSize = INVISIBLE;
-        }
+        // unsubscribe
+        appState.OnSidebarToggled -= StateHasChanged;
     }
 }

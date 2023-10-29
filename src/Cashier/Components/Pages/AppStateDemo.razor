@@ -1,0 +1,33 @@
+﻿@page "/app-state-demo"
+
+@implements IDisposable
+@inject AppState appState
+@using Cashier.Data
+
+<h3>AppStateDemo</h3>
+
+<p>Demonstrate the use of application state.</p>
+
+<p>Nested component: @appState.SidebarVisible</p>
+
+<FluentButton @onclick="ToggleState">Toggle Sidebar via State</FluentButton>
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        appState.OnSidebarToggled += StateHasChanged;
+    }
+
+    private void ToggleState()
+    {
+        appState.ToggleSidebar();
+    }
+
+    public void Dispose()
+    {
+        appState.OnSidebarToggled -= StateHasChanged;
+    }
+}
