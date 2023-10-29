@@ -1,5 +1,4 @@
-﻿<FluentDesignSystemProvider FillColor=@Palette.Info>
-    @* <div class="glossy" style="height: 65px;"> *@
+﻿<FluentDesignSystemProvider FillColor=@ColourPalette.Tan>
     <FluentHeader class="glossy" Style="width: 100%;">
         <div class="toolbar-content">
             <MenuToggleButton />
@@ -26,12 +25,15 @@
         </div>
     </FluentHeader>
 
-    @* shadow *@
-    @* <div class="shadow"></div> *@
-    @* </div> *@
 </FluentDesignSystemProvider>
 
 <style>
+@*     :root {
+        --accent-fill-rest: @Palette.Primary !important;
+        --fill-color: @ColourPalette.Tan !important;
+        --neutral-foreground-rest: @ColourPalette.Tan !important;
+    }
+ *@
     div.toolbar-content {
         display: flex;
         flex-direction: row;
