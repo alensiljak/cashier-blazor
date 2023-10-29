@@ -33,6 +33,6 @@
             OnSidebarToggled?.Invoke();
         }
 
-        public event Action OnSidebarToggled;
+        public event Action? OnSidebarToggled;
     }
 }

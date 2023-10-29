@@ -57,6 +57,8 @@ namespace Cashier.Components.Pages
                 var key = await Dexie.Xacts().Add(new Xact("2023-11-01", "Halloween"));
                 var xact = await Dexie.Xacts().Get(key);
             });
+
+            await LoadData();
         }
 
         private async Task FailedTransaction()
@@ -65,11 +67,20 @@ namespace Cashier.Components.Pages
 
             try
             {
-
+                await Dexie.Transaction(async tx =>
+                {
+                    await Dexie.Xacts().Clear();
+                    var key = await Dexie.Xacts().Add(new Xact("2023-10-18", "Supermarket"));
+                    var xact = await Dexie.Xacts().Get(key);
+                    // fail
+                    await Dexie.Xacts().Add(xact);
+                });
             } catch (Exception ex)
             {
                 LogMessage(ex.Message);
             }
+
+            await LoadData();
         }
 
         private void LogMessage(string message)

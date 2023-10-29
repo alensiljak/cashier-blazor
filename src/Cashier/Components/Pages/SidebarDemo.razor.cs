@@ -14,8 +14,8 @@ namespace Cashier.Components.Pages
 
         private readonly SimplePerson simplePerson = new()
         {
-            Firstname = "Alen",
-            Lastname = "Batman",
+            FirstName = "Alen",
+            LastName = "Batman",
             Age = 42,
         };
 
@@ -47,7 +47,7 @@ namespace Cashier.Components.Pages
             DialogParameters<SimplePerson> parameters = new()
             {
                 Content = simplePerson,
-                Title = $"Hello {simplePerson.Firstname}",
+                Title = $"Hello {simplePerson.FirstName}",
                 Alignment = HorizontalAlignment.Left,
                 Modal = false,
                 ShowDismiss = false,
@@ -55,7 +55,7 @@ namespace Cashier.Components.Pages
                 SecondaryAction = "Cancel",
                 Width = "500px",
             };
-            _dialog = await MyDialogService.ShowPanelAsync<SimplePanel>(simplePerson, parameters);
+            _dialog = await MyDialogService!.ShowPanelAsync<SimplePanel>(simplePerson, parameters);
             DialogResult result = await _dialog.Result;
             HandlePanel(result);
         }
@@ -64,12 +64,12 @@ namespace Cashier.Components.Pages
         {
             // DemoLogger.WriteLine($"Open right panel");
 
-            _dialog = await MyDialogService.ShowPanelAsync<SimplePanel>(simplePerson, 
+            _dialog = await MyDialogService!.ShowPanelAsync<SimplePanel>(simplePerson, 
                 new DialogParameters<SimplePerson>()
             {
                 Content = simplePerson,
                 Alignment = HorizontalAlignment.Right,
-                Title = $"Hello {simplePerson.Firstname}",
+                Title = $"Hello {simplePerson.FirstName}",
                 PrimaryAction = "Yes",
                 SecondaryAction = "No",
             });
