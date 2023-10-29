@@ -1,11 +1,12 @@
 ﻿<FluentDesignSystemProvider FillColor=@Palette.Info>
+    @* <div class="glossy" style="height: 65px;"> *@
     <FluentHeader class="glossy" Style="width: 100%;">
         <div class="toolbar-content">
             <MenuToggleButton />
 
             <div class="title">
                 <h4>
-                    @ChildContent
+                    @Title
                 </h4>
             </div>
 
@@ -13,6 +14,7 @@
                 test
             </div>
  *@
+        @if (ContextMenu != null) {
             <div class="contextMenu">
                 <FluentIcon Id="contextMenu" Icon="Cashier.Code.LucideIcons24.MoreVertical" 
                             @onclick="@(() => contextMenuOpen = !contextMenuOpen)" />
@@ -20,9 +22,13 @@
                     @ContextMenu
                 </FluentMenu>
             </div>
+        }
         </div>
     </FluentHeader>
 
+    @* shadow *@
+    @* <div class="shadow"></div> *@
+    @* </div> *@
 </FluentDesignSystemProvider>
 
 <style>
@@ -70,15 +76,17 @@
         background-color: rgba(255, 255, 0, 0.1);
     }
 
+    div.shadow {
+        bottom: -10px;
+    }
 </style>
 
 @code {
     [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    public RenderFragment? Title { get; set; }
 
     [Parameter]
     public RenderFragment ContextMenu { get; set; }
 
     private bool contextMenuOpen { get; set; }
-
 }
