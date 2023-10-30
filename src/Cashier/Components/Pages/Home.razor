@@ -1,13 +1,15 @@
 ﻿@page "/"
-@inherits FluentUiPageBase
 
-@using Microsoft.Fast.Components.FluentUI
-@using Microsoft.Fast.Components.FluentUI.DesignTokens
-@using Cashier.Components.Components
+@using MudBlazor
 
 
 <ToolbarMud>
     <Title>Cashier++</Title>
+    <ContextMenuItems>
+        <MudMenuItem Icon="@IconsMud20.Star">Item 1</MudMenuItem>
+        <MudMenuItem Icon="@IconsMud20.Scroll">Item 2</MudMenuItem>
+
+    </ContextMenuItems>
 </ToolbarMud>
 
 <PageTitle>Home</PageTitle>
@@ -41,9 +43,6 @@
         </li>
     </ul>
 
-    <FluentBodyContent>
-        This is fluent body content.
-    </FluentBodyContent>
 </article>
 
 @code {
