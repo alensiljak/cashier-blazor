@@ -22,13 +22,15 @@ namespace Cashier.Code
                     Warning = ColourPalette.Gold,
                     Error = ColourPalette.Sangria,
 
+                    // Text
+
                     PrimaryContrastText = ColourPalette.Tan,        // titles
                     TextPrimary = ColourPalette.Tan,
                     // TextSecondary = "#ffff00",
                     AppbarText = ColourPalette.Tan,
                     DrawerText = ColourPalette.Tan,
                     
-                    //DrawerIcon = ColourPalette.Tan,
+                    DrawerIcon = ColourPalette.Tan,
 
                     // ActionDefault = ColourPalette.Sangria,
                     

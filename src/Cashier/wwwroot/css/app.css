@@ -4,7 +4,7 @@ body {
   /*color: #d0cd94;*/
   /*margin: 0;*/
  
-  --mud-palette-action-default-hover: var(--mud-palette-secondary);
+  /*--mud-palette-action-default-hover: var(--mud-palette-secondary);*/
 }
 
 /*
@@ -81,7 +81,7 @@ a,
 .blazor-error-boundary::after {
   content: 'An error has occurred.';
 }
-
+*/
 .loading-progress {
   position: relative;
   display: block;
@@ -114,7 +114,7 @@ a,
 .loading-progress-text:after {
   content: var(--blazor-load-percentage-text, 'Loading');
 }
-
+/*
 code {
   color: #c02d76;
 }
@@ -130,6 +130,8 @@ code {
   ) !important;
 }
 
+/*
 article {
     margin: 0.5rem 0.5rem 0.5rem 0.5rem;
 }
+*/
