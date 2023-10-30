@@ -1,0 +1,38 @@
+﻿@using MudBlazor
+@inherits LayoutComponentBase
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudSwipeArea OnSwipe="@OnSwipe">
+    <MudLayout>
+        <MudAppBar>
+            Cashier
+        </MudAppBar>
+        <MudDrawer @bind-Open="@_drawerOpen">
+            The main menu
+        </MudDrawer>
+        <MudMainContent>
+            @Body
+        </MudMainContent>
+    </MudLayout>
+</MudSwipeArea>
+
+@code {
+    bool _drawerOpen = true;
+
+    public void OnSwipe(SwipeDirection direction)
+    {
+        if (direction == SwipeDirection.LeftToRight && !_drawerOpen)
+        {
+            _drawerOpen = true;
+            StateHasChanged();
+        }
+        else if (direction == SwipeDirection.RightToLeft && _drawerOpen)
+        {
+            _drawerOpen = false;
+            StateHasChanged();
+        }
+    }
+}
