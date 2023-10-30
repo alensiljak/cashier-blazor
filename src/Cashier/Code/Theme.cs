@@ -10,8 +10,33 @@ namespace Cashier.Code
             {
                 PaletteDark = new PaletteDark()
                 {
-                    Primary = Palette.Primary,
-                    Secondary = Palette.Secondary,
+                    Primary = ColourPalette.TropicalRainForest,
+                    Secondary = ColourPalette.Sangria,
+                    Tertiary = ColourPalette.Gold,
+
+                    Dark = ColourPalette.DarkJungleGreen,
+                    DarkDarken = QuasarPaletteDark.DarkPage,
+
+                    Info = ColourPalette.Tan,
+                    Success = ColourPalette.TropicalRainForest,
+                    Warning = ColourPalette.Gold,
+                    Error = ColourPalette.Sangria,
+
+                    PrimaryContrastText = ColourPalette.Tan,        // titles
+                    TextPrimary = ColourPalette.Tan,
+                    // TextSecondary = "#ffff00",
+                    AppbarText = ColourPalette.Tan,
+                    DrawerText = ColourPalette.Tan,
+                    
+                    //DrawerIcon = ColourPalette.Tan,
+
+                    // ActionDefault = ColourPalette.Sangria,
+                    
+                },
+                Palette = new PaletteLight()
+                {
+                    Primary = ColourPalette.TropicalRainForest,
+                    Secondary = ColourPalette.Sangria,
                 }
             };
             return theme;

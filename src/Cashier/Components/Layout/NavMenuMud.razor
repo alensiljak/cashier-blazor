@@ -1,0 +1,26 @@
+﻿@using MudBlazor
+
+<MudDrawerHeader LinkToIndex="true" Class="mud-theme-primary">
+    <MudContainer Class="d-flex flex-column align-center">
+        <MudImage Src="/icon-192.png" Width="100" />
+        <MudText Typo="Typo.h4" Class="mt-1">Cashier</MudText>
+    </MudContainer>
+
+</MudDrawerHeader>
+
+<MudNavMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
+    <MudNavLink Href="/journal" Match="NavLinkMatch.Prefix">Journal</MudNavLink>
+    <MudNavLink Href="/favourites" Match="NavLinkMatch.Prefix">Favourites</MudNavLink>
+    <MudNavLink Href="/accounts" Match="NavLinkMatch.Prefix">Accounts</MudNavLink>
+    <MudNavLink Href="/payees" Match="NavLinkMatch.Prefix">Payees</MudNavLink>
+    <MudNavLink Href="/asset-allocation" Match="NavLinkMatch.Prefix">Asset Allocation</MudNavLink>
+    <MudNavLink Href="/scheduled-xacts" Match="NavLinkMatch.Prefix">Scheduled Transactions</MudNavLink>
+
+    <hr />
+
+    <MudNavLink Href="/cloud-backup" Match="NavLinkMatch.Prefix">Cloud Backup</MudNavLink>
+    <MudNavLink Href="/settings" Match="NavLinkMatch.Prefix">Settings</MudNavLink>
+    <MudNavLink Href="/help" Match="NavLinkMatch.Prefix">Help</MudNavLink>
+    <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
+</MudNavMenu>
