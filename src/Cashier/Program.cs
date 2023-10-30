@@ -4,7 +4,6 @@ using Cashier.Components;
 using Cashier.Data;
 using Cashier.Domain;
 using DexieNET;
-using Microsoft.Fast.Components.FluentUI;
 using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -13,11 +12,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-// FluentUI
-builder.Services.AddFluentUIComponents(options =>
-{
-    options.HostingModel = BlazorHostingModel.WebAssembly;
-});
 // MudBlazor
 builder.Services.AddMudServices();
 
