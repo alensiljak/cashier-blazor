@@ -2,12 +2,22 @@
 
 @using MudBlazor
 
+<MudAppBar @ref=appBar>
+    Inside appbar
+</MudAppBar>
+
 <h3>MudBlazorDemo</h3>
+
 <p>The page to demonstrate MudBlazor functionality. For evaluation purposes.</p>
 
 <MudText>Some Text</MudText>
-<MudButton>Button</MudButton>
+<MudButton @onclick="toggleAppbar">Hide appbar</MudButton>
 
 @code {
+    MudAppBar? appBar;
 
+    void toggleAppbar()
+    {
+        appBar.Style = "display: none;";
+    }
 }

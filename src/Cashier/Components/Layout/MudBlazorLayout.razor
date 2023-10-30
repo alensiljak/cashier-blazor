@@ -8,14 +8,19 @@
 <MudSwipeArea OnSwipeEnd="@OnSwipeEnd">
     <MudLayout>
         <MudAppBar>
-            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" 
+                OnClick="@((e) => DrawerToggle())" />
             Cashier
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
         </MudAppBar>
         <MudDrawer @bind-Open="@_drawerOpen">
             <MudSidebarMenu />
         </MudDrawer>
         <MudMainContent>
-            @Body
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                @Body
+            </MudContainer>
         </MudMainContent>
     </MudLayout>
 </MudSwipeArea>
