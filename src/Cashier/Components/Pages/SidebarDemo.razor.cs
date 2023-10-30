@@ -1,4 +1,3 @@
-
 using Cashier.Components.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
