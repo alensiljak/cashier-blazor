@@ -22,6 +22,11 @@ namespace Cashier.Code
                     Warning = ColourPalette.Gold,
                     Error = ColourPalette.Sangria,
 
+                    // background colours
+
+                    Background = ColourPalette.DarkJungleGreen,
+                    DrawerBackground = QuasarPaletteDark.DarkPage,
+
                     // Text
 
                     PrimaryContrastText = ColourPalette.Tan,        // titles
