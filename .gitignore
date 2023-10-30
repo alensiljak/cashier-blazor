@@ -5,6 +5,8 @@
 # .net
 /src/Cashier/bin/
 /src/Cashier/obj/
+/src/Cashier.Tests/bin/
+/src/Cashier.Tests/obj/
 
 # Vendor JS file
 #/src/Cashier/wwwroot/js/vendor.min.js

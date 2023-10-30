@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AFB53E5A-5E8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cashier", "src\Cashier\Cashier.csproj", "{B77EA1B8-CB52-4023-BEAF-83C9882667BC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cashier.Tests", "src\Cashier.Tests\Cashier.Tests.csproj", "{AE4988B1-73D5-48F7-9CF1-CD5E0C7C018A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +19,17 @@ Global
 		{B77EA1B8-CB52-4023-BEAF-83C9882667BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B77EA1B8-CB52-4023-BEAF-83C9882667BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B77EA1B8-CB52-4023-BEAF-83C9882667BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE4988B1-73D5-48F7-9CF1-CD5E0C7C018A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE4988B1-73D5-48F7-9CF1-CD5E0C7C018A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE4988B1-73D5-48F7-9CF1-CD5E0C7C018A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE4988B1-73D5-48F7-9CF1-CD5E0C7C018A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B77EA1B8-CB52-4023-BEAF-83C9882667BC} = {AFB53E5A-5E8D-4966-AEB1-7B24163672D9}
+		{AE4988B1-73D5-48F7-9CF1-CD5E0C7C018A} = {AFB53E5A-5E8D-4966-AEB1-7B24163672D9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {83D791AE-0F7C-4B27-91F2-367FED78497F}
