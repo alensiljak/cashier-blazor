@@ -1,0 +1,29 @@
+﻿@*
+    Toolbar implemented with MudBlazor components.
+*@
+@inject AppState appState
+@using MudBlazor
+
+<MudAppBar>
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+                   OnClick="@((e) => OnMenuClick())" />
+    
+    @Title
+
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+</MudAppBar>
+
+
+<h3>ToolbarMud</h3>
+
+@code {
+    [Parameter]
+    public RenderFragment? Title { get; set; }
+
+    private void OnMenuClick()
+    {
+        appState.ToggleSidebar();
+    }
+
+}

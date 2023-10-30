@@ -1,20 +1,22 @@
 ﻿@using MudBlazor
 @inherits LayoutComponentBase
+@implements IDisposable
+@inject AppState appState
 
-<MudThemeProvider IsDarkMode="true" />
+<MudThemeProvider @ref=themeProvider IsDarkMode="true" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudSwipeArea OnSwipeEnd="@OnSwipeEnd">
     <MudLayout>
-        <MudAppBar>
+@*         <MudAppBar>
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" 
                 OnClick="@((e) => DrawerToggle())" />
             Cashier
             <MudSpacer />
             <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
         </MudAppBar>
-        <MudDrawer @bind-Open="@_drawerOpen">
+ *@        <MudDrawer @bind-Open="@appState.DrawerOpen">
             <MudSidebarMenu />
         </MudDrawer>
         <MudMainContent>
@@ -26,30 +28,41 @@
 </MudSwipeArea>
 
 @code {
-    bool _drawerOpen = true;
+    MudThemeProvider? themeProvider;
 
-    void DrawerToggle()
+    protected override void OnInitialized()
     {
-        _drawerOpen = !_drawerOpen;
+        base.OnInitialized();
+
+        appState.OnSidebarToggled += StateHasChanged;
+
+        // set the theme
+        //themeProvider.IsDarkMode = true;
+        //themeProvider.Theme = Theme.CreateTheme();
+
     }
 
     public void OnSwipeEnd(SwipeEventArgs args)
     {
-        //Console.WriteLine("swipe end");
         OnSwipe(args.SwipeDirection);
     }
 
     public void OnSwipe(SwipeDirection direction)
     {
-        if (direction == SwipeDirection.LeftToRight && !_drawerOpen)
+        if (direction == SwipeDirection.LeftToRight && !appState.DrawerOpen)
         {
-            _drawerOpen = true;
-            StateHasChanged();
+            appState.DrawerOpen = true;
         }
-        else if (direction == SwipeDirection.RightToLeft && _drawerOpen)
+        else if (direction == SwipeDirection.RightToLeft && appState.DrawerOpen)
         {
-            _drawerOpen = false;
-            StateHasChanged();
+            appState.DrawerOpen = false;
         }
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        // unsubscribe
+        appState.OnSidebarToggled -= StateHasChanged;
     }
 }
