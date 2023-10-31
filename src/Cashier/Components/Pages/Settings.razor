@@ -1,71 +1,101 @@
 ﻿@page "/settings"
+@inherits DexieNET<CashierDB>
 @inject IJSRuntime jsRuntime
+@inject ISnackbar Snackbar
 @using MudBlazor
+@using DexieNET
+@using DexieNET.Component
+@using Cashier.Lib
+@using Cashier.Services
 
 <ToolbarMud>
     <Title>Settings</Title>
 </ToolbarMud>
 
-<MudTextField T="string" Label="Main Currency" />
+<MudForm>
+    <MudTextField T="string" Label="Main Currency" @bind-Value="mainCurrency" />
 
-<MudText Typo="Typo.h5" Class="mt-4">Investments</MudText>
-<MudTextField T="string" Label="Root investment account" />
+    <MudText Typo="Typo.h5" Class="mt-4">Investments</MudText>
+    <MudTextField T="string" Label="Root investment account" />
 
-<MudText Typo="Typo.h5" Class="mt-4">Last Transaction</MudText>
-<MudCheckBox T="bool" Label="Remember last transaction for payees. Reuses the information for new transactions." />
+    <MudText Typo="Typo.h5" Class="mt-4">Last Transaction</MudText>
+    <MudCheckBox T="bool" Label="Remember last transaction for payees. Reuses the information for new transactions." />
 
-<MudCheckBox T="bool" Label="Use Dark Mode" />
+    <MudCheckBox T="bool" Label="Use Dark Mode" />
 
-<MudContainer Style="text-align: center;" Class="mt-4">
-    <MudButton Variant="Variant.Filled" Color="Color.Error">Save</MudButton>
-</MudContainer>
+    <MudContainer Style="text-align: center;" Class="mt-4">
+        <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="saveSettings">Save</MudButton>
+    </MudContainer>
 
-<MudDivider Class="my-6" />
+    <MudDivider Class="my-6" />
 
-<MudText Typo="Typo.h5" Class="mt-4">Asset Allocation</MudText>
-<MudTextField T="string" Label="Asset Allocation settings file" />
-<MudFileUpload T="IBrowserFile">
-    <ButtonTemplate>
-        <MudButton HtmlTag="label"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   for="">
-            Select File
-        </MudButton>
-    </ButtonTemplate>
-    <SelectedTemplate>
-        selected template
-    </SelectedTemplate>
-</MudFileUpload>
+    <MudText Typo="Typo.h5" Class="mt-4">Asset Allocation</MudText>
+    <MudTextField T="string" Label="Asset Allocation settings file" />
+    <MudFileUpload T="IBrowserFile">
+        <ButtonTemplate>
+            <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" for="">
+                Select File
+            </MudButton>
+        </ButtonTemplate>
+        <SelectedTemplate>
+            selected template
+        </SelectedTemplate>
+    </MudFileUpload>
 
-<MudText Typo="Typo.h5" Class="mt-4">Restore Settings</MudText>
-<MudTextField T="string" Label="Settings backup file" />
+    <MudText Typo="Typo.h5" Class="mt-4">Restore Settings</MudText>
+    <MudTextField T="string" Label="Settings backup file" />
 
-<MudText Typo="Typo.h5" Class="mt-4">Reload App</MudText>
-<MudText>Force-reload the page to refresh the version in case the background service worker does not manage to update to the latest
-    version.
-</MudText>
-<MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="reloadApp">Reload App</MudButton>
+    <MudText Typo="Typo.h5" Class="mt-4">Reload App</MudText>
+    <MudText>
+        Force-reload the page to refresh the version in case the background service worker does not manage to update to the latest
+        version.
+    </MudText>
+    <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="reloadApp">Reload App</MudButton>
+</MudForm>
 
 @code {
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
+    string? mainCurrency { get; set; }
 
-        loadSettings();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await loadSettings();
     }
 
-    void loadSettings()
+    async Task loadSettings()
     {
-        // todo
+        await Dexie.Version(1).Stores();
+
+        var svc = new SettingsService(Dexie);
         // currency
+        mainCurrency = await svc.Get(SettingsKeys.currency);
+
         // root investment account
         // remember last transaction
+
     }
 
     async Task reloadApp()
     {
         await jsRuntime.InvokeVoidAsync("window.location.reload", true);
         // window.location.reload(true)
+    }
+
+    async Task saveSettings()
+    {
+        var svc = new SettingsService(Dexie);
+        string message;
+
+        if (await svc.Set(SettingsKeys.currency, mainCurrency))
+        {
+            message = "Currency saved";
+        }
+        else
+        {
+            message = "Could not save the currency.";
+        }
+        Snackbar.Add(message);
+
     }
 }
