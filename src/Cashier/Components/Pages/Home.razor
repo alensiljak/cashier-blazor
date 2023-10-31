@@ -42,7 +42,13 @@
 
 </article>
 
-<MudFab Color="Color.Primary" StartIcon="@IconsMud24.Plus" Style="position: fixed !important; right: 15px;" />
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud24.Plus" 
+    Style="position: fixed; bottom: 20px; right: 20px;" @onclick="OnFab"/>
+@* !important *@
 
 @code {
+    void OnFab()
+    {
+        Console.WriteLine("fab!");
+    }
 }
