@@ -4,7 +4,7 @@
 @inject AppState appState
 
 <MudThemeProvider @ref="_mudThemeProvider" @bind-IsDarkMode="_isDarkMode" Theme="@theme" />
-<MudDialogProvider />
+<MudDialogProvider CloseOnEscapeKey="true" />
 <MudSnackbarProvider />
 
 <MudSwipeArea OnSwipeEnd="@OnSwipeEnd" Style="height: 100vh;">

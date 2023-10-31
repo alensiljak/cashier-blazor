@@ -2,6 +2,8 @@
 @inherits DexieNET<CashierDB>
 @inject IJSRuntime jsRuntime
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
 @using MudBlazor
 @using DexieNET
 @using DexieNET.Component
@@ -43,7 +45,24 @@
     </MudFileUpload>
 
     <MudText Typo="Typo.h5" Class="mt-4">Restore Settings</MudText>
-    <MudTextField T="string" Label="Settings backup file" />
+    <MudStack Row="true">
+        <MudText>Tap the file icon to select the file to restore:</MudText>
+        <MudFileUpload T="IBrowserFile" FilesChanged="RestoreSettings">
+            <ButtonTemplate>
+                <MudIconButton Icon="@IconsMud24.FileUp" Color="Color.Success" HtmlTag="label" for="@context"></MudIconButton>
+            </ButtonTemplate>
+            <SelectedTemplate>
+                @if (context != null)
+                {
+                    <MudText>@context.Name</MudText>
+                }
+                else
+                {
+                    <MudText>No file selected</MudText>
+                }
+            </SelectedTemplate>
+        </MudFileUpload>
+    </MudStack>
 
     <MudText Typo="Typo.h5" Class="mt-4">Reload App</MudText>
     <MudText>
@@ -80,6 +99,24 @@
     {
         await jsRuntime.InvokeVoidAsync("window.location.reload", true);
         // window.location.reload(true)
+    }
+
+    async Task RestoreSettings(IBrowserFile file)
+    {
+        // Console.WriteLine("selected file: " + file.Name);
+
+        // confirm with a dialog
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you want to restore the selected settings file?");
+
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Restore", parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Large });
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            // restore settings
+            Console.WriteLine("restore settings here");
+        }
     }
 
     async Task saveSettings()
