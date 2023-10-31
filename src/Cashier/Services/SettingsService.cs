@@ -37,5 +37,10 @@ namespace Cashier.Services
             var setting = new Setting(key, value);
             return await _db.Settings().Update(key, setting => setting.Value,  value);
         }
+
+        public async Task<IEnumerable<string>> BulkInsert(List<Setting> items)
+        {
+            return await _db.Settings().BulkPut(items);
+        }
     }
 }

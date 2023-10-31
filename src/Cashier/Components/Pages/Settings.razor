@@ -102,6 +102,11 @@
         // window.location.reload(true)
     }
 
+    /// <summary>
+    /// Restore Settings from a backup JSON file.
+    /// </summary>
+    /// <param name="file">A backup file in JSON format.</param>
+    /// <returns></returns>
     async Task RestoreSettings(IBrowserFile file)
     {
         // Console.WriteLine("selected file: " + file.Name);
@@ -122,26 +127,47 @@
 
             // Console.WriteLine("Content: {0}", content);
 
-            var settings = JsonSerializer.Deserialize<List<Setting>>(content, 
+            // Deserialize JSON
+
+            List<Setting>? settings;
+            try
+            {
+                settings = JsonSerializer.Deserialize<List<Setting>>(content,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            Console.WriteLine("restore settings here: {1}", settings);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add("Error deserializing the backup file.", Severity.Error);
+                Console.WriteLine("Error deserializing the Settings backup file:\n{0}", ex.Message);
+                return;
+            }
+            // Console.WriteLine("restore settings here: {0}", settings);
+            if (settings == null)
+            {
+                Snackbar.Add("No settings found in the file.", Severity.Warning);
+                return;
+            }
+
+            // Insert into db.
+
+            var svc = new SettingsService(Dexie);
+            var insertResult = await svc.BulkInsert(settings);
+            // Console.WriteLine("insert result: {0}", insertResult);
+            Snackbar.Add("Settings restored", Severity.Success);
         }
     }
 
     async Task saveSettings()
     {
         var svc = new SettingsService(Dexie);
-        string message;
 
         if (await svc.Set(SettingsKeys.currency, mainCurrency ?? ""))
         {
-            message = "Currency saved";
+            Snackbar.Add("Currency saved", Severity.Success);
         }
         else
         {
-            message = "Could not save the currency.";
+            Snackbar.Add("Could not save the currency.", Severity.Error);
         }
-        Snackbar.Add(message);
-
     }
 }
