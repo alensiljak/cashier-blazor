@@ -1,14 +1,71 @@
 ﻿@page "/settings"
+@inject IJSRuntime jsRuntime
+@using MudBlazor
 
 <ToolbarMud>
     <Title>Settings</Title>
 </ToolbarMud>
 
-<article>
-    <h3>Settings</h3>
+<MudTextField T="string" Label="Main Currency" />
 
-</article>
+<MudText Typo="Typo.h5" Class="mt-4">Investments</MudText>
+<MudTextField T="string" Label="Root investment account" />
+
+<MudText Typo="Typo.h5" Class="mt-4">Last Transaction</MudText>
+<MudCheckBox T="bool" Label="Remember last transaction for payees. Reuses the information for new transactions." />
+
+<MudCheckBox T="bool" Label="Use Dark Mode" />
+
+<MudContainer Style="text-align: center;" Class="mt-4">
+    <MudButton Variant="Variant.Filled" Color="Color.Error">Save</MudButton>
+</MudContainer>
+
+<MudDivider Class="my-6" />
+
+<MudText Typo="Typo.h5" Class="mt-4">Asset Allocation</MudText>
+<MudTextField T="string" Label="Asset Allocation settings file" />
+<MudFileUpload T="IBrowserFile">
+    <ButtonTemplate>
+        <MudButton HtmlTag="label"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   for="">
+            Select File
+        </MudButton>
+    </ButtonTemplate>
+    <SelectedTemplate>
+        selected template
+    </SelectedTemplate>
+</MudFileUpload>
+
+<MudText Typo="Typo.h5" Class="mt-4">Restore Settings</MudText>
+<MudTextField T="string" Label="Settings backup file" />
+
+<MudText Typo="Typo.h5" Class="mt-4">Reload App</MudText>
+<MudText>Force-reload the page to refresh the version in case the background service worker does not manage to update to the latest
+    version.
+</MudText>
+<MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="reloadApp">Reload App</MudButton>
 
 @code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
 
+        loadSettings();
+    }
+
+    void loadSettings()
+    {
+        // todo
+        // currency
+        // root investment account
+        // remember last transaction
+    }
+
+    async Task reloadApp()
+    {
+        await jsRuntime.InvokeVoidAsync("window.location.reload", true);
+        // window.location.reload(true)
+    }
 }

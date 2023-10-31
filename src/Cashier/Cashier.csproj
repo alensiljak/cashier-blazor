@@ -15,6 +15,7 @@
 		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
 		<!--<IsTrimmable>true</IsTrimmable>-->
 		<EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+		<PublishTrimmed>true</PublishTrimmed>
 	</PropertyGroup>
 
 	<ItemGroup>

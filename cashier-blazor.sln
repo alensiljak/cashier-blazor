@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AFB53E5A-5E8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cashier", "src\Cashier\Cashier.csproj", "{B77EA1B8-CB52-4023-BEAF-83C9882667BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cashier.Tests", "src\Cashier.Tests\Cashier.Tests.csproj", "{AE4988B1-73D5-48F7-9CF1-CD5E0C7C018A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cashier.Tests", "src\Cashier.Tests\Cashier.Tests.csproj", "{AE4988B1-73D5-48F7-9CF1-CD5E0C7C018A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
