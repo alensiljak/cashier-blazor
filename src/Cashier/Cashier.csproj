@@ -13,15 +13,15 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+		<!--<IsTrimmable>true</IsTrimmable>-->
+		<EnableTrimAnalyzer>true</EnableTrimAnalyzer>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="bunit" Version="1.24.10" />
 		<PackageReference Include="DexieNET" Version="1.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0-rc.2.23480.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0-rc.2.23480.2" PrivateAssets="all" />
 		<PackageReference Include="MudBlazor" Version="6.11.0" />
-		<PackageReference Include="xunit" Version="2.5.3" />
 	</ItemGroup>
 
 	<ItemGroup>
