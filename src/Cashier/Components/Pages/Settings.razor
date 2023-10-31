@@ -9,6 +9,7 @@
 @using DexieNET.Component
 @using Cashier.Lib
 @using Cashier.Services
+@using System.Text.Json
 
 <ToolbarMud>
     <Title>Settings</Title>
@@ -115,7 +116,15 @@
         if (!result.Canceled)
         {
             // restore settings
-            Console.WriteLine("restore settings here");
+            var stream = file.OpenReadStream();
+            using var reader = new StreamReader(stream);
+            var content = await reader.ReadToEndAsync();
+
+            // Console.WriteLine("Content: {0}", content);
+
+            var settings = JsonSerializer.Deserialize<List<Setting>>(content, 
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Console.WriteLine("restore settings here: {1}", settings);
         }
     }
 
@@ -124,7 +133,7 @@
         var svc = new SettingsService(Dexie);
         string message;
 
-        if (await svc.Set(SettingsKeys.currency, mainCurrency))
+        if (await svc.Set(SettingsKeys.currency, mainCurrency ?? ""))
         {
             message = "Currency saved";
         }
