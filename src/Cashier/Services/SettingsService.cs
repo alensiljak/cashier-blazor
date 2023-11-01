@@ -15,9 +15,6 @@ namespace Cashier.Services
 
         public async Task<string> Get(string key)
         {
-            // todo
-            // fetch data
-            //var settings = _db.Settings().ToArray();
             var record = await _db.Settings().Get(key);
             if (record == null)
             {
@@ -30,12 +27,11 @@ namespace Cashier.Services
             }
         }
 
-        public async Task<bool> Set(string key, string value)
+        public async Task<string> Set(string key, string value)
         {
-            // _db.Open()
-            // return await _db.Settings().Update(key, () => new Setting(key, value), value);
             var setting = new Setting(key, value);
-            return await _db.Settings().Update(key, setting => setting.Value,  value);
+            // return await _db.Settings().Update(key, setting => setting.Value,  value);
+            return await _db.Settings().Put(new Setting(key, value));
         }
 
         public async Task<IEnumerable<string>> BulkInsert(List<Setting> items)

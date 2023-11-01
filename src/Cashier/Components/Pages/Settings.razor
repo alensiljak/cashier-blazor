@@ -34,7 +34,7 @@
 
     <MudText Typo="Typo.h5" Class="mt-4">Asset Allocation</MudText>
     <MudTextField T="string" Label="Asset Allocation settings file" />
-    <MudFileUpload T="IBrowserFile">
+    <MudFileUpload T="IBrowserFile" Accept=".toml">
         <ButtonTemplate>
             <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" for="">
                 Select File
@@ -48,7 +48,7 @@
     <MudText Typo="Typo.h5" Class="mt-4">Restore Settings</MudText>
     <MudStack Row="true">
         <MudText>Tap the file icon to select the file to restore:</MudText>
-        <MudFileUpload T="IBrowserFile" FilesChanged="RestoreSettings">
+        <MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="RestoreSettings">
             <ButtonTemplate>
                 <MudIconButton Icon="@IconsMud24.FileUp" Color="Color.Success" HtmlTag="label" for="@context"></MudIconButton>
             </ButtonTemplate>
