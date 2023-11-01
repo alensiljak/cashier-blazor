@@ -19,10 +19,12 @@
     <MudTextField T="string" Label="Main Currency" @bind-Value="mainCurrency" />
 
     <MudText Typo="Typo.h5" Class="mt-4">Investments</MudText>
-    <MudTextField T="string" Label="Root investment account" />
+    <MudTextField T="string" @bind-Value="investmentRoot"
+        Label="Root investment account" />
 
     <MudText Typo="Typo.h5" Class="mt-4">Last Transaction</MudText>
-    <MudCheckBox T="bool" Label="Remember last transaction for payees. Reuses the information for new transactions." />
+    <MudCheckBox T="bool" @bind-Checked="rememberLastTransaction"
+        Label="Remember last transaction for payees. Reuses the information for new transactions." />
 
     <MudCheckBox T="bool" Label="Use Dark Mode" />
 
@@ -75,31 +77,37 @@
 
 @code {
     string? mainCurrency { get; set; }
+    string? investmentRoot { get; set; }
+    bool rememberLastTransaction { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
+        await Dexie.Version(1).Stores();
 
         await loadSettings();
     }
 
     async Task loadSettings()
     {
-        await Dexie.Version(1).Stores();
-
         var svc = new SettingsService(Dexie);
         // currency
         mainCurrency = await svc.Get(SettingsKeys.currency);
 
         // root investment account
-        // remember last transaction
+        investmentRoot = await svc.Get(SettingsKeys.rootInvestmentAccount);
 
+        // remember last transaction
+        rememberLastTransaction = await svc.GetBool(SettingsKeys.rememberLastTransaction);
+
+        // StateHasChanged();
     }
 
     async Task reloadApp()
     {
-        await jsRuntime.InvokeVoidAsync("window.location.reload", true);
         // window.location.reload(true)
+        await jsRuntime.InvokeVoidAsync("window.location.reload", true);
     }
 
     /// <summary>
@@ -148,20 +156,27 @@
                 return;
             }
 
+            // clear the existing settings?
+
             // Insert into db.
 
             var svc = new SettingsService(Dexie);
-            var insertResult = await svc.BulkInsert(settings);
+            var insertResult = await svc.BulkPut(settings);
             // Console.WriteLine("insert result: {0}", insertResult);
             Snackbar.Add("Settings restored", Severity.Success);
+
+            await loadSettings();
         }
     }
 
     async Task saveSettings()
     {
         var svc = new SettingsService(Dexie);
+        var result = await svc.Set(SettingsKeys.currency, mainCurrency ?? "");
 
-        if (await svc.Set(SettingsKeys.currency, mainCurrency ?? ""))
+        Console.WriteLine("saving result: {0}", result);
+
+        if (result != string.Empty)
         {
             Snackbar.Add("Currency saved", Severity.Success);
         }

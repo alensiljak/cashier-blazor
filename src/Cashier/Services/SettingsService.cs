@@ -1,6 +1,8 @@
 ﻿using DexieNET;
 using DexieNET.Component;
 using Cashier.Domain;
+using System.Text.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Cashier.Services
 {
@@ -23,7 +25,16 @@ namespace Cashier.Services
             }
             else
             {
-                return record.Value;
+#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
+                var result = JsonSerializer.Deserialize<string>(record.Value);
+                if (result == null)
+                {
+                    return string.Empty;
+                } else
+                {
+                    return result;
+                }
+#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
             }
         }
 
@@ -34,9 +45,22 @@ namespace Cashier.Services
             return await _db.Settings().Put(new Setting(key, value));
         }
 
-        public async Task<IEnumerable<string>> BulkInsert(List<Setting> items)
+        public async Task<IEnumerable<string>> BulkPut(List<Setting> items)
         {
             return await _db.Settings().BulkPut(items);
+        }
+
+        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+        public async Task<bool> GetBool(string key)
+        {
+            var record = await _db.Settings().Get(key);
+            if (record == null)
+            {
+                return false;
+            }
+                
+            var result = JsonSerializer.Deserialize<bool>(record.Value);
+            return result;
         }
     }
 }
