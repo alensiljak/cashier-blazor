@@ -1,0 +1,53 @@
+﻿@page "/tx"
+@inject ISnackbar Snackbar
+
+@using MudBlazor
+
+<ToolbarMud>
+    <Title>Journal Entry</Title>
+    <ContextMenuItems>
+        <MudMenuItem Icon="@IconsMud24.Save">Save</MudMenuItem>
+        <MudMenuItem Icon="@IconsMud24.XCircle">Reset</MudMenuItem>
+    </ContextMenuItems>
+
+</ToolbarMud>
+
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud24.Check"
+        Style="position: fixed; bottom: 20px; right: 20px;" @onclick="OnFab" />
+
+@* Date *@
+<MudDatePicker @ref="_datePicker" @bind-Date="date" Placeholder="Date" DateFormat="@FixedSettings.DateFormat"
+               AutoClose="true" Adornment="Adornment.Start" AdornmentIcon="@IconsMud24.CalendarDays">
+    <PickerActions>
+        <MudButton Class="mr-auto align-self-start" OnClick="Today">Today</MudButton>
+    </PickerActions>
+</MudDatePicker>
+
+@* Payee *@
+<MudTextField T="string" Placeholder="Payee" Adornment="Adornment.Start" AdornmentIcon="@IconsMud24.Users2" />
+
+<MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud24.FileText" />
+
+<MudText Class="red-text">Postings</MudText>
+
+<MudPaper Class="d-flex justify-center gap-10">
+    <MudIconButton Icon="@IconsMud24.PlusCircle" />
+    <MudIconButton Icon="@IconsMud24.ArrowUpDown" />
+    <MudIconButton Icon="@IconsMud24.Trash" />
+</MudPaper>
+
+@code {
+    MudDatePicker _datePicker = default!;
+    DateTime? date;
+
+    private async Task Today()
+    {
+        await _datePicker.GoToDate(DateTime.Today);
+    }
+
+    void OnFab()
+    {
+        // save
+        Snackbar.Add("save here");
+    }
+}

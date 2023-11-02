@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
 @using MudBlazor
 
@@ -8,7 +9,6 @@
     <ContextMenuItems>
         <MudMenuItem Icon="@IconsMud20.Star">Item 1</MudMenuItem>
         <MudMenuItem Icon="@IconsMud20.Scroll">Item 2</MudMenuItem>
-
     </ContextMenuItems>
 </ToolbarMud>
 
@@ -48,6 +48,10 @@
 @code {
     void OnFab()
     {
-        Console.WriteLine("fab!");
+        // Console.WriteLine("fab!");
+
+        // TODO: create new transaction in the app store
+
+        NavigationManager.NavigateTo("/tx");
     }
 }
