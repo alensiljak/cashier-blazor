@@ -3,6 +3,8 @@ using DexieNET.Component;
 using Cashier.Domain;
 using System.Text.Json;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using Cashier.Lib;
 
 namespace Cashier.Services
 {
@@ -61,6 +63,15 @@ namespace Cashier.Services
                 
             var result = JsonSerializer.Deserialize<bool>(record.Value);
             return result;
+        }
+
+        public async Task<string> GetDefaultCurrency()
+        {
+            var record = await _db.Settings().Get(SettingsKeys.currency);
+
+            Console.WriteLine("loaded ", record);
+
+            return record?.Value ?? string.Empty;
         }
     }
 }

@@ -1,7 +1,14 @@
-﻿@using MudBlazor
-@*
+﻿@*
     Favourites card
 *@
+
+@using Cashier.Services
+@using DexieNET
+@using DexieNET.Component
+@using MudBlazor
+
+@* @inherits DexieNET<CashierDB> *@
+@inject IDexieNETService<CashierDB> dexieSvc
 
 <MudCard>
     <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="pa-2">
@@ -26,5 +33,31 @@
 </MudCard>
 
 @code {
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
 
+        // load data
+        await loadData();
+    }
+
+    async Task<CashierDB> initDb()
+    {
+        var db = await dexieSvc.DexieNETFactory.Create();
+        await db.Version(1).Stores();
+        return db;
+    }
+
+    async Task loadData()
+    {
+        var db = await initDb();
+        var svc = new SettingsService(db);
+
+        var defaultCurrency = await svc.GetDefaultCurrency();
+        Console.WriteLine("default currency:", defaultCurrency);
+
+        var second = await svc.Get(SettingsKeys.currency);
+        Console.WriteLine("second:", second);
+
+    }
 }
