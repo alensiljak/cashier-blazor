@@ -2,12 +2,11 @@
     Favourites card
 *@
 
+@inject IJSRuntime JSRuntime
+@using BlazorDexie.JsModule
+@using Cashier.DAL
 @using Cashier.Services
-@using DexieNET
-@using DexieNET.Component
 @using MudBlazor
-
-@inherits DexieNET<CashierDB>
 
 <MudCard>
     <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="pa-2">
@@ -32,11 +31,15 @@
 </MudCard>
 
 @code {
+    private DexieDAL _db;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        await Dexie.Version(1).Stores();
+        // init db
+        var moduleFactory = new EsModuleFactory(JSRuntime);
+        _db = new DexieDAL(moduleFactory);
 
         // load data
         await loadData();
@@ -44,15 +47,18 @@
 
     async Task loadData()
     {
-        Console.WriteLine("db is ", Dexie);
+        Console.WriteLine("db is ", _db);
 
-        var svc = new SettingsService(Dexie);
+        var cur = await _db.Settings.Get(SettingsKeys.currency);
+        Console.WriteLine("currency is ", cur);
 
-        var defaultCurrency = await svc.GetDefaultCurrency();
-        Console.WriteLine("default currency:", defaultCurrency);
+        // var svc = new SettingsService(Dexie);
 
-        var second = await svc.Get(SettingsKeys.currency);
-        Console.WriteLine("second:", second);
+        // var defaultCurrency = await svc.GetDefaultCurrency();
+        // Console.WriteLine("default currency:", defaultCurrency);
+
+        // var second = await svc.Get(SettingsKeys.currency);
+        // Console.WriteLine("second:", second);
 
     }
 }
