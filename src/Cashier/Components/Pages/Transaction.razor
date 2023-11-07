@@ -6,34 +6,34 @@
 <ToolbarMud>
     <Title>Journal Entry</Title>
     <ContextMenuItems>
-        <MudMenuItem Icon="@IconsMud24.Save">Save</MudMenuItem>
-        <MudMenuItem Icon="@IconsMud24.XCircle">Reset</MudMenuItem>
+        <MudMenuItem Icon="@IconsMud.Save">Save</MudMenuItem>
+        <MudMenuItem Icon="@IconsMud.XCircle">Reset</MudMenuItem>
     </ContextMenuItems>
 
 </ToolbarMud>
 
-<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud24.Check"
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check"
         Style="position: fixed; bottom: 20px; right: 20px;" @onclick="OnFab" />
 
 @* Date *@
 <MudDatePicker @ref="_datePicker" @bind-Date="date" Placeholder="Date" DateFormat="@FixedSettings.DateFormat"
-               AutoClose="true" Adornment="Adornment.Start" AdornmentIcon="@IconsMud24.CalendarDays">
+               AutoClose="true" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.CalendarDays">
     <PickerActions>
         <MudButton Class="mr-auto align-self-start" OnClick="Today">Today</MudButton>
     </PickerActions>
 </MudDatePicker>
 
 @* Payee *@
-<MudTextField T="string" Placeholder="Payee" Adornment="Adornment.Start" AdornmentIcon="@IconsMud24.Users2" />
+<MudTextField T="string" Placeholder="Payee" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.Users2" />
 
-<MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud24.FileText" />
+<MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.FileText" />
 
 <MudText Class="red-text">Postings</MudText>
 
 <MudPaper Class="d-flex justify-center gap-10">
-    <MudIconButton Icon="@IconsMud24.PlusCircle" />
-    <MudIconButton Icon="@IconsMud24.ArrowUpDown" />
-    <MudIconButton Icon="@IconsMud24.Trash" />
+    <MudIconButton Icon="@IconsMud.PlusCircle" />
+    <MudIconButton Icon="@IconsMud.ArrowUpDown" />
+    <MudIconButton Icon="@IconsMud.Trash" />
 </MudPaper>
 
 @code {
