@@ -3,35 +3,26 @@
     Favourites card
 *@
 
-<h3>Favourites Card</h3>
-
 <MudCard>
-    <MudCardHeader>
+    <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="pa-2">
         <CardHeaderAvatar>
             <MudIcon Icon="@IconsMud.Star" Size="Size.Medium" />
         </CardHeaderAvatar>
         <CardHeaderContent>
-            Header content
-            <MudText>Large</MudText>
-            <MudIcon Icon="@IconsMud.Star" Size="Size.Large" />
-            <MudIcon Icon="@IconsMud.Star" Size="Size.Medium" />
-            <MudIcon Icon="@IconsMud.Star" Size="Size.Small" />
-            manual
-            <MudIcon Icon="@IconsMud.Star" Style="font-size: 2rem;" />
-            <MudIcon Icon="@IconsMud.Star" Style="font-size: 6rem;" />
-            24 default
-            <MudIcon Icon="@IconsMud.Star" Style="font-size: 6rem;" />
-            <MudIcon Icon="@IconsMud.Star" Size="Size.Small" />
-            <MudIcon Icon="@IconsMud.Star" Style="font-size: 24px;" />
-            <MudIcon Icon="@IconsMud.Star" Style="font-size: 20px;" />
+            <MudText>Favourites</MudText>
         </CardHeaderContent>
-        <CardHeaderActions>actions</CardHeaderActions>
+        <CardHeaderActions>
+            @* <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" /> *@
+            @* <MudIcon Icon="@IconsMud.Settings" /> *@
+        </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
         Content
         <MudText>Mudtext content</MudText>
     </MudCardContent>
-    <MudCardActions>Actions</MudCardActions>
+    <MudCardActions Class="justify-center">
+        <MudButton StartIcon="@IconsMud.FileUp" Variant="Variant.Outlined" Color="Color.Tertiary">Export</MudButton>
+    </MudCardActions>
 </MudCard>
 
 @code {

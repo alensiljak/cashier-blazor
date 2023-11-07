@@ -1,6 +1,6 @@
 ﻿using MudBlazor;
 
-namespace Cashier.Code
+namespace Cashier.Lib
 {
     public static class Theme
     {

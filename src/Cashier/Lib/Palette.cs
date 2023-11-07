@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace Cashier.Code
+namespace Cashier.Lib
 {
     /// <summary>
     /// The colour palette:

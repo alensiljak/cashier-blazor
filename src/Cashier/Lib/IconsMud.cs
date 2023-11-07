@@ -1,4 +1,4 @@
-﻿namespace Cashier.Code
+﻿namespace Cashier.Lib
 {
     public static class IconsMud
     {
