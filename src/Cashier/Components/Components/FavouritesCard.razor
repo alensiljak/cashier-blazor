@@ -7,8 +7,7 @@
 @using DexieNET.Component
 @using MudBlazor
 
-@* @inherits DexieNET<CashierDB> *@
-@inject IDexieNETService<CashierDB> dexieSvc
+@inherits DexieNET<CashierDB>
 
 <MudCard>
     <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="pa-2">
@@ -37,21 +36,17 @@
     {
         await base.OnInitializedAsync();
 
+        await Dexie.Version(1).Stores();
+
         // load data
         await loadData();
     }
 
-    async Task<CashierDB> initDb()
-    {
-        var db = await dexieSvc.DexieNETFactory.Create();
-        await db.Version(1).Stores();
-        return db;
-    }
-
     async Task loadData()
     {
-        var db = await initDb();
-        var svc = new SettingsService(db);
+        Console.WriteLine("db is ", Dexie);
+
+        var svc = new SettingsService(Dexie);
 
         var defaultCurrency = await svc.GetDefaultCurrency();
         Console.WriteLine("default currency:", defaultCurrency);
