@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Cashier.Components;
 using Cashier.Data;
-using Cashier.Domain;
-using DexieNET;
 using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -17,8 +15,5 @@ builder.Services.AddMudServices();
 
 // app state
 builder.Services.AddSingleton<AppState>();
-
-// IndexedDb support
-builder.Services.AddDexieNET<CashierDB>();
 
 await builder.Build().RunAsync();

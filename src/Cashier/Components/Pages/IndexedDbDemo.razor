@@ -1,0 +1,177 @@
+﻿@page "/indexed-db-demo"
+
+@using Cashier.DAL
+
+<article>
+    <h3>_dbNetDemo</h3>
+
+    Accounts:
+    @if (accounts is null)
+    {
+        <p>Loading...</p>
+    }
+    else if (accounts.Count() == 0)
+    {
+        <p>No items...</p>
+    }
+    else
+    {
+        <ul style="list-style: square inside;">
+            @foreach (var friend in accounts)
+            {
+                <li>
+                    Name: @friend.Name,
+                </li>
+            }
+        </ul>
+    }
+
+    <hr />
+
+    Xacts:
+    @if (xacts is null)
+    {
+        <p>Loading...</p>
+    }
+    else if (xacts.Count() == 0)
+    {
+        <p>No items...</p>
+    }
+    else
+    {
+        <ul style="list-style: square inside;">
+            @foreach (var xact in xacts)
+            {
+                <li>
+                    Date: @xact.Date, Payee: @xact.Payee;
+                    @if (xact.Postings != null)
+                    {
+                        <ul>
+                            @foreach (var posting in xact.Postings)
+                            {
+                                <li>@posting.Account @posting.Money?.Amount @posting.Money?.Currency</li>
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        </ul>
+    }
+
+    <hr />
+
+    <div style="display: flex; column-gap: 50px">
+        <FluentButton @onclick="PopulateDatabase" Appearance="Appearance.Accent">
+            PopulateDatabase
+        </FluentButton>
+
+        <FluentButton @onclick="GoodTransaction">
+            GoodTransaction
+        </FluentButton>
+
+        <FluentButton @onclick="FailedTransaction">
+            FailedTransaction
+        </FluentButton>
+
+        <FluentButton @onclick="ClearDatabase">
+            ClearDatabase
+        </FluentButton>
+    </div>
+</article>
+
+@code {
+    private DexieDAL _db = default!;
+    private IEnumerable<Account>? accounts;
+    private IEnumerable<Xact>? xacts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        accounts = await _db.Accounts.ToArray();
+        xacts = await _db.Xacts.ToArray();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ClearDatabase()
+    {
+        LogMessage("Clearing database...");
+
+        await _db.Accounts.Clear();
+        await _db.Xacts.Clear();
+
+        await LoadData();
+    }
+
+    private async Task PopulateDatabase()
+    {
+        LogMessage("populating database");
+
+        await _db.Accounts.Add(new Account("Assets"));
+        await _db.Accounts.Add(new Account("Equity"));
+        await _db.Accounts.Add(new Account("Expenses"));
+        await _db.Accounts.Add(new Account("Income"));
+
+        await _db.Xacts.Add(new Xact("2023-10-29", "Oebb", null, null));
+
+        var postings = new Posting[]
+        {
+                new Posting("Expenses:Groceries", new Money(20, "EUR")),
+                new Posting("Assets:Checking", null)
+        };
+        await _db.Xacts.Add(new Xact("2023-10-30", "Drakon", null, postings));
+
+        await LoadData();
+    }
+
+    private async Task GoodTransaction()
+    {
+        LogMessage("Good transaction example");
+
+        // await _db.Transaction(async tx =>
+        // {
+        var key = await _db.Xacts.Add(new Xact("2023-11-01", "Halloween", null, null));
+        var xact = await _db.Xacts.Get(key);
+        // });
+
+        await LoadData();
+    }
+
+    private async Task FailedTransaction()
+    {
+        LogMessage("Failed transaction");
+
+        try
+        {
+            // await _db.Transaction(async tx =>
+            // {
+            await _db.Xacts.Clear();
+            var key = await _db.Xacts.Add(new Xact("2023-10-18", "Supermarket", null, null));
+            var xact = await _db.Xacts.Get(key);
+            if (xact == null)
+            {
+                throw new Exception("saved item not found!");
+            }
+            // fail
+            await _db.Xacts.Add(xact);
+            // });
+        }
+        catch (Exception ex)
+        {
+            LogMessage(ex.Message);
+        }
+
+        await LoadData();
+    }
+
+    private void LogMessage(string message)
+    {
+        Console.WriteLine(message);
+    }
+}

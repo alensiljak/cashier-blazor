@@ -3,6 +3,8 @@
 *@
 
 @inject IJSRuntime JSRuntime
+@inject ISnackbar Snackbar
+
 @using BlazorDexie.JsModule
 @using Cashier.DAL
 @using Cashier.Services
@@ -31,15 +33,9 @@
 </MudCard>
 
 @code {
-    private DexieDAL _db;
-
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
-        // init db
-        var moduleFactory = new EsModuleFactory(JSRuntime);
-        _db = new DexieDAL(moduleFactory);
 
         // load data
         await loadData();
@@ -47,15 +43,10 @@
 
     async Task loadData()
     {
-        Console.WriteLine("db is ", _db);
+        var svc = new SettingsService(JSRuntime);
 
-        var cur = await _db.Settings.Get(SettingsKeys.currency);
-        Console.WriteLine("currency is ", cur);
-
-        // var svc = new SettingsService(Dexie);
-
-        // var defaultCurrency = await svc.GetDefaultCurrency();
-        // Console.WriteLine("default currency:", defaultCurrency);
+        var defaultCurrency = await svc.GetDefaultCurrency();
+        Console.WriteLine("default currency: {0}", defaultCurrency);
 
         // var second = await svc.Get(SettingsKeys.currency);
         // Console.WriteLine("second:", second);

@@ -1,13 +1,13 @@
 ﻿@page "/settings"
-@inherits DexieNET<CashierDB>
-@inject IJSRuntime jsRuntime
+
+@inject IJSRuntime JSRuntime
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
+@using BlazorDexie.JsModule
+@using Cashier.DAL
+@using Cashier.Model
 @using MudBlazor
-@using DexieNET
-@using DexieNET.Component
-@using Cashier.Lib
 @using Cashier.Services
 @using System.Text.Json
 
@@ -84,14 +84,12 @@
     {
         await base.OnInitializedAsync();
 
-        await Dexie.Version(1).Stores();
-
         await loadSettings();
     }
 
     async Task loadSettings()
     {
-        var svc = new SettingsService(Dexie);
+        var svc = new SettingsService(JSRuntime);
         // currency
         mainCurrency = await svc.Get(SettingsKeys.currency);
 
@@ -107,7 +105,7 @@
     async Task reloadApp()
     {
         // window.location.reload(true)
-        await jsRuntime.InvokeVoidAsync("window.location.reload", true);
+        await JSRuntime.InvokeVoidAsync("window.location.reload", true);
     }
 
     /// <summary>
@@ -160,7 +158,7 @@
 
             // Insert into db.
 
-            var svc = new SettingsService(Dexie);
+            var svc = new SettingsService(JSRuntime);
             var insertResult = await svc.BulkPut(settings);
             // Console.WriteLine("insert result: {0}", insertResult);
             Snackbar.Add("Settings restored", Severity.Success);
@@ -171,7 +169,7 @@
 
     async Task saveSettings()
     {
-        var svc = new SettingsService(Dexie);
+        var svc = new SettingsService(JSRuntime);
         var result = await svc.Set(SettingsKeys.currency, mainCurrency ?? "");
 
         Console.WriteLine("saving result: {0}", result);

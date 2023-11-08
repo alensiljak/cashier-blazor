@@ -1,4 +1,4 @@
-﻿namespace Cashier.Domain
+﻿namespace Cashier.Model
 {
     public class Money
     {
