@@ -75,5 +75,42 @@ namespace Cashier.Services
 
             return record?.Value ?? string.Empty;
         }
+
+        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+        public async Task<Account?[]> GetFavouriteAccounts()
+        {
+            var setting = await _db.Settings.Get(SettingsKeys.favouriteAccounts);
+            if (setting == null)
+            {
+                return [];
+            }
+
+            var keysJson = setting.Value;
+            //Console.WriteLine("The account keys: {0}", keysJson);
+
+            var keys = JsonSerializer.Deserialize<string[]>(keysJson);
+            //Console.WriteLine("Deserialized: {0}", keys);
+            if (keys == null)
+            {
+                return new Account[0];
+            }
+
+            var accounts = await _db.Accounts.BulkGet(keys);
+            if (accounts == null)
+            {
+                return [];
+            }
+
+            // Handle any accounts that have not been found in the Accounts table.
+            var result = new List<Account>();
+            foreach ( var account in accounts)
+            {
+                if (account != null)
+                {
+                    result.Add(account);
+                }
+            }
+            return result.ToArray();
+        }
     }
 }

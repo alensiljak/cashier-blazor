@@ -26,6 +26,22 @@
     <MudCardContent>
         Content
         <MudText>Mudtext content</MudText>
+        @if (accounts == null || accounts.Length == 0)
+        {
+            <MudText>There are no favourite accounts defined</MudText>
+        }
+        else
+        {
+
+            <MudList>
+                @foreach (var account in accounts)
+                {
+                <MudListItem Text="Account: " />
+                    <MudListItem Text="@account?.Name" />
+                        
+                }
+            </MudList>
+        }
     </MudCardContent>
     <MudCardActions Class="justify-center">
         <MudButton StartIcon="@IconsMud.FileUp" Variant="Variant.Outlined" Color="Color.Tertiary">Export</MudButton>
@@ -33,6 +49,8 @@
 </MudCard>
 
 @code {
+    Account?[]? accounts;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -48,8 +66,8 @@
         var defaultCurrency = await svc.GetDefaultCurrency();
         Console.WriteLine("default currency: {0}", defaultCurrency);
 
-        // var second = await svc.Get(SettingsKeys.currency);
-        // Console.WriteLine("second:", second);
-
+        accounts = await svc.GetFavouriteAccounts();
+        
+        StateHasChanged();
     }
 }
