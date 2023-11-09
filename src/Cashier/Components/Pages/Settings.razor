@@ -3,6 +3,7 @@
 @inject IJSRuntime JSRuntime
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject NavigationManager NavMan
 
 @using BlazorDexie.JsModule
 @using Cashier.DAL
@@ -13,6 +14,9 @@
 
 <ToolbarMud>
     <Title>Settings</Title>
+    <ContextMenuItems>
+        <MudMenuItem @onclick="@onAppStateMenu">App State</MudMenuItem>
+    </ContextMenuItems>
 </ToolbarMud>
 
 <MudForm>
@@ -100,6 +104,11 @@
         rememberLastTransaction = await svc.GetBool(SettingsKeys.rememberLastTransaction);
 
         // StateHasChanged();
+    }
+
+    void onAppStateMenu()
+    {
+        NavMan.NavigateTo("/appstate-viewer");
     }
 
     async Task reloadApp()

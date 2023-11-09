@@ -1,5 +1,6 @@
 ﻿@page "/"
-@inject NavigationManager NavigationManager
+@inject NavigationManager NavMan
+@inject AppState State
 
 @using MudBlazor
 
@@ -26,6 +27,9 @@
 
     <MudList>
         <MudListItem>
+            <MudLink Href="/appstate-viewer">AppState Viewer</MudLink>
+        </MudListItem>
+        <MudListItem>
             <MudLink Href="/responsive-side-navigation">Responsive Side Navigation</MudLink>
         </MudListItem>
         <MudListItem>
@@ -51,10 +55,10 @@
 @code {
     void OnFab()
     {
-        // Console.WriteLine("fab!");
+        // create new transaction in the app store
+        var xact = new TransactionActions().CreateNew();
+        State.Xact = xact;
 
-        // TODO: create new transaction in the app store
-
-        NavigationManager.NavigateTo("/tx");
+        NavMan.NavigateTo("/tx");
     }
 }

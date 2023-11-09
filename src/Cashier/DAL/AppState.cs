@@ -1,4 +1,6 @@
-﻿namespace Cashier.Data
+﻿using Cashier.Model;
+
+namespace Cashier.Data
 {
     /// <summary>
     /// Simple state management solution.
@@ -39,5 +41,7 @@
         }
 
         public event Action? OnSidebarToggled;
+
+        public Xact? Xact { get; set; }
     }
 }

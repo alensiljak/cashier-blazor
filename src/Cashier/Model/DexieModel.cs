@@ -46,18 +46,18 @@ namespace Cashier.Model
         public string Value { get; set; } = value;
     }
 
-    public class Posting(string account, Money? money)
+    public class Posting(string? account = null, Money? money = null)
     {
         public string? Account { get; set; } = account;
         public Money? Money { get; set; } = money;
     }
 
-    public class Xact(string date, string? payee, string? note, Posting[]? postings)
+    public class Xact(DateTime date, string? payee = null, string? note = null, List<Posting>? postings = null)
     {
         public int? Id { get; set; }
-        public string? Date { get; set; } = date;
+        public DateTime Date { get; set; } = date;
         public string? Payee { get; set; } = payee;
         public string? Note { get; set; } = note;
-        public Posting[]? Postings { get; set; } = postings;
+        public List<Posting>? Postings { get; set; } = postings;
     }
 }
