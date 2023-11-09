@@ -1,13 +1,55 @@
 ﻿@using MudBlazor
 
-<h3>PostingEditor</h3>
+<MudTextField T="string" @bind-Value="Posting!.Account" Placeholder="Account" />
 
-Posting: @Posting?.Account
-@Posting?.Money?.Amount @Posting?.Money?.Currency
-
-<MudTextField T="string" @bind-Value="Posting.Account" />
+<MudGrid>
+    <MudItem xs="2">
+        <MudIconButton Icon="@IconsMud.Star" />
+    </MudItem>
+    <MudItem xs="6">
+        <MudTextField T="decimal?" @bind-Value="Amount" Placeholder="Amount" Class="text-right" />
+    </MudItem>
+    <MudItem lg="4" xs="4" Class="pl-0">
+        <MudTextField T="string" @bind-Value="Currency" Placeholder="Currency" />
+    </MudItem>
+</MudGrid>
 
 @code {
     [Parameter]
-    public Posting? Posting { get; set; }
+    public Posting Posting { get; set; } = default!;
+
+    decimal? Amount
+    {
+        get
+        {
+            return Posting.Money?.Amount;
+        }
+        set
+        {
+            if (Posting.Money == null)
+            {
+                Posting.Money = new Money();
+            }
+
+            Posting.Money.Amount = value;
+        }
+    }
+
+    string? Currency
+    {
+        get
+        {
+            return Posting.Money?.Currency;
+        }
+        set
+        {
+            if (Posting.Money == null)
+            {
+                Posting.Money = new Money();
+            }
+
+            Posting.Money.Currency = value;
+        }
+    }
+
 }

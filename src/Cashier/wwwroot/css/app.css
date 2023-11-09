@@ -136,3 +136,9 @@ article {
     margin: 0.5rem 0.5rem 0.5rem 0.5rem;
 }
 */
+.text-right {
+    text-align: right;
+}
+.text-right input {
+    text-align: right;
+}
