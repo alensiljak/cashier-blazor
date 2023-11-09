@@ -35,10 +35,11 @@ namespace Cashier.Lib
                     AppbarText = ColourPalette.Tan,
                     DrawerText = ColourPalette.Tan,
                     ErrorContrastText = ColourPalette.Gold, // button text when Error is used
-                    
+
                     DrawerIcon = ColourPalette.Tan,
 
                     // ActionDefault = ColourPalette.Sangria,
+                    // TertiaryContrastText = ColourPalette.DarkJungleGreen
                     
                 },
                 Palette = new PaletteLight()

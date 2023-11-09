@@ -115,11 +115,6 @@ a,
 .loading-progress-text:after {
   content: var(--blazor-load-percentage-text, 'Loading');
 }
-/*
-code {
-  color: #c02d76;
-}
-*/
 
 .glossy {
   background-image: linear-gradient(
@@ -131,11 +126,11 @@ code {
   ) !important;
 }
 
-/*
-article {
-    margin: 0.5rem 0.5rem 0.5rem 0.5rem;
+
+.mud-nav-link.active {
+    background-color: var(--mud-palette-secondary) !important;
 }
-*/
+
 .text-right {
     text-align: right;
 }
