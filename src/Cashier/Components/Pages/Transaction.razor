@@ -1,5 +1,6 @@
 ﻿@page "/tx"
 @inject ISnackbar Snackbar
+@inject NavigationManager NavMan
 @inject AppState State
 
 @using MudBlazor
@@ -27,7 +28,7 @@
 
 @* Payee *@
 <MudTextField T="string" Placeholder="Payee" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.Users2"
-    @bind-Value="State.Xact.Payee"/>
+              @bind-Value="State.Xact.Payee" />
 
 <MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.FileText" />
 
@@ -39,6 +40,11 @@
     <MudIconButton Icon="@IconsMud.Trash" />
 </MudPaper>
 
+@foreach (var posting in State?.Xact?.Postings)
+{
+    <PostingEditor Posting="posting" />
+}
+
 @code {
     MudDatePicker _datePicker = default!;
     DateTime? date
@@ -47,7 +53,8 @@
         {
             return State?.Xact?.Date;
         }
-        set {
+        set
+        {
             if (State == null || State.Xact == null)
             {
                 return;
@@ -61,7 +68,10 @@
     {
         base.OnInitialized();
 
-        // State.Xact
+        if(State.Xact == null)
+        {
+            NavMan.NavigateTo("/");
+        }
     }
 
     private async Task Today()

@@ -1,0 +1,13 @@
+﻿@using MudBlazor
+
+<h3>PostingEditor</h3>
+
+Posting: @Posting?.Account
+@Posting?.Money?.Amount @Posting?.Money?.Currency
+
+<MudTextField T="string" @bind-Value="Posting.Account" />
+
+@code {
+    [Parameter]
+    public Posting? Posting { get; set; }
+}
