@@ -1,0 +1,39 @@
+﻿@page "/sync"
+
+@using MudBlazor
+
+<ToolbarMud>
+    <Title>Cashier Sync</Title>
+    <ContextMenuItems>
+
+    </ContextMenuItems>
+</ToolbarMud>
+
+<MudText>To update data from Ledger, the Cashier Server must be running and accessible.</MudText>
+<MudText>You can run Cashier Server locally.</MudText>
+
+@* <MudPaper Class="mb-3"> *@
+    <MudText Typo="Typo.h4" Align="Align.Center">Settings</MudText>
+
+    <MudTextField T="string" Placeholder="Server URL" />
+
+@* </MudPaper> *@
+
+<MudDivider DividerType="DividerType.Middle" />
+
+<MudText Typo="Typo.h4" Align="Align.Center">Synchronization</MudText>
+
+<MudCheckBox T="bool">Sync accounts list with balances</MudCheckBox>
+
+<MudCheckBox T="bool">yo</MudCheckBox>
+
+<MudCheckBox T="bool">yo</MudCheckBox>
+
+<MudContainer Class="d-flex justify-center">
+<MudButton Variant="Variant.Filled" Color="Color.Tertiary" Size="Size.Large"
+           StartIcon="@IconsMud.RefreshCW" Style="color: var(--mud-palette-secondary);" Class="">Sync</MudButton>
+</MudContainer>
+
+@code {
+
+}

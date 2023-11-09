@@ -2,6 +2,7 @@
     Sync Card
 *@
 @inject ISnackbar Snackbar
+@inject NavigationManager NavMan
 
 @using MudBlazor
 
@@ -38,7 +39,7 @@
 
     void OnSettingsClick()
     {
-        Snackbar.Add("Not Implemented");
+        NavMan.NavigateTo("/sync");
     }
 
 }

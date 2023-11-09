@@ -18,21 +18,14 @@
         <CardHeaderContent>
             <MudText>Favourites</MudText>
         </CardHeaderContent>
-        <CardHeaderActions>
-            @* <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" /> *@
-            @* <MudIcon Icon="@IconsMud.HelpCircle" /> *@
-        </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
-        Content
-        <MudText>Mudtext content</MudText>
         @if (accounts == null || accounts.Length == 0)
         {
             <MudText>There are no favourite accounts defined</MudText>
         }
         else
         {
-
             <MudList>
                 @foreach (var account in accounts)
                 {
