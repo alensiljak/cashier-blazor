@@ -1,0 +1,38 @@
+﻿@*
+    Scheduled Transactions Card
+*@
+@inject ISnackbar Snackbar
+@using MudBlazor
+
+<MudCard Class="@Class">
+    <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="pa-2">
+        <CardHeaderAvatar>
+            <MudIcon Icon="@IconsMud.CalendarClock" Size="Size.Medium" />
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText>Upcoming Transactions</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            @* <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" /> *@
+            @* <MudIcon Icon="@IconsMud.Settings" /> *@
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        Status:
+    </MudCardContent>
+    <MudCardActions Class="justify-center">
+        <MudButton StartIcon="@IconsMud.CalendarDays" Variant="Variant.Outlined" Color="Color.Tertiary"
+            @onclick="OnCalendarClick">Calendar</MudButton>
+    </MudCardActions>
+
+</MudCard>
+
+@code {
+    [Parameter]
+    public string? Class { get; set; }
+
+    void OnCalendarClick()
+    {
+        Snackbar.Add("Not Implemented");
+    }
+}

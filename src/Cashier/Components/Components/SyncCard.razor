@@ -1,0 +1,44 @@
+﻿@*
+    Sync Card
+*@
+@inject ISnackbar Snackbar
+
+@using MudBlazor
+
+<MudCard Class="@Class">
+    <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="pa-2">
+        <CardHeaderAvatar>
+            <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Medium" />
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText>CashierSync</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIconButton Icon="@IconsMud.HelpCircle" @onclick="OnHelpClick" />
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        Status:
+    </MudCardContent>
+    <MudCardActions Class="justify-center">
+        <MudButton StartIcon="@IconsMud.RefreshCW" Variant="Variant.Outlined" Color="Color.Tertiary"
+                   @onclick="OnSettingsClick">Sync Settings</MudButton>
+    </MudCardActions>
+
+</MudCard>
+
+@code {
+    [Parameter]
+    public string? Class { get; set; }
+
+    void OnHelpClick()
+    {
+        Snackbar.Add("Not Implemented");
+    }
+
+    void OnSettingsClick()
+    {
+        Snackbar.Add("Not Implemented");
+    }
+
+}

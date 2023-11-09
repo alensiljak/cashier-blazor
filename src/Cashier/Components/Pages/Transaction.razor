@@ -28,7 +28,7 @@
 
 @* Payee *@
 <MudTextField T="string" Placeholder="Payee" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.Users2"
-              @bind-Value="State.Xact.Payee" />
+              @bind-Value="State.Xact.Payee" @onclick="OnPayeeClick" />
 
 <MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.FileText" />
 
@@ -87,11 +87,18 @@
     void OnAccountClicked(int? index)
     {
         Console.WriteLine("account clicked on line {0}", index);
+
+        NavMan.NavigateTo("/accounts");
     }
 
     void OnFab()
     {
         // save
         Snackbar.Add("save here");
+    }
+
+    void OnPayeeClick()
+    {
+        NavMan.NavigateTo("/payees");
     }
 }
