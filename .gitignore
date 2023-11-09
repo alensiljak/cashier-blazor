@@ -8,3 +8,5 @@
 /src/Cashier.Tests/bin/
 /src/Cashier.Tests/obj/
 
+/src/Cashier.Tests.E2E/bin/
+/src/Cashier.Tests.E2E/obj/

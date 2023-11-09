@@ -29,7 +29,32 @@ To debug the Blazor application, select Edge as the browser in Visual Studio. Ru
 profile from Visual Studio.
 
 # Testing
+
+## Unit Testing
 TODO: bUnit + Playwright
+
+## E2E Testing
+E2E tests are conducted using Playwright.
+
+Go to `src/Cashier.Tests.E2E` and run
+
+```sh
+set HEADED=1
+set BROWSER=firefox
+
+dotnet test
+```
+
+or
+
+```sh
+dotnet test --settings test.runsettings
+```
+
+Create tests with Codegen:
+```sh
+pwsh bin/Debug/netX/playwright.ps1 codegen localhost:5000
+```
 
 # Publish
 
