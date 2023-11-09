@@ -1,6 +1,6 @@
 ﻿@using MudBlazor
 
-<MudTextField T="string" @bind-Value="Posting!.Account" Placeholder="Account" />
+<MudTextField T="string" @bind-Value="Posting!.Account" Placeholder="Account" ReadOnly="true" @onclick="OnAccountClicked" />
 
 <MudGrid>
     <MudItem xs="2">
@@ -17,6 +17,12 @@
 @code {
     [Parameter]
     public Posting Posting { get; set; } = default!;
+
+    /// <summary>
+    /// Event when the Account is tapped
+    /// </summary>
+    [Parameter]
+    public EventCallback OnAccountClick { get; set; }
 
     decimal? Amount
     {
@@ -52,4 +58,8 @@
         }
     }
 
+    private async Task OnAccountClicked()
+    {
+        await OnAccountClick.InvokeAsync();
+    }
 }

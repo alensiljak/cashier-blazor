@@ -45,7 +45,8 @@
 {
     @foreach (var posting in State.Xact?.Postings)
     {
-        <PostingEditor Posting="posting" />
+        var index = State.Xact?.Postings.IndexOf(posting);
+        <PostingEditor Posting="posting" OnAccountClick="@(() => OnAccountClicked(index))" />
     }
 }
 
@@ -81,6 +82,11 @@
     private async Task Today()
     {
         await _datePicker.GoToDate(DateTime.Today);
+    }
+
+    void OnAccountClicked(int? index)
+    {
+        Console.WriteLine("account clicked on line {0}", index);
     }
 
     void OnFab()
