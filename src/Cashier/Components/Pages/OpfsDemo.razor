@@ -1,9 +1,98 @@
 ﻿@page "/opfs-demo"
 
+@using KristofferStrube.Blazor.FileSystem
+@using MudBlazor
+
+@inject IStorageManagerService StorageManagerService
+@inject ISnackbar Snackbar
+
+<ToolbarMud>
+    OPFS Demo
+</ToolbarMud>
+
 <h3>OpfsDemo</h3>
 
-<p>Incomplete. Just a stub for now.</p>
+<MudText>Demonstrate reading and writing files in OPFS.</MudText>
+
+<MudText>The button below will create and write to a file.txt:</MudText>
+<MudButton @onclick="OnWriteClick" Variant="Variant.Outlined">Write to File</MudButton>
+
+<MudDivider Class="pb-3 mt-3" />
+
+<MudText>The file contents are below:</MudText>
+<MudTextField T="string" Lines="6" @bind-Value="content" />
+
+<MudDivider Class="pb-3 mt-3" />
+
+<MudButton @onclick="OnDeleteClick" Variant="Variant.Outlined">Delete File</MudButton>
 
 @code {
+    string? content;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await OpenAndReadFile();
+    }
+
+    private async Task OpenAndReadFile()
+    {
+        var svc = new OpfsService(StorageManagerService);
+        KristofferStrube.Blazor.FileAPI.File? file = null;
+        try
+        {
+            file = await svc.OpenFile("file.txt", false);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+
+        if (file != null)
+        {
+            // Do something with the file.
+            content = await file.TextAsync();
+        }
+        else
+        {
+            content = "<File not found>";
+        }
+
+        // Console.WriteLine("file contents: {0}", content);
+    }
+
+    async Task OnDeleteClick()
+    {
+        var svc = new OpfsService(StorageManagerService);
+        await svc.DeleteFile("file.txt");
+
+        Snackbar.Add("File deleted");
+
+        await OpenAndReadFile();
+    }
+
+    async Task OnWriteClick()
+    {
+        try
+        {
+            await WriteToFile();
+
+            Snackbar.Add("File written.");
+
+            await OpenAndReadFile();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    async Task WriteToFile()
+    {
+        var svc = new OpfsService(StorageManagerService);
+        var stream = await svc.OpenWritable("file.txt");
+        await stream.WriteAsync("Hello!");
+        await stream.CloseAsync();
+    }
 }
