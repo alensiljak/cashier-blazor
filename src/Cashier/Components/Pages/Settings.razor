@@ -98,10 +98,10 @@
         mainCurrency = await svc.GetDefaultCurrency();
 
         // root investment account
-        investmentRoot = await svc.Get(SettingsKeys.rootInvestmentAccount);
+        investmentRoot = await svc.GetRootInvestmentAccount();
 
         // remember last transaction
-        rememberLastTransaction = await svc.GetBool(SettingsKeys.rememberLastTransaction);
+        rememberLastTransaction = await svc.GetRememberLastTransaction();
 
         // StateHasChanged();
     }

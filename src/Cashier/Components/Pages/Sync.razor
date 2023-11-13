@@ -2,6 +2,7 @@
 
 @inject IJSRuntime JSRuntime
 @inject ISnackbar Snackbar
+@inject HttpClient HttpClient
 
 @using Cashier.Services
 @using MudBlazor
@@ -24,15 +25,17 @@
 
 <MudText Typo="Typo.h4" Align="Align.Center" Class="mt-3">Synchronization</MudText>
 
-<MudCheckBox T="bool">Sync accounts list with balances</MudCheckBox>
+<MudCheckBox T="bool" @bind-Checked="syncAccounts">Sync accounts list with balances</MudCheckBox>
 
-<MudCheckBox T="bool">yo</MudCheckBox>
+<MudCheckBox T="bool" @bind-Checked="syncAaValues">Sync account values in base currency 
+    (ledger b ^&lt;root&gt; -X &lt;CUR&gt; --flat --no-total). Used for asset allocation.</MudCheckBox>
 
-<MudCheckBox T="bool">yo</MudCheckBox>
+<MudCheckBox T="bool" @bind-Checked="syncPayees">Sync Payees</MudCheckBox>
 
 <MudContainer Class="d-flex justify-center">
     <MudButton Variant="Variant.Filled" Color="Color.Tertiary" Size="Size.Large"
-               StartIcon="@IconsMud.RefreshCW" Style="color: var(--mud-palette-secondary);" Class="">Sync</MudButton>
+               StartIcon="@IconsMud.RefreshCW" Style="color: var(--mud-palette-secondary);" Class=""
+               @onclick="onSyncClicked">Sync</MudButton>
 </MudContainer>
 
 @code {
@@ -51,6 +54,14 @@
     string? rootInvestmentAccount = null;
     string? currency = null;
 
+    bool syncAccounts = false;
+    bool syncAaValues = false;
+    bool syncPayees = false;
+
+    bool showAccountProgress = false;
+    bool showPayeesProgress = false;
+    bool showAssetProgress = false;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -62,11 +73,27 @@
     {
         var settings = new SettingsService(JSRuntime);
 
-        _serverUrl = await settings.GetSyncServerUrl();
+        ServerUrl = await settings.GetSyncServerUrl();
         rootInvestmentAccount = await settings.GetRootInvestmentAccount();
         currency = await settings.GetDefaultCurrency();
 
-        StateHasChanged();
+        syncAccounts = await settings.GetSyncAccounts();
+        syncAaValues = await settings.GetSyncAaValues();
+        syncPayees = await settings.GetSyncPayees();
+
+        // StateHasChanged();
+    }
+
+    ///  <summary>
+    /// Synchronize with Cashier Server.
+    /// </summary>
+    /// <returns></returns>
+    async Task onSyncClicked()
+    {
+        // test connection
+        var svc = new SyncService(HttpClient, ServerUrl);
+        
+        await svc.test();
     }
 
     async Task saveSyncServerUrl(string value)

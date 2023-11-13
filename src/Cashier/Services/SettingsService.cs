@@ -19,52 +19,9 @@ namespace Cashier.Services
             _db = new DexieDAL(moduleFactory);
         }
 
-        public async Task<string> Get(string key)
-        {
-            var record = await _db.Settings.Get(key);
-            if (record == null)
-            {
-                await _db.Settings.Add(new Setting(key, string.Empty));
-                return string.Empty;
-            }
-            else
-            {
-#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
-                var result = JsonSerializer.Deserialize<string>(record.Value);
-                if (result == null)
-                {
-                    return string.Empty;
-                } else
-                {
-                    return result;
-                }
-#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
-            }
-        }
-
-        public async Task<string> Set(string key, string value)
-        {
-            var setting = new Setting(key, value);
-            // return await _db.Settings().Update(key, setting => setting.Value,  value);
-            return await _db.Settings.Put(new Setting(key, value));
-        }
-
         public async Task<string> BulkPut(List<Setting> items)
         {
             return await _db.Settings.BulkPut(items);
-        }
-
-        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-        public async Task<bool> GetBool(string key)
-        {
-            var record = await _db.Settings.Get(key);
-            if (record == null)
-            {
-                return false;
-            }
-                
-            var result = JsonSerializer.Deserialize<bool>(record.Value);
-            return result;
         }
 
         public async Task<string> GetDefaultCurrency()
@@ -86,6 +43,26 @@ namespace Cashier.Services
         {
             var record = await _db.Settings.Get(SettingsKeys.rootInvestmentAccount);
             return record?.Value ?? string.Empty;
+        }
+
+        public async Task<bool> GetRememberLastTransaction()
+        {
+            return await GetBool(SettingsKeys.rememberLastTransaction);
+        }
+
+        public async Task<bool> GetSyncAccounts()
+        {
+            return await GetBool(SettingsKeys.syncAccounts);
+        }
+
+        public async Task<bool> GetSyncAaValues()
+        {
+            return await GetBool(SettingsKeys.syncAaValues);
+        }
+
+        public async Task<bool> GetSyncPayees()
+        {
+            return await GetBool(SettingsKeys.syncPayees);
         }
 
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
@@ -142,7 +119,23 @@ namespace Cashier.Services
             return await SetString(SettingsKeys.syncServerUrl, value);
         }
 
-        private async Task<string> SetString(string key, string value)
+        // Private
+
+        private async Task<bool> GetBool(string key)
+        {
+            var record = await _db.Settings.Get(key);
+            if (record == null)
+            {
+                return false;
+            }
+
+            // var result = JsonSerializer.Deserialize<bool>(record.Value);
+            _ = bool.TryParse(record.Value, out bool result);
+
+            return result;
+        }
+
+        private async Task<string> SetBool(string key, bool value)
         {
             var record = await _db.Settings.Get(key);
             if (record == null)
@@ -150,12 +143,27 @@ namespace Cashier.Services
                 throw new Exception("The setting not found!");
             }
 
+            record.Value = value.ToString();
+
+            var result = await _db.Settings.Put(record);
+
+            return result;
+        }
+
+        private async Task<string> SetString(string key, string value)
+        {
+            var record = await _db.Settings.Get(key);
+            if (record == null)
+            {
+                // throw new Exception("The setting not found!");
+                record = new Setting(key, value);
+            }
+
             record.Value = value;
 
             var result = await _db.Settings.Put(record);
 
             return result;
-
         }
     }
 }
