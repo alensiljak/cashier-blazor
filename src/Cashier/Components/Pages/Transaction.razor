@@ -1,4 +1,5 @@
 ﻿@page "/tx"
+
 @inject ISnackbar Snackbar
 @inject NavigationManager NavMan
 @inject AppState State
@@ -28,7 +29,7 @@
 
 @* Payee *@
 <MudTextField T="string" Placeholder="Payee" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.Users2"
-              @bind-Value="State.Xact.Payee" @onclick="OnPayeeClick" />
+              @bind-Value="Payee" @onclick="OnPayeeClick" />
 
 <MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.FileText" />
 
@@ -43,7 +44,7 @@
 
 @if (State?.Xact?.Postings != null)
 {
-    @foreach (var posting in State.Xact?.Postings)
+    @foreach (var posting in Postings)
     {
         var index = State.Xact?.Postings.IndexOf(posting);
         <PostingEditor Posting="posting" OnAccountClick="@(() => OnAccountClicked(index))" />
@@ -76,6 +77,26 @@
         if(State.Xact == null)
         {
             NavMan.NavigateTo("/");
+        }
+    }
+
+    string Payee
+    {
+        get
+        {
+            return State?.Xact?.Payee ?? string.Empty;
+        }
+        set
+        {
+            State.Xact!.Payee = value;
+        }
+    }
+
+    List<Posting> Postings
+    {
+        get
+        {
+            return State.Xact?.Postings ?? new List<Posting>();
         }
     }
 

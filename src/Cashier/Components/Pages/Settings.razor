@@ -80,8 +80,8 @@
 </MudForm>
 
 @code {
-    string? mainCurrency { get; set; }
-    string? investmentRoot { get; set; }
+    string mainCurrency { get; set; } = default!;
+    string investmentRoot { get; set; } = default!;
     bool rememberLastTransaction { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -95,7 +95,7 @@
     {
         var svc = new SettingsService(JSRuntime);
         // currency
-        mainCurrency = await svc.Get(SettingsKeys.currency);
+        mainCurrency = await svc.GetDefaultCurrency();
 
         // root investment account
         investmentRoot = await svc.Get(SettingsKeys.rootInvestmentAccount);
@@ -179,9 +179,13 @@
     async Task saveSettings()
     {
         var svc = new SettingsService(JSRuntime);
-        var result = await svc.Set(SettingsKeys.currency, mainCurrency ?? "");
 
-        Console.WriteLine("saving result: {0}", result);
+        var result = await svc.SetDefaultCurrency(mainCurrency ?? "");
+        Console.WriteLine("saving currency: {0}", result);
+
+        // root investment account
+        result = await svc.SetRootInvestmentAccount(investmentRoot);
+        Console.WriteLine("saving investment root: {0}", result);
 
         if (result != string.Empty)
         {

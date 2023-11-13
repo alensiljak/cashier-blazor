@@ -71,8 +71,20 @@ namespace Cashier.Services
         {
             var record = await _db.Settings.Get(SettingsKeys.currency);
 
-            Console.WriteLine("loaded ", record);
+            //Console.WriteLine("loaded ", record);
 
+            return record?.Value ?? string.Empty;
+        }
+
+        public async Task<string> GetSyncServerUrl()
+        {
+            var record = await _db.Settings.Get(SettingsKeys.syncServerUrl);
+            return record?.Value ?? string.Empty;
+        }
+
+        public async Task<string> GetRootInvestmentAccount()
+        {
+            var record = await _db.Settings.Get(SettingsKeys.rootInvestmentAccount);
             return record?.Value ?? string.Empty;
         }
 
@@ -111,6 +123,39 @@ namespace Cashier.Services
                 }
             }
             return result.ToArray();
+        }
+
+        // Save methods
+
+        public async Task<string> SetDefaultCurrency(string value)
+        {
+            return await SetString(SettingsKeys.currency, value);
+        }
+
+        public async Task<string> SetRootInvestmentAccount(string value)
+        {
+            return await SetString(SettingsKeys.rootInvestmentAccount, value);
+        }
+
+        public async Task<string> SetSyncServerUrl(string value)
+        {
+            return await SetString(SettingsKeys.syncServerUrl, value);
+        }
+
+        private async Task<string> SetString(string key, string value)
+        {
+            var record = await _db.Settings.Get(key);
+            if (record == null)
+            {
+                throw new Exception("The setting not found!");
+            }
+
+            record.Value = value;
+
+            var result = await _db.Settings.Put(record);
+
+            return result;
+
         }
     }
 }
