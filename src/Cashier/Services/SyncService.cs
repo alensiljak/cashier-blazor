@@ -1,10 +1,16 @@
-﻿namespace Cashier.Services
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
+
+namespace Cashier.Services
 {
     /// <summary>
     /// Synchronizes with the Cashier Server.
     /// </summary>
     public class SyncService
     {
+        private const string AccountsCommand = "b --flat --empty --no-total";
+        private const string payeesCommand = "payees";
+
         private HttpClient _httpClient;
         private string _serverUrl;
 
@@ -13,6 +19,10 @@
             _serverUrl = serverUrl;
         }
 
+        /// <summary>
+        /// Demonstrates communicating with a remote server.
+        /// </summary>
+        /// <returns></returns>
         public async Task test()
         {
             HttpResponseMessage? response;
@@ -32,6 +42,40 @@
 
             var content = await response.Content.ReadAsStringAsync();
             Console.WriteLine("Content: {0}", content);
+        }
+
+        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+        public async Task<string[]?> ReadAccounts()
+        {
+            var response = await this.ledger(AccountsCommand);
+            // this returns JSON
+            var lines = JsonSerializer.Deserialize<string[]>(response);
+            // var lines = response.Split(Environment.NewLine);
+            return lines;
+        }
+
+        // Private
+
+        private string createUrl(string command)
+        {
+            var path = $"?command={command}";
+            var url = $"{this._serverUrl}{path}";
+            return url;
+        }
+
+        private async Task<string> ledger(string command)
+        {
+            var url = createUrl(command);
+
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Error communicating with Cashier Server");
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            
+            return content;
         }
     }
 }

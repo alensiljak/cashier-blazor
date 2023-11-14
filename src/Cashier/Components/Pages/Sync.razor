@@ -17,22 +17,24 @@
 <MudText>To update data from Ledger, the Cashier Server must be running and accessible.</MudText>
 <MudText>You can run Cashier Server locally.</MudText>
 
-<MudText Typo="Typo.h4" Align="Align.Center">Settings</MudText>
+<MudText Typo="Typo.h4" Align="Align.Center" Class="my-3">Settings</MudText>
 
 <MudTextField T="string" Placeholder="http://localhost:3000" Label="Server URL" Value="@ServerUrl" ValueChanged="saveSyncServerUrl" />
 
 <MudDivider DividerType="DividerType.Middle" />
 
-<MudText Typo="Typo.h4" Align="Align.Center" Class="mt-3">Synchronization</MudText>
+<MudText Typo="Typo.h4" Align="Align.Center" Class="my-3">Synchronization</MudText>
 
 <MudCheckBox T="bool" @bind-Checked="syncAccounts">Sync accounts list with balances</MudCheckBox>
 
-<MudCheckBox T="bool" @bind-Checked="syncAaValues">Sync account values in base currency 
-    (ledger b ^&lt;root&gt; -X &lt;CUR&gt; --flat --no-total). Used for asset allocation.</MudCheckBox>
+<MudCheckBox T="bool" @bind-Checked="syncAaValues">
+    Sync account values in base currency
+    (ledger b ^&lt;root&gt; -X &lt;CUR&gt; --flat --no-total). Used for asset allocation.
+</MudCheckBox>
 
 <MudCheckBox T="bool" @bind-Checked="syncPayees">Sync Payees</MudCheckBox>
 
-<MudContainer Class="d-flex justify-center">
+<MudContainer Class="d-flex justify-center mt-4">
     <MudButton Variant="Variant.Filled" Color="Color.Tertiary" Size="Size.Large"
                StartIcon="@IconsMud.RefreshCW" Style="color: var(--mud-palette-secondary);" Class=""
                @onclick="onSyncClicked">Sync</MudButton>
@@ -90,10 +92,20 @@
     /// <returns></returns>
     async Task onSyncClicked()
     {
-        // test connection
-        var svc = new SyncService(HttpClient, ServerUrl);
-        
-        await svc.test();
+        if (syncAccounts)
+        {
+            showAccountProgress = true;
+            await synchronizeAccounts();
+            showAccountProgress = false;
+        }
+        if (syncAaValues)
+        {
+
+        }
+        if (syncPayees)
+        {
+
+        }
     }
 
     async Task saveSyncServerUrl(string value)
@@ -105,5 +117,39 @@
         await settings.SetSyncServerUrl(value);
 
         Snackbar.Add("Sync URL saved");
+    }
+
+    async Task synchronizeAccounts()
+    {
+        var svc = new SyncService(HttpClient, ServerUrl);
+        string[]? accounts = null;
+        try
+        {
+            accounts = await svc.ReadAccounts();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Error: " + ex.Message, Severity.Warning);
+        }
+        if (accounts == null || accounts.Length == 0)
+        {
+            Snackbar.Add("No accounts received");
+            return;
+        }
+
+        var appService = new AppService(JSRuntime);
+        await appService.deleteAccounts();
+
+        // Import
+        string? result = null;
+        try
+        {
+            result = await appService.importBalanceSheet(accounts);
+        } catch(Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+
+        Snackbar.Add("Accounts fetched from Ledger: " + result, Severity.Success);
     }
 }
