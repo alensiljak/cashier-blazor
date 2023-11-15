@@ -32,8 +32,8 @@
                     @foreach (var account in accounts)
                     {
                         <tr>
-                            <td>@account?.Name</td>
-                            <td style="text-align: end;">@account?.Balances?.FirstOrDefault()</td>
+                            <td class="pl-2 pr-1">@account?.Name</td>
+                            <td style="text-align: end;" class="pl-1 pr-2">@account?.Balances?.FirstOrDefault()</td>
                         </tr>
                     }
                 </tbody>
