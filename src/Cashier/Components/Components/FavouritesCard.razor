@@ -4,14 +4,15 @@
 
 @inject IJSRuntime JSRuntime
 @inject ISnackbar Snackbar
+@inject NavigationManager NavMan
 
 @using BlazorDexie.JsModule
 @using Cashier.DAL
 @using Cashier.Services
 @using MudBlazor
 
-<MudCard>
-    <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="pa-2">
+<MudCard @onclick="OnCardClick">
+    <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="px-2 pt-2 pb-1">
         <CardHeaderAvatar>
             <MudIcon Icon="@IconsMud.Star" Size="Size.Medium" />
         </CardHeaderAvatar>
@@ -19,21 +20,24 @@
             <MudText>Favourites</MudText>
         </CardHeaderContent>
     </MudCardHeader>
-    <MudCardContent>
+    <MudCardContent Class="pa-0">
         @if (accounts == null || accounts.Length == 0)
         {
             <MudText>There are no favourite accounts defined</MudText>
         }
         else
         {
-            <MudList>
-                @foreach (var account in accounts)
-                {
-                <MudListItem Text="Account: " />
-                    <MudListItem Text="@account?.Name" />
-                        
-                }
-            </MudList>
+            <MudSimpleTable Dense>
+                <tbody>
+                    @foreach (var account in accounts)
+                    {
+                        <tr>
+                            <td>@account?.Name</td>
+                            <td style="text-align: end;">@account?.Balances?.FirstOrDefault()</td>
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
         }
     </MudCardContent>
 </MudCard>
@@ -53,11 +57,19 @@
     {
         var svc = SettingsService.CreateInstance(JSRuntime);
 
-        var defaultCurrency = await svc.GetDefaultCurrency();
-        Console.WriteLine("default currency: {0}", defaultCurrency);
+        // var defaultCurrency = await svc.GetDefaultCurrency();
+        // Console.WriteLine("default currency: {0}", defaultCurrency);
 
         accounts = await svc.GetFavouriteAccounts();
-        
+        // Take only top 5.
+        accounts = accounts.Take(5).ToArray();
+
         StateHasChanged();
+    }
+
+    void OnCardClick()
+    {
+        // Open Favourites
+        NavMan.NavigateTo("/favourites");
     }
 }
