@@ -141,11 +141,11 @@
         await appService.deleteAccounts();
 
         // Import
-        string? result = null;
         try
         {
-            result = await appService.importBalanceSheet(accounts);
-        } catch(Exception ex)
+            await appService.importBalanceSheet(accounts);
+        }
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
@@ -153,6 +153,6 @@
             Snackbar.Add(ex.Message, Severity.Error);
         }
 
-        Snackbar.Add("Accounts fetched from Ledger: " + result, Severity.Success);
+        Snackbar.Add("Accounts fetched from Ledger", Severity.Success);
     }
 }

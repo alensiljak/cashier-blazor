@@ -63,7 +63,7 @@ namespace Cashier.Services
 
             foreach (var line in lines)
             {
-                Console.WriteLine("Processing {0}", line);
+                //Console.WriteLine("Processing {0}", line);
 
                 // Prepare for parsing
                 var source = line.Trim();
