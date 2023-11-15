@@ -1,11 +1,65 @@
 ﻿@page "/accounts"
 
+@inject IJSRuntime JSRuntime
+
+@using MudBlazor
+
 <ToolbarMud>
     <Title>Accounts</Title>
 </ToolbarMud>
 
-<h3>Accounts</h3>
+<MudPaper Class="px-2 py-1 d-flex justify-center">
+    <div style="width: 500px;">
+        <MudTextField T="string" Adornment="Adornment.End" AdornmentIcon="@IconsMud.Search" Label="Search" Variant="Variant.Outlined"
+                      Margin="Margin.Dense" DebounceInterval="300" OnDebounceIntervalElapsed="OnSearch" Clearable="true"
+                      FullWidth="false" @bind-Value="searchTerm" />
+    </div>
+</MudPaper>
+
+<p>Accounts with balances</p>
+<p>You searched for @searchTerm</p>
+
+<MudSimpleTable>
+    <tbody>
+        @foreach(var account in accounts)
+        {
+            <tr>
+                <td>@account.Name</td>
+            </tr>
+        }
+    </tbody>
+</MudSimpleTable>
 
 @code {
+    string? searchTerm;
+    List<Account>? accounts = [];
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await loadData();
+    }
+
+    async Task loadData()
+    {
+        var db = DexieDAL.CreateInstance(JSRuntime);
+        var records = await db.Accounts
+            .OrderBy("name")
+            .ToList();
+
+        if (searchTerm != null)
+        {
+            var regex = new ListSearch().getRegex(searchTerm);
+            //accounts = records.Where(acc => regex.Match(acc.Name));
+        }
+    }
+
+    /// <summary>
+    /// Handle debounced search term.
+    /// </summary>
+    void OnSearch()
+    {
+        Console.WriteLine("search here");
+    }
 }

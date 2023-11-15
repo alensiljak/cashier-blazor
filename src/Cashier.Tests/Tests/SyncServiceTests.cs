@@ -12,13 +12,14 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cashier.Tests
+namespace Cashier.Tests.Tests
 {
     public class SyncServiceTests
     {
         private SyncService _syncService;
 
-        public SyncServiceTests() {
+        public SyncServiceTests()
+        {
             var mockHttp = new TestHelpers().CreateMockHttpHandler();
             var httpClient = new HttpClient(mockHttp.Object);
             _syncService = new SyncService(httpClient, "http://localhost");
@@ -32,7 +33,7 @@ namespace Cashier.Tests
         {
             var mockHttp = new TestHelpers().CreateMockHttpHandler();
             var httpClient = new HttpClient(mockHttp.Object);
-            
+
             var response = await httpClient.GetAsync("http://localhost");
 
             Assert.NotNull(response);

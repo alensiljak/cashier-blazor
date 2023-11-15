@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cashier.Tests
+namespace Cashier.Tests.Tests
 {
     public class AppServiceTests
     {

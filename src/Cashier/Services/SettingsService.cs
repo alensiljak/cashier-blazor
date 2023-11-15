@@ -2,10 +2,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Cashier.Lib;
-using Cashier.DAL;
 using Cashier.Model;
 using BlazorDexie.JsModule;
 using Microsoft.JSInterop;
+using Cashier.Data;
 
 namespace Cashier.Services
 {
@@ -14,8 +14,7 @@ namespace Cashier.Services
     {
         public static SettingsService CreateInstance(IJSRuntime jsRuntime)
         {
-            var moduleFactory = new EsModuleFactory(jsRuntime);
-            var db = new DexieDAL(moduleFactory);
+            var db = DexieDAL.CreateInstance(jsRuntime);
             return new SettingsService(db);
         }
         private IDexieDAL _db;

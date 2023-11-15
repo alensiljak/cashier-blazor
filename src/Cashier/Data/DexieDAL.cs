@@ -1,11 +1,19 @@
 ﻿using BlazorDexie.Database;
 using BlazorDexie.JsModule;
 using Cashier.Model;
+using Microsoft.JSInterop;
 
-namespace Cashier.DAL
+namespace Cashier.Data
 {
     public class DexieDAL : Db, IDexieDAL
     {
+        public static IDexieDAL CreateInstance(IJSRuntime jsRuntime)
+        {
+            var moduleFactory = new EsModuleFactory(jsRuntime);
+            var dal = new DexieDAL(moduleFactory);
+            return dal;
+        }
+
         public Store<Setting, string> Settings { get; set; } = new(nameof(Setting.Key));
 
         public Store<Account, string> Accounts { get; set; } = new(nameof(Account.Name));

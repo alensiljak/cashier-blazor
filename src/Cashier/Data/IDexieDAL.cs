@@ -1,7 +1,7 @@
 ﻿using BlazorDexie.Database;
 using Cashier.Model;
 
-namespace Cashier.DAL
+namespace Cashier.Data
 {
     public interface IDexieDAL
     {

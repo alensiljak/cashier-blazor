@@ -1,4 +1,4 @@
-﻿using Cashier.DAL;
+﻿using Cashier.Data;
 using Cashier.Model;
 using Cashier.Services;
 using Microsoft.JSInterop;

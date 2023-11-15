@@ -1,7 +1,7 @@
 ﻿using BlazorDexie.Database;
 using BlazorDexie.JsModule;
 using Cashier.Components.Pages;
-using Cashier.DAL;
+using Cashier.Data;
 using Cashier.Model;
 using Microsoft.JSInterop;
 using MudBlazor.Charts;
@@ -16,8 +16,7 @@ namespace Cashier.Services
     {
         public static AppService CreateInstance(IJSRuntime jsRuntime)
         {
-            var moduleFactory = new EsModuleFactory(jsRuntime);
-            var dal = new DexieDAL(moduleFactory);
+            var dal = DexieDAL.CreateInstance(jsRuntime);
             return new AppService(jsRuntime, dal);
         }
 
