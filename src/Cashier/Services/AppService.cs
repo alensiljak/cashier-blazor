@@ -5,6 +5,7 @@ using Cashier.DAL;
 using Cashier.Model;
 using Microsoft.JSInterop;
 using MudBlazor.Charts;
+using System.Dynamic;
 
 namespace Cashier.Services
 {
@@ -13,54 +14,74 @@ namespace Cashier.Services
     /// </summary>
     public class AppService
     {
-        private IJSRuntime _jsRuntime;
-        private DexieDAL _db;
+        public static AppService CreateInstance(IJSRuntime jsRuntime)
+        {
+            var moduleFactory = new EsModuleFactory(jsRuntime);
+            var dal = new DexieDAL(moduleFactory);
+            return new AppService(jsRuntime, dal);
+        }
 
-        public AppService(IJSRuntime jsRuntime)
+        private IJSRuntime _jsRuntime;
+        
+        public IDexieDAL DAL { get; set; }
+
+        public AppService(IJSRuntime jsRuntime, IDexieDAL dal)
         {
             _jsRuntime = jsRuntime;
-
-            var moduleFactory = new EsModuleFactory(jsRuntime);
-            _db = new DexieDAL(moduleFactory);
+            DAL = dal;
         }
 
         public async Task deleteAccounts()
         {
-            await _db.Accounts.Clear();
+            await DAL.Accounts.Clear();
         }
 
-        public async Task<string?> importBalanceSheet(string[] accountNames)
+        public async Task<string?> importBalanceSheet(string[] lines)
         {
-            if (accountNames.Length == 0)
+            if (lines.Length == 0)
             {
                 throw new ArgumentException("No accounts sent for import!");
             }
 
-            var settings = new SettingsService(_jsRuntime);
-            var mainCurrency = await settings.GetDefaultCurrency();
-            if (mainCurrency == null)
-            {
-                throw new ArgumentException("Main currency not set!");
-            }
+            //var settings = SettingsService.CreateInstance(_jsRuntime);
+            //var mainCurrency = await settings.GetDefaultCurrency();
+            //if (mainCurrency == null)
+            //{
+            //    throw new ArgumentException("Main currency not set!");
+            //}
 
+            var accounts = ParseAccounts(lines);
+
+            var saveResult = await DAL.Accounts.BulkPut(accounts);
+            return saveResult;
+        }
+
+        protected List<Account> ParseAccounts(string[] lines)
+        {
             var accounts = new List<Account>();
             var accountBalances = new List<Money>();
 
-            foreach (var line in accountNames)
+            foreach (var line in lines)
             {
-                if (string.IsNullOrEmpty(line)) continue;
+                Console.WriteLine("Processing {0}", line);
+
+                // Prepare for parsing
+                var source = line.Trim();
+                if (string.IsNullOrEmpty(source)) continue;
+
+                var parts = source.Split("  ");
 
                 Account? account = null;
-                // name
-                string namePart = string.Empty;
-                if (line.Length > 21)
+                if (parts.Length > 1)
                 {
-                    namePart = line.Substring(21).Trim();
+                    // name
+                    var namePart = parts[1];
                     account = new Account(namePart);
                 }
 
-                var balancePart = line.Substring(0, 20).Trim();
-                // separate the currency
+                // Balance
+                var balancePart = parts[0];
+                // separate the currency and the quantity
                 var balanceParts = balancePart.Split(" ");
 
                 // currency
@@ -79,7 +100,7 @@ namespace Cashier.Services
 
                 // If we do not have a name, it's an amount of a multicurrency account.
                 // Keep the balance until we get the line with the account name.
-                if (string.IsNullOrEmpty(namePart)) continue;
+                if (account == null) continue;
 
                 // Once we have the name, assign the balances dictionary and keep for update.
                 account!.Balances = accountBalances.ToArray();
@@ -90,8 +111,7 @@ namespace Cashier.Services
                 accountBalances = [];
             }
 
-            var saveResult = await _db.Accounts.BulkPut(accounts);
-            return saveResult;
+            return accounts;
         }
     }
 }

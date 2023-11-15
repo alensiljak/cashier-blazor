@@ -51,7 +51,7 @@
 
     async Task loadData()
     {
-        var svc = new SettingsService(JSRuntime);
+        var svc = SettingsService.CreateInstance(JSRuntime);
 
         var defaultCurrency = await svc.GetDefaultCurrency();
         Console.WriteLine("default currency: {0}", defaultCurrency);

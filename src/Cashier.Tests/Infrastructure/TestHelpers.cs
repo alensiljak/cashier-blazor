@@ -6,8 +6,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.JSInterop;
+using Cashier.DAL;
 
-namespace Cashier.Tests
+namespace Cashier.Tests.Infrastructure
 {
     internal class TestHelpers
     {
@@ -21,6 +23,20 @@ namespace Cashier.Tests
                 .Verifiable();
 
             return mockHttp;
+        }
+
+        public Mock<IJSRuntime> CreateMockJSRuntime()
+        {
+            var mock = new Mock<IJSRuntime>();
+            //mock.Protected().Setup<Task>("InvokeAsync");
+                
+            return mock;
+        }
+
+        public Mock<IDexieDAL> CreateMockDAL()
+        {
+            var mock = new Mock<IDexieDAL>();
+            return mock;
         }
     }
 }

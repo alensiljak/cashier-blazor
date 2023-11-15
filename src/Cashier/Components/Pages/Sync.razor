@@ -73,7 +73,7 @@
 
     async Task loadSettings()
     {
-        var settings = new SettingsService(JSRuntime);
+        var settings = SettingsService.CreateInstance(JSRuntime);
 
         ServerUrl = await settings.GetSyncServerUrl();
         rootInvestmentAccount = await settings.GetRootInvestmentAccount();
@@ -113,7 +113,7 @@
         // Console.WriteLine("sync server changed: {0}", value);
         ServerUrl = value;
 
-        var settings = new SettingsService(JSRuntime);
+        var settings = SettingsService.CreateInstance(JSRuntime);
         await settings.SetSyncServerUrl(value);
 
         Snackbar.Add("Sync URL saved");
@@ -137,7 +137,7 @@
             return;
         }
 
-        var appService = new AppService(JSRuntime);
+        var appService = AppService.CreateInstance(JSRuntime);
         await appService.deleteAccounts();
 
         // Import
@@ -147,6 +147,9 @@
             result = await appService.importBalanceSheet(accounts);
         } catch(Exception ex)
         {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+
             Snackbar.Add(ex.Message, Severity.Error);
         }
 

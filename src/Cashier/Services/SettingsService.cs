@@ -12,11 +12,16 @@ namespace Cashier.Services
     // Operations for application settings.
     public class SettingsService
     {
-        private DexieDAL _db;
-
-        public SettingsService(IJSRuntime jsRuntime) {
+        public static SettingsService CreateInstance(IJSRuntime jsRuntime)
+        {
             var moduleFactory = new EsModuleFactory(jsRuntime);
-            _db = new DexieDAL(moduleFactory);
+            var db = new DexieDAL(moduleFactory);
+            return new SettingsService(db);
+        }
+        private IDexieDAL _db;
+
+        public SettingsService(IDexieDAL dal) {
+            _db = dal;
         }
 
         public async Task<string> BulkPut(List<Setting> items)

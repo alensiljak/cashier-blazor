@@ -93,7 +93,7 @@
 
     async Task loadSettings()
     {
-        var svc = new SettingsService(JSRuntime);
+        var svc = SettingsService.CreateInstance(JSRuntime);
         // currency
         mainCurrency = await svc.GetDefaultCurrency();
 
@@ -167,7 +167,7 @@
 
             // Insert into db.
 
-            var svc = new SettingsService(JSRuntime);
+            var svc = SettingsService.CreateInstance(JSRuntime);
             var insertResult = await svc.BulkPut(settings);
             // Console.WriteLine("insert result: {0}", insertResult);
             Snackbar.Add("Settings restored", Severity.Success);
@@ -178,7 +178,7 @@
 
     async Task saveSettings()
     {
-        var svc = new SettingsService(JSRuntime);
+        var svc = SettingsService.CreateInstance(JSRuntime);
 
         var result = await svc.SetDefaultCurrency(mainCurrency ?? "");
         Console.WriteLine("saving currency: {0}", result);

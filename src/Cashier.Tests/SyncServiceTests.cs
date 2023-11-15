@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Io;
 using Cashier.Services;
+using Cashier.Tests.Infrastructure;
 using Moq;
 using Moq.Protected;
 using System;
