@@ -69,8 +69,14 @@ namespace Cashier.Services
             return await GetBool(SettingsKeys.syncPayees);
         }
 
+        /// <summary>
+        /// Loads favourite accounts.
+        /// The account names are stored in the Settings. Then, the Accounts are loaded from the database by name.
+        /// </summary>
+        /// <param name="take">Take only the first N accounts.</param>
+        /// <returns></returns>
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-        public async Task<Account?[]> GetFavouriteAccounts()
+        public async Task<Account?[]> GetFavouriteAccounts(int? take = null)
         {
             var setting = await _db.Settings.Get(SettingsKeys.favouriteAccounts);
             if (setting == null)
@@ -85,7 +91,13 @@ namespace Cashier.Services
             //Console.WriteLine("Deserialized: {0}", keys);
             if (keys == null)
             {
-                return new Account[0];
+                return [];
+            }
+
+            // Take only top n.
+            if (take != null)
+            {
+                keys = keys.Take(5).ToArray();
             }
 
             var accounts = await _db.Accounts.BulkGet(keys);

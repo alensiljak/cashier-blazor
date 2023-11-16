@@ -59,9 +59,7 @@
         // var defaultCurrency = await svc.GetDefaultCurrency();
         // Console.WriteLine("default currency: {0}", defaultCurrency);
 
-        accounts = await svc.GetFavouriteAccounts();
-        // Take only top 5.
-        accounts = accounts.Take(5).ToArray();
+        accounts = await svc.GetFavouriteAccounts(5);
 
         StateHasChanged();
     }
