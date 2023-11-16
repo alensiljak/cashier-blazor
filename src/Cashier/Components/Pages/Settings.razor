@@ -137,7 +137,7 @@
         var parameters = new DialogParameters<ConfirmationDialog>();
         parameters.Add(x => x.ContentText, "Do you want to import the selected Asset Allocation file?");
 
-        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Restore", parameters,
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Import", parameters,
             new DialogOptions { MaxWidth = MaxWidth.Large });
         var result = await dialog.Result;
         if (result.Canceled) return;
@@ -147,6 +147,7 @@
         var stream = aaFile.OpenReadStream();
         using var reader = new StreamReader(stream);
         var content = await reader.ReadToEndAsync();
+        // Console.WriteLine("file content: {0}", content);
 
         // Save to OPFS.
         var opfs = new OpfsService(StorageManagerService);

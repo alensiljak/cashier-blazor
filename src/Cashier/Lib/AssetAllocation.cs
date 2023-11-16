@@ -1,4 +1,7 @@
-﻿namespace Cashier.Lib
+﻿using Tomlyn;
+using Tomlyn.Syntax;
+
+namespace Cashier.Lib
 {
     /// <summary>
     /// All Asset Allocation functionality. Migrated from Cashier.
@@ -6,12 +9,26 @@
     public class AssetAllocation
     {
         /// <summary>
-        /// Deletes all AssetAllocation data.
+        /// Loads the Asset Allocation definition by parsing the TOML string.
         /// </summary>
-        /// <returns></returns>
-        public async Task ClearData()
+        /// <param name="toml">Definition. Usually read from a file.</param>
+        public void ParseDefinition(string toml)
         {
-            throw new NotImplementedException();
+            // todo: parse TOML
+            var model = Toml.Parse( toml );
+            //Console.WriteLine(model);
+
+            Console.WriteLine("kind: ", model.Kind);
+            Console.WriteLine("child count: {0}", model.ChildrenCount);
+            //for (int i = 0; i < model.ChildrenCount; i++)
+            //{
+            //    Console.WriteLine("child: {0}", model.GetChild(i));
+            //}
+            //Console.WriteLine(model.Descendants());
+            foreach (var descendant in model.Descendants())
+            {
+                Console.WriteLine("d: {0}", descendant);
+            }
         }
     }
 }

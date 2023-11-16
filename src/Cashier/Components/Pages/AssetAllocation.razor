@@ -1,11 +1,35 @@
 ﻿@page "/asset-allocation"
 
+@using KristofferStrube.Blazor.FileSystem
+@using MudBlazor
+
+@inject IStorageManagerService StorageManagerService
+
 <ToolbarMud>
     <Title>Asset Allocation</Title>
 </ToolbarMud>
 
-<h3>AssetAllocation</h3>
+<MudText>The contents of the Asset Allocation definition file:</MudText>
+
+<MudTextField T="string" @bind-Value="content" Lines="25" />
 
 @code {
+    string? content;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await loadData();
+    }
+
+    async Task loadData()
+    {
+        // load aa
+        var opfs = new OpfsService(StorageManagerService);
+        content = await opfs.ReadFromFile(Constants.AssetAllocationFilename);
+
+        var aa = new Lib.AssetAllocation();
+        aa.ParseDefinition(content);
+    }
 }

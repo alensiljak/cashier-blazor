@@ -46,11 +46,23 @@ namespace Cashier.Lib
             return stream;
         }
 
+        public async Task<string> ReadFromFile(string fileName)
+        {
+            var file = await OpenFile(fileName);
+            if (file == null)
+            {
+                throw new IOException("File not found!");
+            }
+
+            var content = await file.TextAsync();
+            return content;
+        }
+
         public async Task SaveToFile(string fileName, string content)
         {
             using var stream = await OpenWritable(fileName, true);
             await stream.WriteAsync(content);
-            await stream.FlushAsync();
+            await stream.CloseAsync();
         }
     }
 }
