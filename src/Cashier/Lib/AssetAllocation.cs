@@ -1,4 +1,6 @@
-﻿using Tomlyn;
+﻿using MudBlazor.Utilities;
+using Tomlyn;
+using Tomlyn.Model;
 using Tomlyn.Syntax;
 
 namespace Cashier.Lib
@@ -14,20 +16,33 @@ namespace Cashier.Lib
         /// <param name="toml">Definition. Usually read from a file.</param>
         public void ParseDefinition(string toml)
         {
-            // todo: parse TOML
-            var model = Toml.Parse( toml );
-            //Console.WriteLine(model);
+            // parse TOML
+            var model = Toml.ToModel( toml );
+            var root = model.First();
 
-            Console.WriteLine("kind: ", model.Kind);
-            Console.WriteLine("child count: {0}", model.ChildrenCount);
-            //for (int i = 0; i < model.ChildrenCount; i++)
-            //{
-            //    Console.WriteLine("child: {0}", model.GetChild(i));
-            //}
-            //Console.WriteLine(model.Descendants());
-            foreach (var descendant in model.Descendants())
+            RecursivelyDisplay(root, 0);
+        }
+
+        private IEnumerable<KeyValuePair<string, object>> GetSections(TomlTable item)
+        {
+            var subsections = item.Where(pair => pair.Value is TomlTable)
+                .Select(pair => pair);
+            return subsections;
+        }
+
+        private void RecursivelyDisplay(KeyValuePair<string, object> pair, int level)
+        {
+            // The indentation is 2 spaces per level.
+            var indent = new string(' ', level*2);
+
+            TomlTable table = (TomlTable) pair.Value;
+            Console.WriteLine($"{indent}{pair.Key}");
+
+            // now display the subsections
+            var sections = GetSections(table);
+            foreach( var section in sections )
             {
-                Console.WriteLine("d: {0}", descendant);
+                RecursivelyDisplay(section, level+1);
             }
         }
     }
