@@ -46,5 +46,11 @@ namespace Cashier.Lib
             return stream;
         }
 
+        public async Task SaveToFile(string fileName, string content)
+        {
+            using var stream = await OpenWritable(fileName, true);
+            await stream.WriteAsync(content);
+            await stream.FlushAsync();
+        }
     }
 }

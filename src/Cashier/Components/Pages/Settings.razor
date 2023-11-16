@@ -4,8 +4,10 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject NavigationManager NavMan
+@inject IStorageManagerService StorageManagerService
 
 @using BlazorDexie.JsModule
+@using KristofferStrube.Blazor.FileSystem
 @using MudBlazor
 @using Cashier.Services
 @using System.Text.Json
@@ -22,11 +24,11 @@
 
     <MudText Typo="Typo.h5" Class="mt-4">Investments</MudText>
     <MudTextField T="string" @bind-Value="investmentRoot"
-        Label="Root investment account" />
+                  Label="Root investment account" />
 
     <MudText Typo="Typo.h5" Class="mt-4">Last Transaction</MudText>
     <MudCheckBox T="bool" @bind-Checked="rememberLastTransaction"
-        Label="Remember last transaction for payees. Reuses the information for new transactions." />
+                 Label="Remember last transaction for payees. Reuses the information for new transactions." />
 
     <MudCheckBox T="bool" Label="Use Dark Mode" />
 
@@ -36,25 +38,16 @@
 
     <MudDivider Class="my-6" />
 
+    @* Asset Allocation *@
     <MudText Typo="Typo.h5" Class="mt-4">Asset Allocation</MudText>
-    <MudTextField T="string" Label="Asset Allocation settings file" />
-    <MudFileUpload T="IBrowserFile" Accept=".toml">
-        <ButtonTemplate>
-            <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" for="">
-                Select File
-            </MudButton>
-        </ButtonTemplate>
-        <SelectedTemplate>
-            selected template
-        </SelectedTemplate>
-    </MudFileUpload>
-
-    <MudText Typo="Typo.h5" Class="mt-4">Restore Settings</MudText>
     <MudStack Row="true">
-        <MudText>Tap the file icon to select the file to restore:</MudText>
-        <MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="RestoreSettings">
+        <MudFileUpload T="IBrowserFile" Accept=".toml" FilesChanged="RestoreAssetAllocation">
             <ButtonTemplate>
-                <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" for="@context"></MudIconButton>
+                <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" for="@context" />
+                @*             <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" for="">
+                Select File
+                </MudButton>
+                *@
             </ButtonTemplate>
             <SelectedTemplate>
                 @if (context != null)
@@ -67,6 +60,29 @@
                 }
             </SelectedTemplate>
         </MudFileUpload>
+        <MudText>Tap the file icon to select the file to restore</MudText>
+        @* <MudTextField T="string" Label="Asset Allocation settings file" /> *@
+    </MudStack>
+
+    @* Restore Settings *@
+    <MudText Typo="Typo.h5" Class="mt-4">Restore Settings</MudText>
+    <MudStack Row="true">
+        <MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="RestoreSettings">
+            <ButtonTemplate>
+                <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" for="@context" />
+            </ButtonTemplate>
+            <SelectedTemplate>
+                @if (context != null)
+                {
+                    <MudText>@context.Name</MudText>
+                }
+                else
+                {
+                    <MudText>No file selected</MudText>
+                }
+            </SelectedTemplate>
+        </MudFileUpload>
+        <MudText>Tap the file icon to select the file to restore</MudText>
     </MudStack>
 
     <MudText Typo="Typo.h5" Class="mt-4">Reload App</MudText>
@@ -115,6 +131,30 @@
         await JSRuntime.InvokeVoidAsync("window.location.reload", true);
     }
 
+    async Task RestoreAssetAllocation(IBrowserFile aaFile)
+    {
+        // confirm with a dialog
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you want to import the selected Asset Allocation file?");
+
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Restore", parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Large });
+        var result = await dialog.Result;
+        if (result.Canceled) return;
+
+        // restore settings
+
+        var stream = aaFile.OpenReadStream();
+        using var reader = new StreamReader(stream);
+        var content = await reader.ReadToEndAsync();
+
+        // Save to OPFS.
+        var opfs = new OpfsService(StorageManagerService);
+        await opfs.SaveToFile(Constants.AssetAllocationFilename, content);
+
+        Snackbar.Add("Asset Allocation imported.");
+    }
+
     /// <summary>
     /// Restore Settings from a backup JSON file.
     /// </summary>
@@ -122,8 +162,6 @@
     /// <returns></returns>
     async Task RestoreSettings(IBrowserFile file)
     {
-        // Console.WriteLine("selected file: " + file.Name);
-
         // confirm with a dialog
         var parameters = new DialogParameters<ConfirmationDialog>();
         parameters.Add(x => x.ContentText, "Do you want to restore the selected settings file?");
@@ -131,47 +169,44 @@
         var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Restore", parameters,
             new DialogOptions { MaxWidth = MaxWidth.Large });
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result.Canceled) return;
+
+        // restore settings
+
+        var stream = file.OpenReadStream();
+        using var reader = new StreamReader(stream);
+        var content = await reader.ReadToEndAsync();
+
+        // Deserialize JSON
+
+        List<Setting>? settings;
+        try
         {
-            // restore settings
-            var stream = file.OpenReadStream();
-            using var reader = new StreamReader(stream);
-            var content = await reader.ReadToEndAsync();
-
-            // Console.WriteLine("Content: {0}", content);
-
-            // Deserialize JSON
-
-            List<Setting>? settings;
-            try
-            {
-                settings = JsonSerializer.Deserialize<List<Setting>>(content,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            }
-            catch (Exception ex)
-            {
-                Snackbar.Add("Error deserializing the backup file.", Severity.Error);
-                Console.WriteLine("Error deserializing the Settings backup file:\n{0}", ex.Message);
-                return;
-            }
-            // Console.WriteLine("restore settings here: {0}", settings);
-            if (settings == null)
-            {
-                Snackbar.Add("No settings found in the file.", Severity.Warning);
-                return;
-            }
-
-            // clear the existing settings?
-
-            // Insert into db.
-
-            var svc = SettingsService.CreateInstance(JSRuntime);
-            var insertResult = await svc.BulkPut(settings);
-            // Console.WriteLine("insert result: {0}", insertResult);
-            Snackbar.Add("Settings restored", Severity.Success);
-
-            await loadSettings();
+            settings = JsonSerializer.Deserialize<List<Setting>>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Error deserializing the backup file.", Severity.Error);
+            Console.WriteLine("Error deserializing the Settings backup file:\n{0}", ex.Message);
+            return;
+        }
+        if (settings == null)
+        {
+            Snackbar.Add("No settings found in the file.", Severity.Warning);
+            return;
+        }
+
+        // clear the existing settings?
+
+        // Insert into db.
+
+        var svc = SettingsService.CreateInstance(JSRuntime);
+        var insertResult = await svc.BulkPut(settings);
+        // Console.WriteLine("insert result: {0}", insertResult);
+        Snackbar.Add("Settings restored", Severity.Success);
+
+        await loadSettings();
     }
 
     async Task saveSettings()
