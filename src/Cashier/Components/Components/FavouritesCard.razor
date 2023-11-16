@@ -10,7 +10,7 @@
 @using Cashier.Services
 @using MudBlazor
 
-<MudCard @onclick="OnCardClick">
+<MudCard @onclick="OnCardClick" Outlined="true">
     <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="px-2 pt-2 pb-1">
         <CardHeaderAvatar>
             <MudIcon Icon="@IconsMud.Star" Size="Size.Medium" />

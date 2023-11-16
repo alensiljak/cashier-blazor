@@ -26,7 +26,7 @@ namespace Cashier.Lib
     /// </summary>
     public static class QuasarPaletteDark
     {
-        public const string Dark = "#1d1f20";
+        public const string Dark = ColourPalette.DarkJungleGreen;
         public const string DarkPage = "#121212";
     }
 

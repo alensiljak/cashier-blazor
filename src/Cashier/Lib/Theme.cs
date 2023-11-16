@@ -24,8 +24,9 @@ namespace Cashier.Lib
 
                     // background colours
 
-                    Background = ColourPalette.DarkJungleGreen,
+                    Background = QuasarPaletteDark.DarkPage,
                     DrawerBackground = QuasarPaletteDark.DarkPage,
+                    Surface = QuasarPaletteDark.Dark,
 
                     // Text
 
