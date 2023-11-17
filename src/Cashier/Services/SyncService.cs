@@ -9,7 +9,7 @@ namespace Cashier.Services
     public class SyncService
     {
         private const string AccountsCommand = "b --flat --empty --no-total";
-        private const string payeesCommand = "payees";
+        private const string PayeesCommand = "payees";
 
         private HttpClient _httpClient;
         private string _serverUrl;
@@ -48,10 +48,20 @@ namespace Cashier.Services
         public async Task<string[]?> ReadAccounts()
         {
             var response = await this.ledger(AccountsCommand);
-            // this returns JSON
             var lines = JsonSerializer.Deserialize<string[]>(response);
-            // var lines = response.Split(Environment.NewLine);
             return lines;
+        }
+
+        /// <summary>
+        /// Retrieve the list of Payees
+        /// </summary>
+        /// <returns></returns>
+        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+        public async Task<string[]?> ReadPayees()
+        {
+            var result = await ledger(PayeesCommand);
+            var payees = JsonSerializer.Deserialize<string[]>(result);
+            return payees;
         }
 
         // Private

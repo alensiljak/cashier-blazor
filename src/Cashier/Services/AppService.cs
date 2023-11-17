@@ -35,7 +35,7 @@ namespace Cashier.Services
             await DAL.Accounts.Clear();
         }
 
-        public async Task<string?> importBalanceSheet(string[] lines)
+        public async Task<string?> ImportBalanceSheet(string[] lines)
         {
             if (lines.Length == 0)
             {
@@ -53,6 +53,17 @@ namespace Cashier.Services
 
             var saveResult = await DAL.Accounts.BulkPut(accounts);
             return saveResult;
+        }
+
+        /// <summary>
+        /// Imports the payees into storage.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> ImportPayees(string[] payeeNames)
+        {
+            var payees = payeeNames.Select(payee => new Payee { Name = payee });
+            var result = await DAL.Payees.BulkAdd(payees);
+            return result;
         }
 
         protected List<Account> ParseAccounts(string[] lines)

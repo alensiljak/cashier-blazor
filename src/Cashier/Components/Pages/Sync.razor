@@ -1,7 +1,7 @@
 ﻿@page "/sync"
 
 @inject IJSRuntime JSRuntime
-@inject ISnackbar Snackbar
+@inject NotificationService Notification
 @inject HttpClient HttpClient
 
 @using Cashier.Services
@@ -100,11 +100,15 @@
         }
         if (syncAaValues)
         {
-
+            showAssetProgress = true;
+            await synchronizeAaValues();
+            showAssetProgress = false;
         }
         if (syncPayees)
         {
-
+            showPayeesProgress = true;
+            await synchronizePayees();
+            showPayeesProgress = false;
         }
     }
 
@@ -116,7 +120,12 @@
         var settings = SettingsService.CreateInstance(JSRuntime);
         await settings.SetSyncServerUrl(value);
 
-        Snackbar.Add("Sync URL saved");
+        Notification.Show("Sync URL saved");
+    }
+
+    async Task synchronizeAaValues()
+    {
+
     }
 
     async Task synchronizeAccounts()
@@ -129,11 +138,11 @@
         }
         catch (Exception ex)
         {
-            Snackbar.Add("Error: " + ex.Message, Severity.Warning);
+            Notification.Warning("Error: " + ex.Message);
         }
         if (accounts == null || accounts.Length == 0)
         {
-            Snackbar.Add("No accounts received");
+            Notification.Warning("No accounts received");
             return;
         }
 
@@ -143,16 +152,37 @@
         // Import
         try
         {
-            await appService.importBalanceSheet(accounts);
+            await appService.ImportBalanceSheet(accounts);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
 
-            Snackbar.Add(ex.Message, Severity.Error);
+            Notification.Error(ex.Message);
         }
 
-        Snackbar.Add("Accounts fetched from Ledger", Severity.Success);
+        Notification.Success("Accounts fetched from Ledger");
+    }
+
+    async Task synchronizePayees()
+    {
+        var svc = new SyncService(HttpClient, ServerUrl);
+        var payeeNames = await svc.ReadPayees();
+
+        if (payeeNames == null || payeeNames.Length == 0)
+        {
+            Notification.Warning("No Payees retrieved!");
+            return;
+        }
+
+        // delete all payees only after we have retrieved the new ones.
+        var db = DexieDAL.CreateInstance(JSRuntime);
+        await db.Payees.Clear();
+
+        var app = new AppService(JSRuntime, db);
+        var result = await app.ImportPayees(payeeNames);
+
+        Notification.Success("Imported Payees");
     }
 }

@@ -4,6 +4,7 @@ using Cashier.Components;
 using Cashier.Data;
 using MudBlazor.Services;
 using KristofferStrube.Blazor.FileSystem;
+using Cashier.Lib;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -14,10 +15,13 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 // MudBlazor
 builder.Services.AddMudServices();
 
+// OPFS / File System API
+builder.Services.AddStorageManagerService();
+
+// My Services
+builder.Services.AddScoped<NotificationService>();
 // app state
 builder.Services.AddSingleton<AppState>();
 
-// OPFS / File System API
-builder.Services.AddStorageManagerService();
 
 await builder.Build().RunAsync();
