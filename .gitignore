@@ -10,3 +10,6 @@
 
 /src/Cashier.Tests.E2E/bin/
 /src/Cashier.Tests.E2E/obj/
+
+# Local Netlify folder
+.netlify

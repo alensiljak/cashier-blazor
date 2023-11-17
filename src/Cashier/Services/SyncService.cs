@@ -59,7 +59,13 @@ namespace Cashier.Services
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         public async Task<string[]?> ReadPayees()
         {
-            var result = await ledger(PayeesCommand);
+            // Limit the payees to the last 5 years, otherwise there's a high risk of crashing.
+            // This command is somehow very memory hungry on Android.
+            var year = DateTime.Now.Year;
+            year = year - 5;
+
+            var command = PayeesCommand + " -b " + year;
+            var result = await ledger(command);
             var payees = JsonSerializer.Deserialize<string[]>(result);
             return payees;
         }

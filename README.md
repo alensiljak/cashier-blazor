@@ -1,6 +1,8 @@
 # cashier-blazor
 Cashier implemented in Blazor
 
+The live application is available at https://cashier-ii.alensiljak.eu.org
+
 # Development
 Clone the repository. 
 
@@ -58,14 +60,11 @@ pwsh bin/Debug/netX/playwright.ps1 codegen localhost:5000
 
 # Publish
 
-Run the `publish.cmd` script. It will copy the JavaScript libraries and
-run the command below.
+Run the `publish.cmd` script. It will run the command below.
 
 Build the optimized, Release, version of Cashier Blazor Webassembly app:
 ```sh
 dotnet publish -c Release
 ```
 
-The (temporary) production application is at
-
-https://cashier-blazor.netlify.app
+Run Netlify CLI to deploy.
