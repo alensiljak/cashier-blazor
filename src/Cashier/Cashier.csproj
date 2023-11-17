@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
 	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 	  <TypeScriptTarget>ES2021</TypeScriptTarget>
@@ -30,14 +30,5 @@
 	<ItemGroup>
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
 	</ItemGroup>
-
-	<!-- For Debug configuration, use ProjectReference -->
-	<!--<ItemGroup Condition="'$(Configuration)'=='Debug'">
-		<ProjectReference Include="..\..\..\BlazorDexie\BlazorDexie\BlazorDexie.csproj" />
-	</ItemGroup>-->
-	<!-- For non-Debug configuration, use PackageReference -->
-	<!--<ItemGroup Condition="'$(Configuration)'!='Debug'">
-		<PackageReference Include="BlazorDexie" Version="1.1.2" />
-	</ItemGroup>-->
 
 </Project>
