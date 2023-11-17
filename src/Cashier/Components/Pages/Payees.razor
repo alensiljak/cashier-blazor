@@ -1,11 +1,41 @@
 ﻿@page "/payees"
+@using MudBlazor
+
+@inject IJSRuntime JSRuntime
 
 <ToolbarMud>
     <Title>Payees</Title>
 </ToolbarMud>
 
-<h3>Payees</h3>
+@if (payees == null)
+{
+    <MudText>Loading...</MudText>
+}
+else
+{
+    <MudList>
+        @foreach (var payee in payees)
+        {
+            <MudListItem>
+                <span>@payee.Name</span>
+            </MudListItem>
+        }
+    </MudList>
+}
 
 @code {
+    List<Payee> payees;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await loadData();
+    }
+
+    async Task loadData()
+    {
+        var db = DexieDAL.CreateInstance(JSRuntime);
+        payees = await db.Payees.ToList();
+    }
 }
