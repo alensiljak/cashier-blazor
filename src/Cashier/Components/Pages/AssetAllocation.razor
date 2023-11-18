@@ -29,7 +29,7 @@
         var opfs = new OpfsService(StorageManagerService);
         content = await opfs.ReadFromFile(Constants.AssetAllocationFilename);
 
-        var aa = new Lib.AssetAllocation();
-        aa.ParseDefinition(content);
+        var aa = new Lib.AssetAllocation(content);
+
     }
 }
