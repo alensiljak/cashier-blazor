@@ -49,7 +49,7 @@ namespace Cashier.Tests.Tests
             var definition = Get6040Allocation();
             var aa = new AssetAllocation(definition);
 
-            var actual = aa.GetCalculation();
+            var actual = aa.GetTextReport();
             Assert.NotNull(actual);
         }
 

@@ -49,7 +49,7 @@
         if (searchTerm != null)
         {
             var regex = new ListSearch().getRegex(searchTerm);
-            accounts = records.FindAll(acc => regex.Match(acc.Name).Success);
+            accounts = records.FindAll(acc => regex.Match(acc.Name!).Success);
         } else
         {
             accounts = records;

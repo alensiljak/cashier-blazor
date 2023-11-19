@@ -13,8 +13,7 @@ namespace Cashier.Lib
     /// </summary>
     public class AssetAllocation
     {
-        public List<AssetClass> classes;
-
+        public List<AssetClass> classes = [];
         private Dictionary<string, AssetAllocation> _assetClassIndex = [];
 
         public AssetAllocation(string toml)
@@ -22,7 +21,7 @@ namespace Cashier.Lib
             loadFullAssetAllocation(toml);
         }
 
-        public string GetCalculation()
+        public string GetTextReport()
         {
             var output = new StringBuilder();
 
