@@ -25,14 +25,40 @@
 
 <MudText Typo="Typo.h4" Align="Align.Center" Class="my-3">Synchronization</MudText>
 
-<MudCheckBox T="bool" @bind-Checked="syncAccounts">Sync accounts list with balances</MudCheckBox>
-
-<MudCheckBox T="bool" @bind-Checked="syncAaValues">
-    Sync account values in base currency
-    (ledger b ^&lt;root&gt; -X &lt;CUR&gt; --flat --no-total). Used for asset allocation.
-</MudCheckBox>
-
-<MudCheckBox T="bool" @bind-Checked="syncPayees">Sync Payees</MudCheckBox>
+<MudList>
+    <MudListItem>
+        <MudStack Row="true">
+            <div class="flex-grow-1">
+                <MudCheckBox T="bool" @bind-Checked="syncAccounts">Sync accounts list with balances</MudCheckBox>
+            </div>
+            <div>right</div>
+        </MudStack>
+    </MudListItem>
+    <MudListItem>
+        <MudStack Row="true">
+            <div class="flex-grow-1">
+                <MudCheckBox T="bool" @bind-Checked="syncAaValues">
+                    Sync account values in base currency
+                    (ledger b ^&lt;root&gt; -X &lt;CUR&gt; --flat --no-total). Used for asset allocation.
+                </MudCheckBox>
+            </div>
+            @if (showAssetProgress)
+            {
+                <div >
+                    <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Small" Color="Color.Tertiary" />
+                </div>
+            }
+        </MudStack>
+    </MudListItem>
+    <MudListItem>
+        <MudStack Row="true">
+            <div class="flex-grow-1">
+                <MudCheckBox T="bool" @bind-Checked="syncPayees">Sync Payees</MudCheckBox>
+            </div>
+            <div>right</div>
+        </MudStack>
+    </MudListItem>
+</MudList>
 
 <MudContainer Class="d-flex justify-center mt-4">
     <MudButton Variant="Variant.Filled" Color="Color.Tertiary" Size="Size.Large"
@@ -125,7 +151,18 @@
 
     async Task synchronizeAaValues()
     {
-
+        var svc = new SyncService(HttpClient, ServerUrl);
+        try
+        {
+            await svc.ReadCurrentValues(JSRuntime);
+            Notification.Success("Asset Allocation values loaded");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Notification.Error(ex.Message);
+            return;
+        }
     }
 
     async Task synchronizeAccounts()

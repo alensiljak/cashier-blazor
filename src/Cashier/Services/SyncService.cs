@@ -1,4 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using BlazorDexie.JsInterop;
+using Cashier.Data;
+using Microsoft.JSInterop;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Cashier.Services
@@ -53,6 +57,40 @@ namespace Cashier.Services
         }
 
         /// <summary>
+        /// Read investment accounts' current values in the default currency, for Asset Allocation calculation.
+        /// </summary>
+        /// <returns></returns>
+        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+        public async Task<string> ReadCurrentValues(IJSRuntime jsRuntime)
+        {
+            var settings = SettingsService.CreateInstance(jsRuntime);
+            var rootAccount = await settings.GetRootInvestmentAccount();
+            if (rootAccount == null)
+            {
+                throw new Exception("Root investment account not set!");
+            }
+            var currency = await settings.GetDefaultCurrency();
+            if (currency == null)
+            {
+                throw new Exception("Default currency net set!");
+            }
+
+            var command = $"b ^{rootAccount} -X {currency} --flat --no-total";
+            var response = await this.ledger(command);
+
+            var result = JsonSerializer.Deserialize<string[]>(response);
+            if (result == null)
+            {
+                throw new Exception("No response received from the sync server.");
+            }
+
+            var currentValues = ParseCurrentValues(result, rootAccount);
+
+            await ImportCurrentValuesJson(currentValues, jsRuntime);
+            return "OK";
+        }
+
+        /// <summary>
         /// Retrieve the list of Payees
         /// </summary>
         /// <returns></returns>
@@ -79,6 +117,40 @@ namespace Cashier.Services
             return url;
         }
 
+        /// <summary>
+        /// Update the current balances in the asset allocation.
+        /// The current values are stored in the Account records.
+        /// </summary>
+        /// <param name="currentValues"></param>
+        private async Task ImportCurrentValuesJson(Dictionary<string, string> currentValues, IJSRuntime jsRuntime)
+        {
+            var accounts = currentValues.Keys;
+            foreach ( var key in accounts )
+            {
+                var balance = currentValues[key];
+                balance = balance.Replace(",", string.Empty);
+
+                // extract the currency
+                var parts = balance.Split(' ');
+                var amount = parts[0];
+                var currency = parts[1];
+
+                // Update existing account.
+                var db = DexieDAL.CreateInstance(jsRuntime);
+                var account = await db.Accounts.Get(key);
+                if (account == null)
+                {
+                    throw new Exception("Invalid account!");
+                }
+
+                // Update the values
+                account.CurrentValue = amount;
+                account.CurrentCurrency = currency;
+
+                await db.Accounts.Put(account);
+            }
+        }
+
         private async Task<string> ledger(string command)
         {
             var url = createUrl(command);
@@ -92,6 +164,26 @@ namespace Cashier.Services
             var content = await response.Content.ReadAsStringAsync();
             
             return content;
+        }
+
+        private Dictionary<string, string> ParseCurrentValues(string[] lines, string rootAccount)
+        {
+            var result = new Dictionary<string, string>();
+            foreach (var line in lines)
+            {
+                if (line == string.Empty) continue;
+
+                var row = line.Trim();
+
+                var rootIndex = row.IndexOf(rootAccount);
+                var amount = row.Substring(0, rootIndex);
+                amount = amount.Trim();
+
+                var account = row.Substring(rootIndex);
+                
+                result.Add(account, amount);
+            }
+            return result;
         }
     }
 }
