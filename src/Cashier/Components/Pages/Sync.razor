@@ -10,7 +10,7 @@
 <ToolbarMud>
     <Title>Cashier Sync</Title>
     <ContextMenuItems>
-
+        <MudMenuItem Icon="@IconsMud.Power" IconSize="Size.Medium" @onclick="OnShutDownClick">Shut down server</MudMenuItem>
     </ContextMenuItems>
 </ToolbarMud>
 
@@ -120,6 +120,14 @@
         syncPayees = await settings.GetSyncPayees();
 
         // StateHasChanged();
+    }
+
+    async Task OnShutDownClick()
+    {
+        Notification.Show("Sending shutdown request");
+
+        var svc = new SyncService(HttpClient, ServerUrl);
+        await svc.Shutdown();
     }
 
     ///  <summary>

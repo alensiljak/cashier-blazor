@@ -18,7 +18,8 @@ namespace Cashier.Services
         private HttpClient _httpClient;
         private string _serverUrl;
 
-        public SyncService(HttpClient client, string serverUrl) { 
+        public SyncService(HttpClient client, string serverUrl)
+        {
             _httpClient = client;
             _serverUrl = serverUrl;
         }
@@ -34,7 +35,8 @@ namespace Cashier.Services
             try
             {
                 response = await _httpClient.GetAsync(url);
-            } catch (HttpRequestException rex)
+            }
+            catch (HttpRequestException rex)
             {
                 // The server is not up?
                 Console.WriteLine("Error: {0}", rex.Message);
@@ -108,6 +110,18 @@ namespace Cashier.Services
             return payees;
         }
 
+        public async Task Shutdown()
+        {
+            try
+            {
+                await _httpClient.GetAsync(_serverUrl + "/shutdown");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
         // Private
 
         private string createUrl(string command)
@@ -125,7 +139,7 @@ namespace Cashier.Services
         private async Task ImportCurrentValuesJson(Dictionary<string, string> currentValues, IJSRuntime jsRuntime)
         {
             var accounts = currentValues.Keys;
-            foreach ( var key in accounts )
+            foreach (var key in accounts)
             {
                 var balance = currentValues[key];
                 balance = balance.Replace(",", string.Empty);
@@ -162,7 +176,7 @@ namespace Cashier.Services
             }
 
             var content = await response.Content.ReadAsStringAsync();
-            
+
             return content;
         }
 
@@ -180,7 +194,7 @@ namespace Cashier.Services
                 amount = amount.Trim();
 
                 var account = row.Substring(rootIndex);
-                
+
                 result.Add(account, amount);
             }
             return result;
