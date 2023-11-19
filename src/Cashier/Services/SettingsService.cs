@@ -130,6 +130,21 @@ namespace Cashier.Services
             return await SetString(SettingsKeys.rootInvestmentAccount, value);
         }
 
+        public async Task<string> SetSyncAccounts(bool value)
+        {
+            return await SetBool(SettingsKeys.syncAccounts, value);
+        }
+
+        public async Task<string> SetSyncAaValues(bool value)
+        {
+            return await SetBool(SettingsKeys.syncAaValues, value);
+        }
+
+        public async Task<string> SetSyncPayees(bool value)
+        {
+            return await SetBool(SettingsKeys.syncPayees, value);
+        }
+
         public async Task<string> SetSyncServerUrl(string value)
         {
             return await SetString(SettingsKeys.syncServerUrl, value);

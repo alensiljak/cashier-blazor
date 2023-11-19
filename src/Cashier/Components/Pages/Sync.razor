@@ -154,6 +154,12 @@
             await synchronizePayees();
             showPayeesProgress = false;
         }
+
+        // Save the current sync choices
+        var settings = SettingsService.CreateInstance(JSRuntime);
+        await settings.SetSyncAccounts(syncAccounts);
+        await settings.SetSyncAaValues(syncAaValues);
+        await settings.SetSyncPayees(syncPayees);
     }
 
     async Task saveSyncServerUrl(string value)
