@@ -1,4 +1,7 @@
 ﻿using Cashier.Data;
+using Cashier.Model;
+using System.Reflection.Emit;
+using System.Text;
 using Tomlyn;
 using Tomlyn.Model;
 using Tomlyn.Syntax;
@@ -10,11 +13,33 @@ namespace Cashier.Lib
     /// </summary>
     public class AssetAllocation
     {
+        public List<AssetClass> classes;
+
         private Dictionary<string, AssetAllocation> _assetClassIndex = [];
 
         public AssetAllocation(string toml)
         {
             loadFullAssetAllocation(toml);
+        }
+
+        public string GetCalculation()
+        {
+            var output = new StringBuilder();
+
+            foreach (var asset in classes)
+            {
+                // Indentation
+                //output.Append(' ', asset.Depth * 2);
+                var indent = new string(' ', asset.Depth * 2);
+                var nameWithIndent = indent + asset.Name;
+
+                output.Append(nameWithIndent.PadRight(20, ' '));
+                output.Append(' ');
+                
+                output.Append(asset.Allocation);
+                output.AppendLine();
+            }
+            return output.ToString();
         }
 
         /// <summary>
@@ -26,6 +51,7 @@ namespace Cashier.Lib
         {
             // load definition
             //await LoadAssetAllocation();
+            this.classes = ParseDefinition(toml);
 
             // build asset class index
             // _assetClassIndex = new Dictionary<string, AssetAllocation>();
@@ -41,13 +67,16 @@ namespace Cashier.Lib
         /// Loads the Asset Allocation definition by parsing the TOML string.
         /// </summary>
         /// <param name="toml">Definition. Usually read from a file.</param>
-        public void ParseDefinition(string toml)
+        public List<AssetClass> ParseDefinition(string toml)
         {
             // parse TOML
             var model = Toml.ToModel(toml);
             var root = model.First();
 
-            RecursivelyDisplay(root, 0);
+            //RecursivelyDisplay(root, 0);
+            //RecursivelyParse(root);
+            var aa = LinearizeTable(model);
+            return aa;
         }
 
         // Private
@@ -82,6 +111,74 @@ namespace Cashier.Lib
             {
                 RecursivelyDisplay(section, level + 1);
             }
+        }
+
+        //private AssetClass RecursivelyParse(KeyValuePair<string, object> pair)
+        //{
+        //    var ac = new AssetClass();
+        //    ac.FullName = pair.Key;
+
+        //    var table = (TomlTable)pair.Value;
+        //    // now parse the subsections
+        //    var sections = GetSections(table);
+        //    foreach (var section in sections)
+        //    {
+        //        var child = RecursivelyParse(section);
+        //        if (child != null)
+        //        {
+        //            // ac.
+        //        }
+        //    }
+
+        //    return ac;
+        //}
+
+        /// <summary>
+        /// Creates a linear representation of the Asset Allocation table.
+        /// It is not a tree but a list of all asset classes.
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="nameSpace"></param>
+        /// <returns></returns>
+        private List<AssetClass> LinearizeTable(TomlTable table, string nameSpace = "")
+        {
+            var result = new List<AssetClass>();
+
+            var subsections = GetSections(table);
+            foreach(var section in subsections)
+            {
+                var child = new AssetClass();
+                if (!string.IsNullOrEmpty(nameSpace))
+                {
+                    child.FullName = nameSpace + ':' + section.Key;
+                } else
+                {
+                    child.FullName = section.Key;
+                }
+
+                var childTable = (TomlTable)section.Value;
+                child.Allocation = Convert.ToDecimal(childTable["allocation"]);
+                if( childTable.ContainsKey("symbols"))
+                {
+                    var symbolsArray = (TomlArray) childTable["symbols"];
+                    child.Symbols = symbolsArray.Select(item => (string)item!).ToList();
+                }
+
+                result.Add(child);
+
+                // parse recursively
+                var childNamespace = nameSpace;
+                if(!string.IsNullOrEmpty(childNamespace))
+                {
+                    childNamespace += ':';
+                }
+                childNamespace += section.Key;
+
+                var grandchildren = LinearizeTable(childTable, childNamespace);
+                result.AddRange(grandchildren);
+            }
+
+            return result;
         }
     }
 }
