@@ -31,7 +31,12 @@
             <div class="flex-grow-1">
                 <MudCheckBox T="bool" @bind-Checked="syncAccounts">Sync accounts list with balances</MudCheckBox>
             </div>
-            <div>right</div>
+            @if (showAccountProgress)
+            {
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Small" Color="Color.Tertiary" Class="spin" />
+                </div>
+            }
         </MudStack>
     </MudListItem>
     <MudListItem>
@@ -44,8 +49,8 @@
             </div>
             @if (showAssetProgress)
             {
-                <div >
-                    <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Small" Color="Color.Tertiary" />
+                <div class="d-flex align-center">
+                <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Small" Color="Color.Tertiary" Class="spin" />
                 </div>
             }
         </MudStack>
@@ -55,7 +60,12 @@
             <div class="flex-grow-1">
                 <MudCheckBox T="bool" @bind-Checked="syncPayees">Sync Payees</MudCheckBox>
             </div>
-            <div>right</div>
+            @if (showPayeesProgress)
+            {
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Small" Color="Color.Tertiary" Class="spin" />
+                </div>
+            }
         </MudStack>
     </MudListItem>
 </MudList>
