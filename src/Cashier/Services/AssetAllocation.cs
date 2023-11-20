@@ -1,6 +1,7 @@
 ﻿using Cashier.Data;
 using Cashier.Model;
 using Microsoft.JSInterop;
+using System.Numerics;
 using System.Reflection.Emit;
 using System.Security.Principal;
 using System.Text;
@@ -76,7 +77,7 @@ namespace Cashier.Services
             SumGroupBalances();
 
             // calculate offsets
-            //calculateOffsets();
+            CalculateOffsets();
 
         }
 
@@ -100,6 +101,30 @@ namespace Cashier.Services
                 {
                     _stockIndex.Add(symbol, assetClass.FullName);
                 }
+            }
+        }
+
+        private void CalculateOffsets()
+        {
+            var root = _assetClassIndex.First();
+            var total = root.Value.CurrentValue.Amount!.Value;
+
+            foreach (var ac in classes)
+            {
+                // calculate current allocation
+                ac.CurrentAllocation = ac.CurrentValue.Amount!.Value * 100 / total;
+
+                // diff
+                ac.Diff = ac.CurrentAllocation - ac.Allocation;
+
+                // diff %
+                ac.DiffPerc = (ac.Diff * 100) / ac.Allocation;
+
+                // allocated value
+                ac.AllocatedValue = (ac.Allocation * total) / 100;
+
+                // diff amount
+                ac.DiffAmount = ac.CurrentValue.Amount.Value - ac.AllocatedValue;
             }
         }
 
