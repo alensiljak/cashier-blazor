@@ -8,6 +8,7 @@
     <Title>Accounts</Title>
 </ToolbarMud>
 
+@* Search *@
 <MudPaper Class="px-2 py-1 d-flex justify-center">
     <div style="width: 500px;">
         <MudTextField T="string" Adornment="Adornment.End" AdornmentIcon="@IconsMud.Search" Label="Search" Variant="Variant.Outlined"
@@ -44,16 +45,22 @@
         var db = DexieDAL.CreateInstance(JSRuntime);
         var records = await db.Accounts
             .OrderBy("name")
+            // .Limit(100)
             .ToList();
 
         if (searchTerm != null)
         {
             var regex = new ListSearch().getRegex(searchTerm);
             accounts = records.FindAll(acc => regex.Match(acc.Name!).Success);
-        } else
+            // var filter = await table.Filter("test").ToList();
+        }
+        else
         {
             accounts = records;
         }
+
+        // take only the top 100 results
+        accounts = accounts.Take(100).ToList();
     }
 
     /// <summary>

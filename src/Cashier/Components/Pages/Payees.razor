@@ -13,6 +13,15 @@
 }
 else
 {
+    @* Search *@
+    <MudPaper Class="px-2 py-1 d-flex justify-center">
+        <div style="width: 500px;">
+            <MudTextField T="string" Adornment="Adornment.End" AdornmentIcon="@IconsMud.Search" Label="Search" Variant="Variant.Outlined"
+                          Margin="Margin.Dense" DebounceInterval="300" OnDebounceIntervalElapsed="OnSearch" Clearable="true"
+                          FullWidth="false" @bind-Value="searchTerm" />
+        </div>
+    </MudPaper>
+
     <MudList>
         @foreach (var payee in payees)
         {
@@ -24,6 +33,7 @@ else
 }
 
 @code {
+    string? searchTerm;
     List<Payee> payees = [];
 
     protected override async Task OnInitializedAsync()
@@ -36,6 +46,27 @@ else
     async Task loadData()
     {
         var db = DexieDAL.CreateInstance(JSRuntime);
-        payees = await db.Payees.ToList();
+        var records = await db.Payees.ToList();
+
+        if (searchTerm != null)
+        {
+            var regex = new ListSearch().getRegex(searchTerm);
+            payees = records.FindAll(acc => regex.Match(acc.Name!).Success);
+        }
+        else
+        {
+            payees = records;
+        }
+
+        // load only the first 100
+        payees = payees.Take(100).ToList();
+    }
+
+    /// <summary>
+    /// Handle debounced search term.
+    /// </summary>
+    async Task OnSearch()
+    {
+        await loadData();
     }
 }
