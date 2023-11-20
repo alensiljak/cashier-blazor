@@ -92,6 +92,17 @@ namespace Cashier.Tests.Tests
             Assert.Equal("EUR", actualFixed.Currency);
         }
 
+        [Fact]
+        public async Task TestGroupSums()
+        {
+            var definition = Get6040Allocation();
+            var aa = CreateAssetAllocation();
+            await aa.loadFullAssetAllocation(definition);
+
+            var actual = aa.classes.First(ac => ac.FullName == "Allocation").CurrentValue;
+            Assert.Equal(1000, actual.Amount);
+        }
+
         // Private
 
         private string Get6040Allocation()

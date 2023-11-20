@@ -73,7 +73,10 @@ namespace Cashier.Services
             await LoadCurrentValues();
 
             // sum group balances
+            SumGroupBalances();
+
             // calculate offsets
+            //calculateOffsets();
 
         }
 
@@ -233,6 +236,40 @@ namespace Cashier.Services
             }
 
             return result;
+        }
+
+        private void SumGroupBalances()
+        {
+            var root = _assetClassIndex["Allocation"];
+
+            var sum = SumChildren(root);
+            
+            root.CurrentValue.Amount = sum;
+        }
+
+        private Decimal SumChildren(AssetClass item)
+        {
+            var children = FindChildren(item);
+            if (children.Count == 0) {
+                return item.CurrentValue?.Amount ?? 0;
+            }
+
+            var sum = 0m;
+            foreach (var child in children)
+            {
+                //var sum = children.Sum(child => child.CurrentValue.Amount);
+                child.CurrentValue.Amount = SumChildren(child);
+                sum += child.CurrentValue.Amount ?? 0;
+            }
+            return sum;
+        }
+
+        private List<AssetClass> FindChildren(AssetClass parent)
+        {
+            return _assetClassIndex
+                .Where(x => x.Value.ParentName == parent.FullName)
+                .Select(x => x.Value)
+                .ToList();
         }
     }
 }
