@@ -15,15 +15,19 @@
 </ToolbarMud>
 
 <MudText>To update data from Ledger, the Cashier Server must be running and accessible.</MudText>
-<MudText>You can run Cashier Server locally.</MudText>
+<MudText>You can run the Cashier Server locally.</MudText>
 
-<MudText Typo="Typo.h4" Align="Align.Center" Class="my-3">Settings</MudText>
+@* <MudText Typo="Typo.h4" Align="Align.Center" Class="my-3">Settings</MudText> *@
 
-<MudTextField T="string" Placeholder="http://localhost:3000" Label="Server URL" Value="@ServerUrl" ValueChanged="saveSyncServerUrl" />
+<MudPaper Style="background-color: var(--mud-palette-background);">
+    <MudTextField T="string" Placeholder="http://localhost:3000" Label="Server URL" Value="@ServerUrl" ValueChanged="saveSyncServerUrl"
+    FullWidth="false" Class="pa-5" />
+</MudPaper>
 
-<MudDivider DividerType="DividerType.Middle" />
+@* <MudDivider DividerType="DividerType.Middle" /> *@
 
-<MudText Typo="Typo.h4" Align="Align.Center" Class="my-3">Synchronization</MudText>
+@* Sync *@
+@* <MudText Typo="Typo.h4" Align="Align.Center" Class="my-3">Synchronization</MudText> *@
 
 <MudList>
     <MudListItem>

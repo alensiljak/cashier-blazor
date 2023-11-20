@@ -1,3 +1,20 @@
+/*
+ * The variables available in CSS:
+ * --mud-palette-primary
+ * --mud-palette-primary-text
+ * --mud-palette-secondary
+ * --mud-palette-secondary-text
+ * --mud-palette-background
+ * --mud-palette-surface
+ * --mud-palette-error
+ * --mud-palette-error-text
+ * --mud-palette-warning
+ * --mud-palette-warning-text
+ * --mud-palette-info
+ * --mud-palette-info-text
+ * --mud-palette-success
+ * --mud-palette-success-text
+ */
 using System.Drawing;
 
 namespace Cashier.Lib
