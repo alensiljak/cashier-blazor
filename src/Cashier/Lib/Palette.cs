@@ -14,6 +14,11 @@
  * --mud-palette-info-text
  * --mud-palette-success
  * --mud-palette-success-text
+ * 
+ * Material colour equivalents
+ * text-red-3 = lighten 3
+ * 9 = darken 3
+ * 10 = darken 4
  */
 using System.Drawing;
 

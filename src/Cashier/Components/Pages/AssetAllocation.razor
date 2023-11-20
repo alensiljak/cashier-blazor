@@ -45,7 +45,8 @@
                 <td style="text-align: end;">
                     @item.Diff.ToString(NUMBER)
                 </td>
-                <td style="text-align: end;">
+                @* Diff % *@
+                <td style="text-align: end; color: @GetColor(item.DiffPerc);">
                     @item.DiffPerc.ToString(NUMBER)
                 </td>
                 <td style="text-align: end;">
@@ -54,7 +55,7 @@
                 <td style="text-align: end;">
                     @item.CurrentValue.Amount?.ToString(NUMBER)
                 </td>
-                <td style="text-align: end;">
+                <td style="text-align: end; color: @GetColor(item.DiffPerc);">
                     @item.DiffAmount.ToString(NUMBER)
                 </td>
             </tr>
@@ -102,5 +103,30 @@
         allocation = aa.classes;
         // text output
         content = aa.GetTextReport();
+    }
+
+    /// <summary>
+    /// Colors and shades for the text based on the value.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    string GetColor(decimal value)
+    {
+        switch(value)
+        {
+            case var n when n <= -20:
+                return Colors.Red.Darken4;
+
+            case var n when -20 < n && n < 0:
+                return Colors.Red.Lighten3;
+
+            case var n when 0 < n && n < 20:
+                return Colors.Green.Lighten3;
+
+            case var n when n > 20:
+                return Colors.Green.Darken3;
+        }
+
+        return string.Empty;
     }
 }
