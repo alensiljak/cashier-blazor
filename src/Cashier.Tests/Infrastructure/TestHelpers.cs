@@ -66,20 +66,31 @@ namespace Cashier.Tests.Infrastructure
             var mock = new Mock<IAccountService>();
             var invAccounts = new List<Account>()
             {
-                new Account("Assets:Investment:Cash") { CurrentValue = "30" },
+                new Account("Assets:Investment:Cash") { 
+                    CurrentValue = "1",
+                    CurrentCurrency = "EUR"
+                },
                 new Account("Assets:Investment:Equity") {
-                    CurrentValue = "10",
+                    CurrentValue = "600",
                     CurrentCurrency = "EUR",
-                Balances = [
-                        new Money(10, "VTS")
-                    ]},
-                new Account("Assets:Investment:Cash") { CurrentValue = "50",
-                                Balances = [
-                        new Money(15, "BND")
-                    ]},
+                    Balances = [
+                            new Money(60, "VTS")
+                        ]
+                },
+                new Account("Assets:Investment:Cash") { 
+                    CurrentValue = "400",
+                    CurrentCurrency = "EUR",
+                    Balances = [
+                        new Money(40, "BND")
+                    ]
+                },
             };
             mock.Setup(x => x.LoadInvestmentAccounts(It.IsAny<ISettingsService>(), It.IsAny<IDexieDAL>()))
                 .ReturnsAsync(invAccounts);
+
+            var acctSvc = new AccountService();
+            mock.Setup(x => x.GetAccountBalance(It.IsAny<Account>(), It.IsAny<string>()))
+                .Returns((Account account, string currency) => acctSvc.GetAccountBalance(account, currency) );
 
             return mock;
         }
