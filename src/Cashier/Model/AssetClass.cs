@@ -6,7 +6,7 @@
         public decimal Allocation { get; set; }
         public decimal AllocatedValue { get; set; }
         public decimal CurrentAllocation { get; set; }
-        public decimal CurrentValue { get; set; }
+        public Money CurrentValue { get; set; } = Money.Empty;
         public decimal Diff { get; set; }
         public decimal DiffAmount { get; set; }
         public decimal DiffPerc { get; set; }

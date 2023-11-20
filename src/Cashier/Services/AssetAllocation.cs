@@ -1,12 +1,14 @@
 ﻿using Cashier.Data;
 using Cashier.Model;
+using Microsoft.JSInterop;
 using System.Reflection.Emit;
+using System.Security.Principal;
 using System.Text;
 using Tomlyn;
 using Tomlyn.Model;
 using Tomlyn.Syntax;
 
-namespace Cashier.Lib
+namespace Cashier.Services
 {
     /// <summary>
     /// All Asset Allocation functionality. Migrated from Cashier.
@@ -14,10 +16,20 @@ namespace Cashier.Lib
     public class AssetAllocation
     {
         public List<AssetClass> classes = [];
-        private Dictionary<string, AssetAllocation> _assetClassIndex = [];
 
-        public AssetAllocation(string toml)
+        private Dictionary<string, AssetClass> _assetClassIndex = [];
+        private Dictionary<string, string> _stockIndex = []; // symbol / asset class
+        //private IJSRuntime _jsRuntime;
+        private ISettingsService _settings;
+        private IDexieDAL _db;
+        private IAccountService _accountService;
+
+        public AssetAllocation(string toml, ISettingsService settings, IDexieDAL dal, IAccountService accountService)
         {
+            _settings = settings;
+            _db = dal;
+            _accountService = accountService;
+
             loadFullAssetAllocation(toml);
         }
 
@@ -34,7 +46,7 @@ namespace Cashier.Lib
 
                 output.Append(nameWithIndent.PadRight(20, ' '));
                 output.Append(' ');
-                
+
                 output.Append(asset.Allocation);
                 output.AppendLine();
             }
@@ -46,20 +58,47 @@ namespace Cashier.Lib
         /// </summary>
         /// <param name="toml">Asset Allocation definition in TOML</param>
         /// <returns></returns>
-        private void loadFullAssetAllocation(string toml)
+        private async void loadFullAssetAllocation(string toml)
         {
             // load definition
             //await LoadAssetAllocation();
-            this.classes = ParseDefinition(toml);
+            classes = ParseDefinition(toml);
 
             // build asset class index
-            // _assetClassIndex = new Dictionary<string, AssetAllocation>();
+            _assetClassIndex = BuildAssetClassIndex();
 
             // build stock index
+            BuildStockIndex();
+
             // load current values
+            await LoadCurrentValues();
+
             // sum group balances
             // calculate offsets
 
+        }
+
+        private Dictionary<string, AssetClass> BuildAssetClassIndex()
+        {
+            var index = new Dictionary<string, AssetClass>();
+            foreach (var item in classes)
+            {
+                index.Add(item.FullName, item);
+            }
+            return index;
+        }
+
+        private void BuildStockIndex()
+        {
+            foreach (var assetClass in classes)
+            {
+                if (assetClass.Symbols.Count == 0) continue;
+
+                foreach (var symbol in assetClass.Symbols)
+                {
+                    _stockIndex.Add(symbol, assetClass.FullName);
+                }
+            }
         }
 
         /// <summary>
@@ -70,7 +109,7 @@ namespace Cashier.Lib
         {
             // parse TOML
             var model = Toml.ToModel(toml);
-            var root = model.First();
+            //var root = model.First();
 
             //RecursivelyDisplay(root, 0);
             //RecursivelyParse(root);
@@ -95,6 +134,45 @@ namespace Cashier.Lib
 
         //    Console.WriteLine("aa file size: {0}", await file.GetSizeAsync());
         //}
+
+        /// <summary>
+        /// Load current balances from accounts.
+        /// </summary>
+        /// <returns></returns>
+        private async Task LoadCurrentValues()
+        {
+            var currency = await _settings.GetDefaultCurrency();
+            var invAccounts = await _accountService.LoadInvestmentAccounts(_settings, _db);
+
+            foreach (var account in invAccounts)
+            {
+                var amount = Decimal.Zero;
+                var commodity = currency;
+
+                if (!string.IsNullOrEmpty(account.CurrentValue))
+                {
+                    amount = Decimal.Parse(account.CurrentValue);
+                } else
+                {
+                    continue;
+                }
+
+                var acctBalance = _accountService.GetAccountBalance(account, currency);
+                account.AccountBalance = acctBalance;
+
+                if (!string.IsNullOrEmpty(account.CurrentCurrency))
+                {
+                    commodity = account.CurrentCurrency;
+                }
+
+                // Now get the asset class for this commodity.
+                var assetClassName = _stockIndex[commodity!];
+
+                var assetClass = _assetClassIndex[assetClassName];
+                assetClass.CurrentValue += amount;
+                assetClass.Currency = currency;
+            }
+        }
 
         private void RecursivelyDisplay(KeyValuePair<string, object> pair, int level)
         {
@@ -144,22 +222,23 @@ namespace Cashier.Lib
             var result = new List<AssetClass>();
 
             var subsections = GetSections(table);
-            foreach(var section in subsections)
+            foreach (var section in subsections)
             {
                 var child = new AssetClass();
                 if (!string.IsNullOrEmpty(nameSpace))
                 {
                     child.FullName = nameSpace + ':' + section.Key;
-                } else
+                }
+                else
                 {
                     child.FullName = section.Key;
                 }
 
                 var childTable = (TomlTable)section.Value;
                 child.Allocation = Convert.ToDecimal(childTable["allocation"]);
-                if( childTable.ContainsKey("symbols"))
+                if (childTable.ContainsKey("symbols"))
                 {
-                    var symbolsArray = (TomlArray) childTable["symbols"];
+                    var symbolsArray = (TomlArray)childTable["symbols"];
                     child.Symbols = symbolsArray.Select(item => (string)item!).ToList();
                 }
 
@@ -167,7 +246,7 @@ namespace Cashier.Lib
 
                 // parse recursively
                 var childNamespace = nameSpace;
-                if(!string.IsNullOrEmpty(childNamespace))
+                if (!string.IsNullOrEmpty(childNamespace))
                 {
                     childNamespace += ':';
                 }

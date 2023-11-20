@@ -10,7 +10,7 @@ using Cashier.Data;
 namespace Cashier.Services
 {
     // Operations for application settings.
-    public class SettingsService
+    public class SettingsService : ISettingsService
     {
         public static SettingsService CreateInstance(IJSRuntime jsRuntime)
         {
@@ -19,7 +19,8 @@ namespace Cashier.Services
         }
         private IDexieDAL _db;
 
-        public SettingsService(IDexieDAL dal) {
+        public SettingsService(IDexieDAL dal)
+        {
             _db = dal;
         }
 
@@ -108,7 +109,7 @@ namespace Cashier.Services
 
             // Handle any accounts that have not been found in the Accounts table.
             var result = new List<Account>();
-            foreach ( var account in accounts)
+            foreach (var account in accounts)
             {
                 if (account != null)
                 {

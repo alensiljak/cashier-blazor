@@ -1,5 +1,8 @@
-﻿using Cashier.Lib;
-using Microsoft.Extensions.Options;
+﻿using Cashier.Data;
+using Cashier.Services;
+using Cashier.Tests.Infrastructure;
+using Microsoft.JSInterop;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +13,25 @@ namespace Cashier.Tests.Tests
 {
     public class AssetAllocationTests
     {
+        private IJSRuntime _fakeRuntime;
+        private IDexieDAL _dal;
+        private ISettingsService _settings;
+        private IAccountService _accountService;
+
+        public AssetAllocationTests() {
+            _fakeRuntime = new Mock<IJSRuntime>().Object;
+
+            var helper = new TestHelpers();
+            _settings = helper.CreateMockSettings().Object;
+            _dal = helper.CreateMockDAL().Object;
+            _accountService = helper.CreateMockAccountService().Object;
+        }
+
         [Fact]
         public void TestTomlParsing()
         {
             var definition = Get6040Allocation();
-            var aa = new AssetAllocation(definition);
+            var aa = CreateAssetAllocation(definition);
 
             Assert.Equal(3, aa.classes.Count);
         }
@@ -22,7 +39,7 @@ namespace Cashier.Tests.Tests
         [Fact]
         public void TestParsingSubclasses() {
             var definition = Get6040Allocation();
-            var aa = new AssetAllocation(definition);
+            var aa = CreateAssetAllocation(definition);
 
             var root = aa.classes.First();
             Assert.NotNull(root);
@@ -34,7 +51,7 @@ namespace Cashier.Tests.Tests
         [Fact]
         public void TestParsingSymbols() {
             var definition = Get6040Allocation();
-            var aa = new AssetAllocation(definition);
+            var aa = CreateAssetAllocation(definition);
             var equity = aa.classes.Skip(1).First();
             Assert.NotNull(equity);
 
@@ -47,7 +64,7 @@ namespace Cashier.Tests.Tests
         public void TestOutput()
         {
             var definition = Get6040Allocation();
-            var aa = new AssetAllocation(definition);
+            var aa = CreateAssetAllocation(definition);
 
             var actual = aa.GetTextReport();
             Assert.NotNull(actual);
@@ -65,9 +82,14 @@ symbols = [""VTS""]
 
 [Allocation.Fixed]
 allocation = 40
-symbols = [""BND""]
+symbols = [""BND"", ""EUR""]
 
 ";
+        }
+
+        private AssetAllocation CreateAssetAllocation(string definition)
+        {
+            return new AssetAllocation(definition, _settings, _dal, _accountService);
         }
     }
 }

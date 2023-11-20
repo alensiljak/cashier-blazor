@@ -3,6 +3,7 @@
 @using KristofferStrube.Blazor.FileSystem
 @using MudBlazor
 
+@inject IJSRuntime JSRuntime
 @inject IStorageManagerService StorageManagerService
 
 <ToolbarMud>
@@ -50,7 +51,7 @@
                     @item.AllocatedValue.ToString(NUMBER)
                 </td>
                 <td style="text-align: end;">
-                    @item.CurrentValue.ToString(NUMBER)
+                    @item.CurrentValue.Amount?.ToString(NUMBER)
                 </td>
                 <td style="text-align: end;">
                     @item.DiffAmount.ToString(NUMBER)
@@ -84,8 +85,11 @@
         // load aa
         var opfs = new OpfsService(StorageManagerService);
         var definition = await opfs.ReadFromFile(Constants.AssetAllocationFilename);
+        var settings = SettingsService.CreateInstance(JSRuntime);
+        var dal = DexieDAL.CreateInstance(JSRuntime);
+        var accountService = new AccountService();
 
-        var aa = new Lib.AssetAllocation(definition);
+        var aa = new Services.AssetAllocation(definition, settings, dal, accountService);
         allocation = aa.classes;
         // text output
         content = aa.GetTextReport();

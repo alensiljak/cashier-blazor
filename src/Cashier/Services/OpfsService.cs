@@ -4,13 +4,14 @@
 
 using KristofferStrube.Blazor.FileSystem;
 
-namespace Cashier.Lib
+namespace Cashier.Services
 {
     public class OpfsService
     {
         private IStorageManagerService _storageManagerService;
 
-        public OpfsService(IStorageManagerService storageManagerService) {
+        public OpfsService(IStorageManagerService storageManagerService)
+        {
             _storageManagerService = storageManagerService;
         }
 

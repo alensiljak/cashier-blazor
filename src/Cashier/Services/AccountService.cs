@@ -1,0 +1,64 @@
+﻿using BlazorDexie.Database;
+using Cashier.Data;
+using Cashier.Model;
+
+namespace Cashier.Services
+{
+    public class AccountService : IAccountService
+    {
+        /// <summary>
+        /// gets the account balance
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="defaultCurrency"></param>
+        /// <returns></returns>
+        public Money GetAccountBalance(Account account, string defaultCurrency)
+        {
+            // the default value.
+            var result = new Money(0, defaultCurrency);
+
+            // Are there any balance records?
+            if (account.Balances == null || account.Balances.Length == 0)
+            {
+                return result;
+            }
+
+            // Do we have a balance in the default currency?
+            var defaultBalance = account.Balances.FirstOrDefault(account => account.Currency == defaultCurrency);
+            if (defaultBalance != null)
+            {
+                result.Amount = defaultBalance.Amount;
+                result.Currency = defaultBalance.Currency;
+                return result;
+            }
+
+            // Otherwise take the first balance/currency.
+            result = account.Balances?.First();
+
+            return result!;
+        }
+
+        public async Task<List<Account>> LoadInvestmentAccounts(ISettingsService settings, IDexieDAL dal)
+        {
+            var root = await settings.GetRootInvestmentAccount();
+            if (root == null)
+            {
+                throw new Exception("Root investment account not set!");
+            }
+
+            var accounts = await dal.Accounts.Where("name").StartsWithIgnoreCase(root)
+                .ToList();
+
+            // add the balance
+            //var defaultCurrency = await _settings.GetDefaultCurrency();
+            //var acctSvc = new AccountService();
+            //foreach (var account in accounts)
+            //{
+            //    account.AccountBalance = acctSvc.GetAccountBalance(account, defaultCurrency);
+            //}
+
+            return accounts;
+        }
+
+    }
+}
