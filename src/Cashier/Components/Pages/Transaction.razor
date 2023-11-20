@@ -16,7 +16,7 @@
 </ToolbarMud>
 
 <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check"
-        Style="position: fixed; bottom: 20px; right: 20px;" @onclick="OnFab" />
+        Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 
 @* Date *@
 <MudDatePicker @ref="_datePicker" Placeholder="Date" DateFormat="@FixedSettings.DateFormat"

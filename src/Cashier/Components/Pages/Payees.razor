@@ -16,9 +16,10 @@ else
     @* Search *@
     <MudPaper Class="px-2 py-1 d-flex justify-center">
         <div style="width: 500px;">
-            <MudTextField T="string" Adornment="Adornment.End" AdornmentIcon="@IconsMud.Search" Label="Search" Variant="Variant.Outlined"
-                          Margin="Margin.Dense" DebounceInterval="300" OnDebounceIntervalElapsed="OnSearch" Clearable="true"
-                          FullWidth="false" @bind-Value="searchTerm" />
+            <MudTextField AutoFocus="true" T="string" Adornment="Adornment.End" AdornmentIcon="@IconsMud.Search" Label="Search"
+                          Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" FullWidth="false"
+                          DebounceInterval="300" OnDebounceIntervalElapsed="OnSearch" 
+                          @bind-Value="searchTerm" />
         </div>
     </MudPaper>
 
@@ -41,6 +42,8 @@ else
         await base.OnInitializedAsync();
 
         await loadData();
+
+
     }
 
     async Task loadData()

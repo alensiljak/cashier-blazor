@@ -11,9 +11,10 @@
 @* Search *@
 <MudPaper Class="px-2 py-1 d-flex justify-center">
     <div style="width: 500px;">
-        <MudTextField T="string" Adornment="Adornment.End" AdornmentIcon="@IconsMud.Search" Label="Search" Variant="Variant.Outlined"
-                      Margin="Margin.Dense" DebounceInterval="300" OnDebounceIntervalElapsed="OnSearch" Clearable="true"
-                      FullWidth="false" @bind-Value="searchTerm" />
+        <MudTextField AutoFocus="true" T="string" Adornment="Adornment.End" AdornmentIcon="@IconsMud.Search" Label="Search" 
+                      Variant="Variant.Outlined" Margin="Margin.Dense" FullWidth="false" Clearable="true"
+                      DebounceInterval="300" OnDebounceIntervalElapsed="OnSearch" 
+                      @bind-Value="searchTerm" />
     </div>
 </MudPaper>
 
