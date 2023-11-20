@@ -4,71 +4,60 @@
 @inject HttpClient httpClient
 
 @using MudBlazor
-@using WebDav
+@using System.Text
 
 <ToolbarMud>
     WebDAV Demo
 </ToolbarMud>
 
-<h3>WebDAVDemo</h3>
+<MudText>
+    A demo for accessing rclone WebDAV server through HttpClient. The other WebDAV clients don't work!
+    Something to do with PROPFIND. Although, PROPFIND works fine from curl.
+</MudText>
 
 <MudTextField T="string" Label="Server URL" @bind-Value="serverUrl" />
 
-<MudButton @onclick="OnPropFindClick">PropFind</MudButton>
-<MudButton @onclick="OnConnectClick">Get File</MudButton>
-<MudButton @onclick="OnDirectClick">Direct</MudButton>
-<MudButton @onclick="OnDirectFileClick">Direct GetFile</MudButton>
-<MudButton @onclick="OnDirectPropfindClick">Direct PropFind</MudButton>
+<MudStack Row="true" AlignItems="AlignItems.Center">
+    <MudButton @onclick="OnGetClick">Get</MudButton>
+    <MudButton @onclick="OnDirectFileClick">GetFile</MudButton>
+    <MudButton @onclick="OnDirectPropfindClick">PropFind</MudButton>
+    <MudButton @onclick="OnUploadClick">Upload</MudButton>
+</MudStack>
+
+<MudTextField T="string" Lines="15" @bind-Value="_content" />
+
+<MudButton @onclick="OnClearClick">Clear</MudButton>
 
 @code {
     string serverUrl = "http://localhost:8080/";
-    public WebDavClient? _client;
+    string? _content;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        _client = InitClient();
+        //httpClient.DefaultRequestHeaders.re
     }
 
-    WebDavClient InitClient()
+    void OnClearClick()
     {
-        httpClient.BaseAddress = new Uri(serverUrl);
-
-        var client = new WebDavClient(httpClient);
-
-        return client;
-    }
-
-    async Task OnConnectClick()
-    {
-        // connect to server
-        try
-        {
-            var url = GetUri("rates.ledger");
-            var file = await _client!.GetRawFile(url);
-            Console.WriteLine(file);
-        }
-        catch (Exception ex)
-        {
-            Notification.Error(ex.Message);
-        }
+        _content = null;
     }
 
     /// <summary>
     /// Try connecting with the HttpClient directly.
     /// </summary>
     /// <returns></returns>
-    async Task OnDirectClick()
+    async Task OnGetClick()
     {
         // httpClient.BaseAddress = new Uri(serverUrl);
-
-        var response = await httpClient.GetAsync("/");
+        var url = GetUri("/");
+        var response = await httpClient.GetAsync(url);
 
         // Console.WriteLine(response);
 
-        var content = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(content);
+        _content = await response.Content.ReadAsStringAsync();
+        // Console.WriteLine(content);
     }
 
     async Task OnDirectFileClick()
@@ -76,8 +65,8 @@
         var url = GetUri("rates.ledger");
         var response = await httpClient.GetAsync(url);
 
-        var content = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(content);
+        _content = await response.Content.ReadAsStringAsync();
+        // Console.WriteLine(content);
     }
 
     ///  <summary>
@@ -86,31 +75,42 @@
     /// <returns></returns>
     async Task OnDirectPropfindClick()
     {
-        var method = new HttpMethod("PROPFIND");
-        var request = new HttpRequestMessage(method, "/");
-        var response = await httpClient.SendAsync(request);
-
-        Console.WriteLine(response.StatusCode);
-        var content = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(content);
-    }
-
-    async Task OnPropFindClick()
-    {
-        // connect to server
         try
         {
-            var url = GetUri("");
-            var response = await _client!.Propfind(url);
-            Console.WriteLine(response);
+            var method = new HttpMethod("PROPFIND");
+            var request = new HttpRequestMessage(method, serverUrl);
+            // request.Headers.ReferralPolicy
+            var response = await httpClient.SendAsync(request);
 
-            url = GetUri("rates.ledger");
-            var file = await _client!.GetRawFile(url);
-            Console.WriteLine(file);
+            Notification.Info(response.StatusCode.ToString());
+
+            _content = await response.Content.ReadAsStringAsync();
         }
         catch (Exception ex)
         {
-            Notification.Error(ex.Message);
+            _content = ex.Message;
+        }
+    }
+
+    /// <summary>
+    /// Upload a dummy file to test.
+    /// </summary>
+    /// <returns></returns>
+    async Task OnUploadClick()
+    {
+        var url = GetUri("upload-test.txt");
+        var stringContent = new StringContent("hello world!");
+
+        try
+        {
+            // var response = await httpClient.PutAsync(url, stringContent);
+            var response = await httpClient.PostAsync(url, stringContent);
+
+            _content = await response.Content.ReadAsStringAsync();
+        }
+        catch (Exception ex)
+        {
+            _content = ex.Message;
         }
     }
 
