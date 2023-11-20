@@ -5,6 +5,7 @@
 
 @inject IJSRuntime JSRuntime
 @inject IStorageManagerService StorageManagerService
+@inject NotificationService Notification
 
 <ToolbarMud>
     <Title>Asset Allocation</Title>
@@ -89,7 +90,15 @@
         var dal = DexieDAL.CreateInstance(JSRuntime);
         var accountService = new AccountService();
 
-        var aa = new Services.AssetAllocation(definition, settings, dal, accountService);
+        var aa = new AssetAllocationService(settings, dal, accountService);
+        try
+        {
+            await aa.loadFullAssetAllocation(definition);
+        } catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Notification.Error(ex.Message);
+        }
         allocation = aa.classes;
         // text output
         content = aa.GetTextReport();

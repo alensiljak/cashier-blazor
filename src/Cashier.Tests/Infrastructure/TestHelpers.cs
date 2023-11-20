@@ -67,7 +67,9 @@ namespace Cashier.Tests.Infrastructure
             var invAccounts = new List<Account>()
             {
                 new Account("Assets:Investment:Cash") { CurrentValue = "30" },
-                new Account("Assets:Investment:Equity") { CurrentValue = "10",
+                new Account("Assets:Investment:Equity") {
+                    CurrentValue = "10",
+                    CurrentCurrency = "EUR",
                 Balances = [
                         new Money(10, "VTS")
                     ]},

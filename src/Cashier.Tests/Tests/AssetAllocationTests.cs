@@ -1,4 +1,5 @@
 ﻿using Cashier.Data;
+using Cashier.Model;
 using Cashier.Services;
 using Cashier.Tests.Infrastructure;
 using Microsoft.JSInterop;
@@ -28,18 +29,20 @@ namespace Cashier.Tests.Tests
         }
 
         [Fact]
-        public void TestTomlParsing()
+        public async Task TestTomlParsing()
         {
             var definition = Get6040Allocation();
-            var aa = CreateAssetAllocation(definition);
+            var aa = CreateAssetAllocation();
+            await aa.loadFullAssetAllocation(definition);
 
             Assert.Equal(3, aa.classes.Count);
         }
 
         [Fact]
-        public void TestParsingSubclasses() {
+        public async Task TestParsingSubclasses() {
             var definition = Get6040Allocation();
-            var aa = CreateAssetAllocation(definition);
+            var aa = CreateAssetAllocation();
+            await aa.loadFullAssetAllocation(definition);
 
             var root = aa.classes.First();
             Assert.NotNull(root);
@@ -49,9 +52,11 @@ namespace Cashier.Tests.Tests
         }
 
         [Fact]
-        public void TestParsingSymbols() {
+        public async Task TestParsingSymbols() {
             var definition = Get6040Allocation();
-            var aa = CreateAssetAllocation(definition);
+            var aa = CreateAssetAllocation();
+            await aa.loadFullAssetAllocation(definition);
+            
             var equity = aa.classes.Skip(1).First();
             Assert.NotNull(equity);
 
@@ -61,14 +66,28 @@ namespace Cashier.Tests.Tests
         }
 
         [Fact]
-        public void TestOutput()
+        public async Task TestOutput()
         {
             var definition = Get6040Allocation();
-            var aa = CreateAssetAllocation(definition);
+            var aa = CreateAssetAllocation();
+            await aa.loadFullAssetAllocation(definition);
 
             var actual = aa.GetTextReport();
             Assert.NotNull(actual);
         }
+
+        [Fact]
+        public async Task TestCurrentValues()
+        {
+            var definition = Get6040Allocation();
+            var aa = CreateAssetAllocation();
+            await aa.loadFullAssetAllocation(definition);
+
+            var actual = aa.classes.First(x => x.FullName == "Allocation:Equity").CurrentValue;
+            Assert.Equal(new Money(0, "EUR"), actual);
+        }
+
+        // Private
 
         private string Get6040Allocation()
         {
@@ -87,9 +106,9 @@ symbols = [""BND"", ""EUR""]
 ";
         }
 
-        private AssetAllocation CreateAssetAllocation(string definition)
+        private AssetAllocationService CreateAssetAllocation()
         {
-            return new AssetAllocation(definition, _settings, _dal, _accountService);
+            return new AssetAllocationService(_settings, _dal, _accountService);
         }
     }
 }

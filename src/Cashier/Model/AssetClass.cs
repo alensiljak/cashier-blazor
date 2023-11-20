@@ -6,11 +6,15 @@
         public decimal Allocation { get; set; }
         public decimal AllocatedValue { get; set; }
         public decimal CurrentAllocation { get; set; }
+        /// <summary>
+        ///  Current value in the default currency.
+        /// </summary>
         public Money CurrentValue { get; set; } = Money.Empty;
         public decimal Diff { get; set; }
         public decimal DiffAmount { get; set; }
         public decimal DiffPerc { get; set; }
-        public string Currency { get; set; } = string.Empty;
+        // public string Currency { get; set; } = string.Empty;
+        
         public List<string> Symbols { get; set; } = new List<string>();
 
         /// <summary>

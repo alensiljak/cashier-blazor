@@ -7,13 +7,14 @@ using System.Text;
 using Tomlyn;
 using Tomlyn.Model;
 using Tomlyn.Syntax;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cashier.Services
 {
     /// <summary>
     /// All Asset Allocation functionality. Migrated from Cashier.
     /// </summary>
-    public class AssetAllocation
+    public class AssetAllocationService
     {
         public List<AssetClass> classes = [];
 
@@ -24,13 +25,11 @@ namespace Cashier.Services
         private IDexieDAL _db;
         private IAccountService _accountService;
 
-        public AssetAllocation(string toml, ISettingsService settings, IDexieDAL dal, IAccountService accountService)
+        public AssetAllocationService(ISettingsService settings, IDexieDAL dal, IAccountService accountService)
         {
             _settings = settings;
             _db = dal;
             _accountService = accountService;
-
-            loadFullAssetAllocation(toml);
         }
 
         public string GetTextReport()
@@ -58,7 +57,7 @@ namespace Cashier.Services
         /// </summary>
         /// <param name="toml">Asset Allocation definition in TOML</param>
         /// <returns></returns>
-        private async void loadFullAssetAllocation(string toml)
+        public async Task loadFullAssetAllocation(string toml)
         {
             // load definition
             //await LoadAssetAllocation();
@@ -126,15 +125,6 @@ namespace Cashier.Services
             return subsections;
         }
 
-        //private async Task LoadAssetAllocation()
-        //{
-        //    var svc = new OpfsService(_storage);
-        //    var file = await svc.OpenFile(Constants.AssetAllocationFilename, false);
-        //    // todo handle null
-
-        //    Console.WriteLine("aa file size: {0}", await file.GetSizeAsync());
-        //}
-
         /// <summary>
         /// Load current balances from accounts.
         /// </summary>
@@ -149,28 +139,34 @@ namespace Cashier.Services
                 var amount = Decimal.Zero;
                 var commodity = currency;
 
+                // Current Value is populated from Ledger. Only the active accounts will have a value.
                 if (!string.IsNullOrEmpty(account.CurrentValue))
                 {
                     amount = Decimal.Parse(account.CurrentValue);
-                } else
+                }
+                else
                 {
                     continue;
                 }
 
                 var acctBalance = _accountService.GetAccountBalance(account, currency);
+                // the the account balance.
                 account.AccountBalance = acctBalance;
 
-                if (!string.IsNullOrEmpty(account.CurrentCurrency))
-                {
-                    commodity = account.CurrentCurrency;
-                }
+                if (account.AccountBalance.Amount == 0) continue;
+
+                commodity = account.AccountBalance.Currency;
 
                 // Now get the asset class for this commodity.
                 var assetClassName = _stockIndex[commodity!];
+                if (assetClassName == null)
+                {
+                    throw new Exception($"Asset class name not found for commodity {commodity}");
+                }
 
                 var assetClass = _assetClassIndex[assetClassName];
-                assetClass.CurrentValue += amount;
-                assetClass.Currency = currency;
+                assetClass.CurrentValue.Amount += amount;
+                assetClass.CurrentValue.Currency = currency;
             }
         }
 
@@ -189,26 +185,6 @@ namespace Cashier.Services
                 RecursivelyDisplay(section, level + 1);
             }
         }
-
-        //private AssetClass RecursivelyParse(KeyValuePair<string, object> pair)
-        //{
-        //    var ac = new AssetClass();
-        //    ac.FullName = pair.Key;
-
-        //    var table = (TomlTable)pair.Value;
-        //    // now parse the subsections
-        //    var sections = GetSections(table);
-        //    foreach (var section in sections)
-        //    {
-        //        var child = RecursivelyParse(section);
-        //        if (child != null)
-        //        {
-        //            // ac.
-        //        }
-        //    }
-
-        //    return ac;
-        //}
 
         /// <summary>
         /// Creates a linear representation of the Asset Allocation table.

@@ -46,7 +46,13 @@ namespace Cashier.Services
                 throw new Exception("Root investment account not set!");
             }
 
-            var accounts = await dal.Accounts.Where("name").StartsWithIgnoreCase(root)
+            var accounts = await dal.Accounts
+                .Where("name").StartsWithIgnoreCase(root)
+                // .Filter
+                .ToList();
+
+            // Get only the accounts with a current value.
+            accounts = accounts.Where(x => !string.IsNullOrEmpty(x.CurrentValue))
                 .ToList();
 
             // add the balance
