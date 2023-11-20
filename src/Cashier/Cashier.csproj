@@ -25,6 +25,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all" />
 		<PackageReference Include="MudBlazor" Version="6.11.0" />
 		<PackageReference Include="Tomlyn" Version="0.16.2" />
+		<PackageReference Include="WebDAV-Client" Version="1.1.2" />
 	</ItemGroup>
 
 	<ItemGroup>

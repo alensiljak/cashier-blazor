@@ -1,0 +1,122 @@
+﻿@page "/webdav-demo"
+
+@inject NotificationService Notification
+@inject HttpClient httpClient
+
+@using MudBlazor
+@using WebDav
+
+<ToolbarMud>
+    WebDAV Demo
+</ToolbarMud>
+
+<h3>WebDAVDemo</h3>
+
+<MudTextField T="string" Label="Server URL" @bind-Value="serverUrl" />
+
+<MudButton @onclick="OnPropFindClick">PropFind</MudButton>
+<MudButton @onclick="OnConnectClick">Get File</MudButton>
+<MudButton @onclick="OnDirectClick">Direct</MudButton>
+<MudButton @onclick="OnDirectFileClick">Direct GetFile</MudButton>
+<MudButton @onclick="OnDirectPropfindClick">Direct PropFind</MudButton>
+
+@code {
+    string serverUrl = "http://localhost:8080/";
+    public WebDavClient? _client;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _client = InitClient();
+    }
+
+    WebDavClient InitClient()
+    {
+        httpClient.BaseAddress = new Uri(serverUrl);
+
+        var client = new WebDavClient(httpClient);
+
+        return client;
+    }
+
+    async Task OnConnectClick()
+    {
+        // connect to server
+        try
+        {
+            var url = GetUri("rates.ledger");
+            var file = await _client!.GetRawFile(url);
+            Console.WriteLine(file);
+        }
+        catch (Exception ex)
+        {
+            Notification.Error(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Try connecting with the HttpClient directly.
+    /// </summary>
+    /// <returns></returns>
+    async Task OnDirectClick()
+    {
+        // httpClient.BaseAddress = new Uri(serverUrl);
+
+        var response = await httpClient.GetAsync("/");
+
+        // Console.WriteLine(response);
+
+        var content = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(content);
+    }
+
+    async Task OnDirectFileClick()
+    {
+        var url = GetUri("rates.ledger");
+        var response = await httpClient.GetAsync(url);
+
+        var content = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(content);
+    }
+
+    ///  <summary>
+    /// Create a manual PropFind method.
+    /// </summary>
+    /// <returns></returns>
+    async Task OnDirectPropfindClick()
+    {
+        var method = new HttpMethod("PROPFIND");
+        var request = new HttpRequestMessage(method, "/");
+        var response = await httpClient.SendAsync(request);
+
+        Console.WriteLine(response.StatusCode);
+        var content = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(content);
+    }
+
+    async Task OnPropFindClick()
+    {
+        // connect to server
+        try
+        {
+            var url = GetUri("");
+            var response = await _client!.Propfind(url);
+            Console.WriteLine(response);
+
+            url = GetUri("rates.ledger");
+            var file = await _client!.GetRawFile(url);
+            Console.WriteLine(file);
+        }
+        catch (Exception ex)
+        {
+            Notification.Error(ex.Message);
+        }
+    }
+
+    Uri GetUri(string path)
+    {
+        var url = $"{serverUrl}{path}";
+        return new Uri(url);
+    }
+}

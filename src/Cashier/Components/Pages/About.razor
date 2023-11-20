@@ -1,8 +1,14 @@
 ﻿@page "/about"
 @using System.Reflection
+@using MudBlazor
+
+@inject NavigationManager NavMan
 
 <ToolbarMud>
     <Title>About</Title>
+    <ContextMenuItems>
+        <MudMenuItem Icon="@IconsMud.UploadCloud" @onclick="OnWebDavClick">WebDAV Demo</MudMenuItem>
+    </ContextMenuItems>
 </ToolbarMud>
 
 <h3>About</h3>
@@ -22,5 +28,10 @@ Version: @version
     string GetVersionInfo()
     {
         return Constants.VersionNumber;
+    }
+
+    void OnWebDavClick()
+    {
+        NavMan.NavigateTo("/webdav-demo");
     }
 }
