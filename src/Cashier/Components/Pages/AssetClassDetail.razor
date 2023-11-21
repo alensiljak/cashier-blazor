@@ -1,0 +1,16 @@
+﻿@page "/assetclassdetail"
+
+<h3>AssetClass Details</h3>
+
+@code {
+    [Parameter]
+    public string fullname { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // todo: load data
+        Console.WriteLine("parameter value is {0}", fullname);
+    }
+}

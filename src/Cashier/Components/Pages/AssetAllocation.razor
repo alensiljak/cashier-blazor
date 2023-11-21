@@ -6,6 +6,7 @@
 @inject IJSRuntime JSRuntime
 @inject IStorageManagerService StorageManagerService
 @inject NotificationService Notification
+@inject NavigationManager NavMan
 
 <ToolbarMud>
     <Title>Asset Allocation</Title>
@@ -30,33 +31,45 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var item in allocation)
+        @foreach (var item in allocation)
         {
             <tr>
                 <td class=@(string.Format("pl-{0}", (item.Depth * 3)))>
-                    @item.Name
+                    <MudLink Color="Color.Surface" @onclick="@(() => ShowDetails(item.FullName))">@item.Name</MudLink>
                 </td>
                 <td style="text-align: end;">
-                    @item.Allocation.ToString(NUMBER)
+                    <MudText>
+                        @item.Allocation.ToString(NUMBER)
+                    </MudText>
                 </td>
                 <td style="text-align: end;">
-                    @item.CurrentAllocation.ToString(NUMBER)
+                    <MudText>
+                        @item.CurrentAllocation.ToString(NUMBER)
+                    </MudText>
                 </td>
-@*                 <td style="text-align: end;">
-                    @item.Diff.ToString(NUMBER)
-                </td>*@
+                @* <td style="text-align: end;">
+            @item.Diff.ToString(NUMBER)
+            </td>*@
                 @* Diff % *@
                 <td style="text-align: end; color: @GetColor(item.DiffPerc);">
-                    @item.DiffPerc.ToString(NUMBER)
+                    <MudText>
+                        @item.DiffPerc.ToString(NUMBER)
+                    </MudText>
                 </td>
                 <td style="text-align: end;">
-                    @item.AllocatedValue.ToString(NUMBER)
+                    <MudText>
+                        @item.AllocatedValue.ToString(NUMBER)
+                    </MudText>
                 </td>
                 <td style="text-align: end;">
-                    @item.CurrentValue.Amount?.ToString(NUMBER)
+                    <MudText>
+                        @item.CurrentValue.Amount?.ToString(NUMBER)
+                    </MudText>
                 </td>
                 <td style="text-align: end; color: @GetColor(item.DiffPerc);">
-                    @item.DiffAmount.ToString(NUMBER)
+                    <MudText>
+                        @item.DiffAmount.ToString(NUMBER)
+                    </MudText>
                 </td>
             </tr>
         }
@@ -95,7 +108,8 @@
         try
         {
             await aa.loadFullAssetAllocation(definition);
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
             Notification.Error(ex.Message);
@@ -112,7 +126,7 @@
     /// <returns></returns>
     string GetColor(decimal value)
     {
-        switch(value)
+        switch (value)
         {
             case var n when n <= -20:
                 return Colors.Red.Darken4;
@@ -128,5 +142,10 @@
         }
 
         return string.Empty;
+    }
+
+    void ShowDetails(string fullName)
+    {
+        NavMan.NavigateTo("/assetclassdetail?fullname=" + fullName);
     }
 }
