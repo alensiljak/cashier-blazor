@@ -22,8 +22,8 @@
             <th style="text-align: center;">Asset Class</th>
             <th style="text-align: center;">Target</th>
             <th style="text-align: center;">Current</th>
-            <th style="text-align: center;">Difference</th>
-            <th style="text-align: center;">Diff. %</th>
+            @* <th style="text-align: center;">Diff</th> *@
+            <th style="text-align: center;">Diff %</th>
             <th style="text-align: center;">Allocated</th>
             <th style="text-align: center;">Current</th>
             <th style="text-align: center;">Difference</th>
@@ -42,9 +42,9 @@
                 <td style="text-align: end;">
                     @item.CurrentAllocation.ToString(NUMBER)
                 </td>
-                <td style="text-align: end;">
+@*                 <td style="text-align: end;">
                     @item.Diff.ToString(NUMBER)
-                </td>
+                </td>*@
                 @* Diff % *@
                 <td style="text-align: end; color: @GetColor(item.DiffPerc);">
                     @item.DiffPerc.ToString(NUMBER)
