@@ -3,6 +3,7 @@
 *@
 
 @inject IJSRuntime JSRuntime
+@inject ISettingsService settings
 @inject ISnackbar Snackbar
 @inject NavigationManager NavMan
 
@@ -54,12 +55,10 @@
 
     async Task loadData()
     {
-        var svc = SettingsService.CreateInstance(JSRuntime);
-
         // var defaultCurrency = await svc.GetDefaultCurrency();
         // Console.WriteLine("default currency: {0}", defaultCurrency);
 
-        accounts = await svc.GetFavouriteAccounts(5);
+        accounts = await settings.GetFavouriteAccounts(5);
 
         StateHasChanged();
     }

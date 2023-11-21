@@ -3,7 +3,8 @@
 @using KristofferStrube.Blazor.FileSystem
 @using MudBlazor
 
-@inject IJSRuntime JSRuntime
+@inject IDexieDAL dal
+@inject ISettingsService settings
 @inject IStorageManagerService StorageManagerService
 @inject NotificationService Notification
 @inject NavigationManager NavMan
@@ -100,8 +101,6 @@
         // load aa
         var opfs = new OpfsService(StorageManagerService);
         var definition = await opfs.ReadFromFile(Constants.AssetAllocationFilename);
-        var settings = SettingsService.CreateInstance(JSRuntime);
-        var dal = DexieDAL.CreateInstance(JSRuntime);
         var accountService = new AccountService();
 
         var aa = new AssetAllocationService(settings, dal, accountService);
@@ -146,6 +145,6 @@
 
     void ShowDetails(string fullName)
     {
-        NavMan.NavigateTo("/assetclassdetail?fullname=" + fullName);
+        NavMan.NavigateTo("/assetclassdetail/" + fullName);
     }
 }

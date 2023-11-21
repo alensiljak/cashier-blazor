@@ -6,12 +6,15 @@ using MudBlazor.Services;
 using KristofferStrube.Blazor.FileSystem;
 using Cashier.Lib;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+using Cashier.Services;
+using Microsoft.JSInterop;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped(sp => new HttpClient());
 
 // MudBlazor
 builder.Services.AddMudServices();
@@ -24,8 +27,9 @@ builder.Services.AddStorageManagerService();
 
 // My Services
 builder.Services.AddScoped<NotificationService>();
-// app state
 builder.Services.AddSingleton<AppState>();
+builder.Services.AddScoped<IDexieDAL, DexieDAL>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
 
 
 await builder.Build().RunAsync();

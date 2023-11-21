@@ -7,13 +7,6 @@ namespace Cashier.Data
 {
     public class DexieDAL : Db, IDexieDAL
     {
-        public static IDexieDAL CreateInstance(IJSRuntime jsRuntime)
-        {
-            var moduleFactory = new EsModuleFactory(jsRuntime);
-            var dal = new DexieDAL(moduleFactory);
-            return dal;
-        }
-
         public Store<Setting, string> Settings { get; set; } = new(nameof(Setting.Key));
 
         public Store<Account, string> Accounts { get; set; } = new(nameof(Account.Name));
@@ -25,8 +18,17 @@ namespace Cashier.Data
             new("++" + nameof(ScheduledXact.Id), nameof(ScheduledXact.NextDate));
         public Store<Xact, string> Xacts { get; set; } = new("++" + nameof(Xact.Id), nameof(Xact.Date));
 
-        public DexieDAL(IModuleFactory moduleFactory)
-            : base("Cashier", 1, new DbVersion[] { }, moduleFactory)
+        //public DexieDAL(IModuleFactory moduleFactory)
+        //    : base("Cashier", 1, new DbVersion[] { }, moduleFactory)
+        //{ }
+
+        public DexieDAL(IJSRuntime jsRuntime)
+            : base("Cashier", 1, new DbVersion[] { }, CreateModuleFactory(jsRuntime))
         { }
+
+        private static IModuleFactory CreateModuleFactory(IJSRuntime jsRuntime)
+        {
+            return new EsModuleFactory(jsRuntime);
+        }
     }
 }

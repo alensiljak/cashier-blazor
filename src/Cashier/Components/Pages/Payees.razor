@@ -1,7 +1,7 @@
 ﻿@page "/payees"
 @using MudBlazor
 
-@inject IJSRuntime JSRuntime
+@inject IDexieDAL db
 
 <ToolbarMud>
     <Title>Payees</Title>
@@ -48,7 +48,6 @@ else
 
     async Task loadData()
     {
-        var db = DexieDAL.CreateInstance(JSRuntime);
         var records = await db.Payees.ToList();
 
         if (searchTerm != null)

@@ -14,19 +14,10 @@ namespace Cashier.Services
     /// </summary>
     public class AppService
     {
-        public static AppService CreateInstance(IJSRuntime jsRuntime)
-        {
-            var dal = DexieDAL.CreateInstance(jsRuntime);
-            return new AppService(jsRuntime, dal);
-        }
-
-        private IJSRuntime _jsRuntime;
-        
         public IDexieDAL DAL { get; set; }
 
-        public AppService(IJSRuntime jsRuntime, IDexieDAL dal)
+        public AppService(IDexieDAL dal)
         {
-            _jsRuntime = jsRuntime;
             DAL = dal;
         }
 
@@ -41,13 +32,6 @@ namespace Cashier.Services
             {
                 throw new ArgumentException("No accounts sent for import!");
             }
-
-            //var settings = SettingsService.CreateInstance(_jsRuntime);
-            //var mainCurrency = await settings.GetDefaultCurrency();
-            //if (mainCurrency == null)
-            //{
-            //    throw new ArgumentException("Main currency not set!");
-            //}
 
             var accounts = ParseAccounts(lines);
 

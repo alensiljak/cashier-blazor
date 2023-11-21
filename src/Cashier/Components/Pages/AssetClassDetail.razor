@@ -1,16 +1,32 @@
-﻿@page "/assetclassdetail"
+﻿@* @page "/assetclassdetail" *@
+@page "/assetclassdetail/{fullname}"
 
-<h3>AssetClass Details</h3>
+@inject ISettingsService settings
+@inject IDexieDAL dal
+
+<ToolbarMud>
+    Asset Class Detail
+</ToolbarMud>
+
+<div>@fullname</div>
+
 
 @code {
     [Parameter]
-    public string fullname { get; set; }
+    public string? fullname { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        // todo: load data
-        Console.WriteLine("parameter value is {0}", fullname);
+        await loadData();
+    }
+
+    async Task loadData()
+    {
+        var acctSvc = new AccountService();
+        var accounts = await acctSvc.LoadInvestmentAccounts(settings, dal);
+
+        Console.WriteLine("accounts {0}", accounts.Count);
     }
 }

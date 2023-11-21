@@ -1,6 +1,8 @@
 ﻿@page "/sync"
 
 @inject IJSRuntime JSRuntime
+@inject IDexieDAL db
+@inject ISettingsService settings
 @inject NotificationService Notification
 @inject HttpClient HttpClient
 
@@ -108,8 +110,6 @@
 
     async Task loadSettings()
     {
-        var settings = SettingsService.CreateInstance(JSRuntime);
-
         ServerUrl = await settings.GetSyncServerUrl();
         rootInvestmentAccount = await settings.GetRootInvestmentAccount();
         currency = await settings.GetDefaultCurrency();
@@ -162,7 +162,6 @@
         }
 
         // Save the current sync choices
-        var settings = SettingsService.CreateInstance(JSRuntime);
         await settings.SetSyncAccounts(syncAccounts);
         await settings.SetSyncAaValues(syncAaValues);
         await settings.SetSyncPayees(syncPayees);
@@ -173,7 +172,6 @@
         // Console.WriteLine("sync server changed: {0}", value);
         ServerUrl = value;
 
-        var settings = SettingsService.CreateInstance(JSRuntime);
         await settings.SetSyncServerUrl(value);
 
         Notification.Show("Sync URL saved");
@@ -213,7 +211,7 @@
             return;
         }
 
-        var appService = AppService.CreateInstance(JSRuntime);
+        var appService = new AppService(db);
         await appService.deleteAccounts();
 
         // Import
@@ -244,10 +242,9 @@
         }
 
         // delete all payees only after we have retrieved the new ones.
-        var db = DexieDAL.CreateInstance(JSRuntime);
         await db.Payees.Clear();
 
-        var app = new AppService(JSRuntime, db);
+        var app = new AppService(db);
         var result = await app.ImportPayees(payeeNames);
 
         Notification.Success("Imported Payees");

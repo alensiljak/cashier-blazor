@@ -1,6 +1,7 @@
 ﻿@page "/settings"
 
 @inject IJSRuntime JSRuntime
+@inject ISettingsService settings
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject NavigationManager NavMan
@@ -107,15 +108,14 @@
 
     async Task loadSettings()
     {
-        var svc = SettingsService.CreateInstance(JSRuntime);
         // currency
-        mainCurrency = await svc.GetDefaultCurrency();
+        mainCurrency = await settings.GetDefaultCurrency();
 
         // root investment account
-        investmentRoot = await svc.GetRootInvestmentAccount();
+        investmentRoot = await settings.GetRootInvestmentAccount();
 
         // remember last transaction
-        rememberLastTransaction = await svc.GetRememberLastTransaction();
+        rememberLastTransaction = await settings.GetRememberLastTransaction();
 
         // StateHasChanged();
     }
@@ -180,10 +180,10 @@
 
         // Deserialize JSON
 
-        List<Setting>? settings;
+        List<Setting>? settingList;
         try
         {
-            settings = JsonSerializer.Deserialize<List<Setting>>(content,
+            settingList = JsonSerializer.Deserialize<List<Setting>>(content,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
         catch (Exception ex)
@@ -192,7 +192,7 @@
             Console.WriteLine("Error deserializing the Settings backup file:\n{0}", ex.Message);
             return;
         }
-        if (settings == null)
+        if (settingList == null)
         {
             Snackbar.Add("No settings found in the file.", Severity.Warning);
             return;
@@ -202,9 +202,7 @@
 
         // Insert into db.
 
-        var svc = SettingsService.CreateInstance(JSRuntime);
-        var insertResult = await svc.BulkPut(settings);
-        // Console.WriteLine("insert result: {0}", insertResult);
+        var insertResult = await settings.BulkPut(settingList);
         Snackbar.Add("Settings restored", Severity.Success);
 
         await loadSettings();
@@ -212,13 +210,11 @@
 
     async Task saveSettings()
     {
-        var svc = SettingsService.CreateInstance(JSRuntime);
-
-        var result = await svc.SetDefaultCurrency(mainCurrency ?? "");
+        var result = await settings.SetDefaultCurrency(mainCurrency ?? "");
         Console.WriteLine("saving currency: {0}", result);
 
         // root investment account
-        result = await svc.SetRootInvestmentAccount(investmentRoot);
+        result = await settings.SetRootInvestmentAccount(investmentRoot);
         Console.WriteLine("saving investment root: {0}", result);
 
         if (result != string.Empty)

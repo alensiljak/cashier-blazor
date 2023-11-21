@@ -12,11 +12,6 @@ namespace Cashier.Services
     // Operations for application settings.
     public class SettingsService : ISettingsService
     {
-        public static SettingsService CreateInstance(IJSRuntime jsRuntime)
-        {
-            var db = DexieDAL.CreateInstance(jsRuntime);
-            return new SettingsService(db);
-        }
         private IDexieDAL _db;
 
         public SettingsService(IDexieDAL dal)

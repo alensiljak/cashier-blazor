@@ -1,6 +1,6 @@
 ﻿@page "/accounts"
 
-@inject IJSRuntime JSRuntime
+@inject IDexieDAL db
 
 @using MudBlazor
 
@@ -43,7 +43,6 @@
 
     async Task loadData()
     {
-        var db = DexieDAL.CreateInstance(JSRuntime);
         var records = await db.Accounts
             .OrderBy("name")
             // .Limit(100)
