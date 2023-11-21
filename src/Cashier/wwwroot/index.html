@@ -8,13 +8,11 @@
     <base href="/" />
     <link rel="icon" type="image/png" href="favicon.png" />
 
-    <!-- FluentUI -->
-    <!-- <link rel="stylesheet" href="_content/Microsoft.Fast.Components.FluentUI/css/reboot.css" /> -->
-    <!-- <link href="_content/Microsoft.Fast.Components.FluentUI/css/variables.css" rel="stylesheet" /> -->
-    <!-- <link rel="stylesheet" href="css/variables.css" /> -->
-    <!-- MudBlazor styles -->
+    <!-- MudBlazor -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link href="_content/Toolbelt.Blazor.PWA.Updater/Toolbelt.Blazor.PWA.Updater.bundle.scp.css"
+          rel="stylesheet" />    
     <!-- custom -->
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="Cashier.styles.css" />
@@ -45,11 +43,9 @@
     <!-- MudBlazor scripts -->
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
-    <!-- Fluent UI theme -->
-    <!-- <script src="js/site.js"></script> -->
-    <!-- <script src="/js/theme.js" type="module"></script> -->
     <!-- PWA web worker -->
-    <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <!-- <script>navigator.serviceWorker.register('service-worker.js');</script> -->
+    <script src="_content/Toolbelt.Blazor.PWA.Updater.Service/script.min.js"></script>
 </body>
 
 </html>

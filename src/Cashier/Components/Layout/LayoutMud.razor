@@ -1,4 +1,6 @@
 ﻿@using MudBlazor
+@using Toolbelt.Blazor.PWA.Updater
+
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject AppState appState
@@ -23,6 +25,7 @@
         <MudMainContent>
             <MudContainer MaxWidth="MaxWidth.Medium" Class="px-1">
                 @Body
+                <PWAUpdater Align="PWAUpdater.Aligns.Buttom" />
             </MudContainer>
         </MudMainContent>
     </MudLayout>
