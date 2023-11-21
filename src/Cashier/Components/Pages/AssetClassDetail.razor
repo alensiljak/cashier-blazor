@@ -2,7 +2,7 @@
 @page "/assetclassdetail/{fullname}"
 
 @inject ISettingsService settings
-@inject IDexieDAL dal
+@inject IDexieDAL db
 
 <ToolbarMud>
     Asset Class Detail
@@ -15,6 +15,8 @@
     [Parameter]
     public string? fullname { get; set; }
 
+    // private AssetClass
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -25,8 +27,15 @@
     async Task loadData()
     {
         var acctSvc = new AccountService();
-        var accounts = await acctSvc.LoadInvestmentAccounts(settings, dal);
+        var accounts = await acctSvc.LoadInvestmentAccounts(settings, db);
 
         Console.WriteLine("accounts {0}", accounts.Count);
+    }
+
+    async Task LoadAssetClasses()
+    {
+        var ac = await db.AssetAllocations.Get(fullname!);
+        // ac.a
+
     }
 }
