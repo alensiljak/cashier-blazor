@@ -5,7 +5,12 @@ namespace Cashier.Services
     public interface ISettingsService
     {
         Task<string> BulkPut(List<Setting> items);
+
+        Task<T> GetSetting<T>(string key);
+        Task<string> SetSetting<T>(string key, T value);
+
         Task<string> GetDefaultCurrency();
+
         Task<Account?[]> GetFavouriteAccounts(int? take = null);
         Task<bool> GetRememberLastTransaction();
         Task<string> GetRootInvestmentAccount();

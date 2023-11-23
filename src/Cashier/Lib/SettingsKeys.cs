@@ -3,6 +3,7 @@
     public class SettingsKeys
     {
         public static string assetAllocationDefinition = "aa.definition";
+        public static string backupServerUrl = "backupServerUrl";
         public static string currency = "currency";
         public static string favouriteAccounts = "favouriteAccounts";
         public static string dbInitialized = "dbInitialized"; // Marks that the db has been initialized

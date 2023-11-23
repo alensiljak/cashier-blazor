@@ -28,37 +28,37 @@ namespace Cashier.Services
 
         public async Task<string> GetDefaultCurrency()
         {
-            return await GetGeneric<string>(SettingsKeys.currency);
+            return await GetSetting<string>(SettingsKeys.currency);
         }
 
         public async Task<string> GetSyncServerUrl()
         {
-            return await GetGeneric<string>(SettingsKeys.syncServerUrl);
+            return await GetSetting<string>(SettingsKeys.syncServerUrl);
         }
 
         public async Task<string> GetRootInvestmentAccount()
         {
-            return await GetGeneric<string>(SettingsKeys.rootInvestmentAccount);
+            return await GetSetting<string>(SettingsKeys.rootInvestmentAccount);
         }
 
         public async Task<bool> GetRememberLastTransaction()
         {
-            return await GetGeneric<bool>(SettingsKeys.rememberLastTransaction);
+            return await GetSetting<bool>(SettingsKeys.rememberLastTransaction);
         }
 
         public async Task<bool> GetSyncAccounts()
         {
-            return await GetGeneric<bool>(SettingsKeys.syncAccounts);
+            return await GetSetting<bool>(SettingsKeys.syncAccounts);
         }
 
         public async Task<bool> GetSyncAaValues()
         {
-            return await GetGeneric<bool>(SettingsKeys.syncAaValues);
+            return await GetSetting<bool>(SettingsKeys.syncAaValues);
         }
 
         public async Task<bool> GetSyncPayees()
         {
-            return await GetGeneric<bool>(SettingsKeys.syncPayees);
+            return await GetSetting<bool>(SettingsKeys.syncPayees);
         }
 
         /// <summary>
@@ -111,37 +111,35 @@ namespace Cashier.Services
 
         public async Task<string> SetDefaultCurrency(string value)
         {
-            return await SetGeneric(SettingsKeys.currency, value);
+            return await SetSetting(SettingsKeys.currency, value);
         }
 
         public async Task<string> SetRootInvestmentAccount(string value)
         {
-            return await SetGeneric(SettingsKeys.rootInvestmentAccount, value);
+            return await SetSetting(SettingsKeys.rootInvestmentAccount, value);
         }
 
         public async Task<string> SetSyncAccounts(bool value)
         {
-            return await SetGeneric(SettingsKeys.syncAccounts, value);
+            return await SetSetting(SettingsKeys.syncAccounts, value);
         }
 
         public async Task<string> SetSyncAaValues(bool value)
         {
-            return await SetGeneric(SettingsKeys.syncAaValues, value);
+            return await SetSetting(SettingsKeys.syncAaValues, value);
         }
 
         public async Task<string> SetSyncPayees(bool value)
         {
-            return await SetGeneric(SettingsKeys.syncPayees, value);
+            return await SetSetting(SettingsKeys.syncPayees, value);
         }
 
         public async Task<string> SetSyncServerUrl(string value)
         {
-            return await SetGeneric(SettingsKeys.syncServerUrl, value);
+            return await SetSetting(SettingsKeys.syncServerUrl, value);
         }
 
-        // Private
-
-        private async Task<T> GetGeneric<T>(string key)
+        public async Task<T> GetSetting<T>(string key)
         {
             var record = await _db.Settings.Get(key);
             if (record == null)
@@ -155,50 +153,19 @@ namespace Cashier.Services
             return result!;
         }
 
-        private async Task<string> SetGeneric<T>(string key, T value)
+        public async Task<string> SetSetting<T>(string key, T value)
         {
             var record = await _db.Settings.Get(key);
             if (record == null)
             {
-                throw new Exception("The setting not found!");
+                record = new Setting(key, string.Empty);
             }
 
             record.Value = JsonConvert.SerializeObject(value);
+            
             var result = await _db.Settings.Put(record);
 
             return result;
-
         }
-
-        //private async Task<string> SetBool(string key, bool value)
-        //{
-        //    var record = await _db.Settings.Get(key);
-        //    if (record == null)
-        //    {
-        //        throw new Exception("The setting not found!");
-        //    }
-
-        //    record.Value = JsonConvert.SerializeObject(value);
-        //    //record.Value = value.ToString();
-
-        //    var result = await _db.Settings.Put(record);
-
-        //    return result;
-        //}
-
-        //private async Task<string> SetString(string key, string value)
-        //{
-        //    var record = await _db.Settings.Get(key);
-        //    if (record == null)
-        //    {
-        //        record = new Setting(key, value);
-        //    }
-
-        //    record.Value = JsonConvert.SerializeObject(value);
-
-        //    var result = await _db.Settings.Put(record);
-
-        //    return result;
-        //}
     }
 }

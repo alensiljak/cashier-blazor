@@ -1,11 +1,81 @@
 ﻿@page "/cloud-backup"
 
+@using MudBlazor
+@* @using WebDav *@
+@inject ISettingsService Settings
+@inject NotificationService Notification
+@inject HttpClient httpClient
+
 <ToolbarMud>
     <Title>Cloud Backup</Title>
 </ToolbarMud>
 
-<h3>CloudBackup</h3>
+<MudPaper Class="mx-2" Style="background-color: var(--mud-palette-background);">
+    <MudTextField T="string" Placeholder="i.e. http://localhost:8080" Label="Server URL" Value="@ServerUrl"
+                  ValueChanged="(e) => saveServerUrl(e)" FullWidth="false" Class="pa-5" />
+</MudPaper>
+
+<MudButton @onclick="TestServer">Test</MudButton>
+@* <MudButton @onclick="TestServerUsingWebDav">Test WebDAV</MudButton> *@
+<MudButton @onclick="TestPropfind">Test PROPFIND</MudButton>
 
 @code {
+    string? ServerUrl { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await loadSettings();
+    }
+
+    async Task loadSettings()
+    {
+        ServerUrl = await Settings.GetSetting<string>(SettingsKeys.backupServerUrl);
+    }
+
+    async Task saveServerUrl(string value)
+    {
+        ServerUrl = value;
+        await Settings.SetSetting(SettingsKeys.backupServerUrl, ServerUrl);
+
+        Notification.Show("Saved Server URL");
+    }
+
+    async Task TestServer()
+    {
+        var url = GetUrl("/");
+
+        // send a simple OPTIONS request.
+        var request = new HttpRequestMessage(HttpMethod.Options, url);
+        var response = await httpClient.SendAsync(request);
+        var result = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(result);
+    }
+
+    // async Task TestServerUsingWebDav()
+    // {
+    //     using var client = new WebDavClient(httpClient);
+    //     var url = GetUrl("/");
+
+    //     var result = await client.Propfind(url);
+    //     Console.WriteLine(result.Description);
+    // }
+
+    async Task TestPropfind()
+    {
+        var url = GetUrl("/");
+
+        // send the PROPFIND request.
+        var method = new HttpMethod("PROPFIND");
+        var request = new HttpRequestMessage(method, url);
+        var response = await httpClient.SendAsync(request);
+        var result = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(result);
+    }
+
+    private string GetUrl(string path)
+    {
+        return string.Format("{0}{1}", ServerUrl, path);
+    }
 }
