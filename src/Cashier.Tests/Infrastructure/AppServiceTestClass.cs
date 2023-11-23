@@ -12,7 +12,7 @@ namespace Cashier.Tests.Infrastructure
 {
     internal class AppServiceTestClass : AppService
     {
-        public AppServiceTestClass(IJSRuntime jsRuntime, IDexieDAL dal) : base(jsRuntime, dal)
+        public AppServiceTestClass(IDexieDAL dal) : base(dal)
         {
         }
 
