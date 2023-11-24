@@ -27,11 +27,24 @@ else
         </div>
     </MudPaper>
 
+@*
     <MudDataGrid T="Payee" Items="@payees" Height="85vh" Virtualize="true" RowClick="@OnRowClick">
         <Columns>
             <PropertyColumn Property="@(p => p.Name)" HeaderStyle="display: none;" CellClass="px-1" />
         </Columns>
     </MudDataGrid>
+*@
+    <MudSimpleTable Style="height: 85vh; overflow-y: scroll;">
+        <tbody>
+            @foreach (var payee in payees)
+            {
+                <tr @onclick="@(() => OnTrClick(payee.Name!))">
+                    <td>@payee.Name</td>
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+
 }
 
 @code {
@@ -65,13 +78,7 @@ else
 
     async Task OnRowClick(DataGridRowClickEventArgs<Payee> args)
     {
-        var meta = State.SelectionModeMetadata;
-        if (meta == null) return;
-        if (meta.SelectionType != SelectionType.Payee) throw new Exception("Invalid selection mode!");
-
-        meta.SelectedId = args.Item.Name;
-
-        await JSRuntime.InvokeVoidAsync("history.back");
+        await SelectPayee(args.Item.Name!);
     }
 
     /// <summary>
@@ -80,5 +87,21 @@ else
     async Task OnSearch()
     {
         await loadData();
+    }
+
+    async Task OnTrClick(string payeeName)
+    {
+        await SelectPayee(payeeName);
+    }
+
+    async Task SelectPayee(string payeeName)
+    {
+        var meta = State.SelectionModeMetadata;
+        if (meta == null) return;
+        if (meta.SelectionType != SelectionType.Payee) throw new Exception("Invalid selection mode!");
+
+        meta.SelectedId = payeeName;
+
+        await new RouterService(JSRuntime).Back();
     }
 }

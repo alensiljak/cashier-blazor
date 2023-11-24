@@ -4,6 +4,9 @@
 @inject NavigationManager NavMan
 @inject AppState State
 @inject NotificationService Notification
+@inject ISettingsService _settings
+@inject IDexieDAL _db
+@inject IJSRuntime _jsRuntime
 
 @using MudBlazor
 
@@ -27,16 +30,16 @@
     {
         base.OnInitialized();
 
-        if(State.Xact == null)
+        if (State.Xact == null)
         {
             NavMan.NavigateTo("/");
         }
     }
 
-    void OnFab()
+    async Task OnFab()
     {
         // save
-        OnSaveClicked();
+        await OnSaveClicked();
     }
 
     void OnResetClick()
@@ -44,10 +47,43 @@
         State.CloseMenu();
     }
 
-    void OnSaveClicked()
+    async Task OnSaveClicked()
     {
         State.CloseMenu();
 
-        Notification.Warning("not implemented");
+        await SaveXact();
+    }
+
+    async Task SaveXact()
+    {
+        var xact = State.Xact;
+        if (xact == null)
+        {
+            Notification.Warning("No transaction found!");
+            return;
+        }
+
+        // Do we need the id?
+        // xact.Id = 0;
+
+        try
+        {
+            DebugPrinter.PrintJson(xact);
+
+            // var result = await _db.Xacts.Put(xact);
+            var result = await _db.Xacts.Add(xact);
+            Notification.Success("Xact saved: " + result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Notification.Error(ex.Message);
+            return;
+        }
+
+        // todo: Should we memorize the last transaction?
+        var remember = await _settings.GetSetting<bool>(SettingsKeys.rememberLastTransaction);
+
+        await new RouterService(_jsRuntime).Back();
     }
 }
