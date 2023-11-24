@@ -1,17 +1,17 @@
 ﻿@page "/settings"
 
+@using BlazorDexie.JsModule
+@using KristofferStrube.Blazor.FileSystem
+@using MudBlazor
+@using Cashier.Services
+@using System.Text.Json
+
 @inject IJSRuntime JSRuntime
 @inject ISettingsService settings
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject NavigationManager NavMan
 @inject IStorageManagerService StorageManagerService
-
-@using BlazorDexie.JsModule
-@using KristofferStrube.Blazor.FileSystem
-@using MudBlazor
-@using Cashier.Services
-@using System.Text.Json
 
 <ToolbarMud>
     <Title>Settings</Title>

@@ -3,73 +3,26 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager NavMan
 @inject AppState State
+@inject NotificationService Notification
 
 @using MudBlazor
 
 <ToolbarMud>
     <Title>Journal Entry</Title>
     <ContextMenuItems>
-        <MudMenuItem Icon="@IconsMud.Save">Save</MudMenuItem>
+        <MudMenuItem Icon="@IconsMud.Save" @onclick="OnSaveClicked">Save</MudMenuItem>
         <MudMenuItem Icon="@IconsMud.XCircle">Reset</MudMenuItem>
     </ContextMenuItems>
 
 </ToolbarMud>
 
+@* FAB *@
 <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check"
         Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 
-@* Date *@
-<MudDatePicker @ref="_datePicker" Placeholder="Date" DateFormat="@FixedSettings.DateFormat"
-               AutoClose="true" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.CalendarDays"
-               @bind-Date="date">
-    <PickerActions>
-        <MudButton Class="mr-auto align-self-start" OnClick="Today">Today</MudButton>
-    </PickerActions>
-</MudDatePicker>
-
-@* Payee *@
-<MudTextField T="string" Placeholder="Payee" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.Users2"
-              @bind-Value="Payee" @onclick="OnPayeeClick" />
-
-<MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.FileText" />
-
-@* Postings *@
-<MudText Align="Align.Center" Class="pt-1">Postings</MudText>
-
-<MudPaper Class="d-flex justify-center gap-10">
-    <MudIconButton Icon="@IconsMud.PlusCircle" />
-    <MudIconButton Icon="@IconsMud.ArrowUpDown" />
-    <MudIconButton Icon="@IconsMud.Trash" />
-</MudPaper>
-
-@if (State?.Xact?.Postings != null)
-{
-    @foreach (var posting in Postings)
-    {
-        var index = State.Xact?.Postings.IndexOf(posting);
-        <PostingEditor Posting="posting" OnAccountClick="@(() => OnAccountClicked(index))" />
-    }
-}
+<XactEditor />
 
 @code {
-    MudDatePicker _datePicker = default!;
-    DateTime? date
-    {
-        get
-        {
-            return State?.Xact?.Date;
-        }
-        set
-        {
-            if (State == null || State.Xact == null)
-            {
-                return;
-            }
-
-            State.Xact.Date = value ?? DateTime.Today;
-        }
-    }
-
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -80,46 +33,14 @@
         }
     }
 
-    string Payee
-    {
-        get
-        {
-            return State?.Xact?.Payee ?? string.Empty;
-        }
-        set
-        {
-            State.Xact!.Payee = value;
-        }
-    }
-
-    List<Posting> Postings
-    {
-        get
-        {
-            return State.Xact?.Postings ?? new List<Posting>();
-        }
-    }
-
-    private async Task Today()
-    {
-        await _datePicker.GoToDate(DateTime.Today);
-    }
-
-    void OnAccountClicked(int? index)
-    {
-        Console.WriteLine("account clicked on line {0}", index);
-
-        NavMan.NavigateTo("/accounts");
-    }
-
     void OnFab()
     {
         // save
-        Snackbar.Add("save here");
+        OnSaveClicked();
     }
 
-    void OnPayeeClick()
+    void OnSaveClicked()
     {
-        NavMan.NavigateTo("/payees");
+        Notification.Warning("not implemented");
     }
 }

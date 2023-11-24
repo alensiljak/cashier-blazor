@@ -1,4 +1,5 @@
 ﻿@page "/"
+
 @inject NavigationManager NavMan
 @inject AppState State
 
@@ -25,8 +26,8 @@
 
 <SyncCard Class="mt-3" />
 
-<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus" 
-    Style="@Constants.DefaultFabPosition" @onclick="OnFab"/>
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus"
+        Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 
 @code {
     void OnFab()

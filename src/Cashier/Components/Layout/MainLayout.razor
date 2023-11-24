@@ -4,13 +4,13 @@
 
 <GestureContainer OnSwipeAsync="OnSwipe">
     <div style="display:flex; flex-direction: row;">
-        <nav class="sidenav" style="width: @appState.SidebarWidth;">
+@*         <nav class="sidenav" style="width: @appState.SidebarWidth;">
             NavMenu
         </nav>
         <main style="margin-left: @appState.SidebarWidth;">
             @Body
         </main>
-    </div>
+ *@    </div>
 </GestureContainer>
 
 @code {
@@ -23,15 +23,15 @@
     private Task OnSwipe(GestureContainer.SwipeDirection swipeDirection)
     {
         // if open, allow swiping left to close.
-        if (appState.SidebarVisible && swipeDirection == GestureContainer.SwipeDirection.Left)
-        {
-            appState.ToggleSidebar();
-        }
+        // if (appState.SidebarVisible && swipeDirection == GestureContainer.SwipeDirection.Left)
+        // {
+        //     appState.ToggleSidebar();
+        // }
         // if closed, allow swiping right to open.
-        if (!appState.SidebarVisible && swipeDirection == GestureContainer.SwipeDirection.Right)
-        {
-            appState.ToggleSidebar();
-        }
+        // if (!appState.SidebarVisible && swipeDirection == GestureContainer.SwipeDirection.Right)
+        // {
+        //     appState.ToggleSidebar();
+        // }
         StateHasChanged();
 
         return Task.CompletedTask;
