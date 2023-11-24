@@ -1,8 +1,10 @@
 ﻿@page "/accounts"
 
-@inject IDexieDAL db
-
 @using MudBlazor
+
+@inject IDexieDAL db
+@inject AppState State
+@inject IJSRuntime JSRuntime
 
 <ToolbarMud>
     <Title>Accounts</Title>
@@ -11,24 +13,19 @@
 @* Search *@
 <MudPaper Class="px-2 py-1 d-flex justify-center">
     <div style="width: 500px;">
-        <MudTextField AutoFocus="true" T="string" Adornment="Adornment.End" AdornmentIcon="@IconsMud.Search" Label="Search" 
+        <MudTextField AutoFocus="true" T="string" Adornment="Adornment.End" AdornmentIcon="@IconsMud.Search" Label="Search"
                       Variant="Variant.Outlined" Margin="Margin.Dense" FullWidth="false" Clearable="true"
-                      DebounceInterval="300" OnDebounceIntervalElapsed="OnSearch" 
+                      DebounceInterval="300" OnDebounceIntervalElapsed="OnSearch"
                       @bind-Value="searchTerm" />
     </div>
 </MudPaper>
 
 @* Accounts list *@
-<MudSimpleTable>
-    <tbody>
-        @foreach(var account in accounts)
-        {
-            <tr>
-                <td>@account.Name</td>
-            </tr>
-        }
-    </tbody>
-</MudSimpleTable>
+<MudDataGrid T="Account" Items="accounts" Height="85vh" Virtualize="true" RowClick="@OnRowClick">
+    <Columns>
+        <PropertyColumn Property="@(a => a.Name)" HeaderStyle="display: none;" CellClass="px-1" />
+    </Columns>
+</MudDataGrid>
 
 @code {
     string? searchTerm;
@@ -61,6 +58,17 @@
 
         // take only the top 100 results
         accounts = accounts.Take(100).ToList();
+    }
+
+    async Task OnRowClick(DataGridRowClickEventArgs<Account> args)
+    {
+        var meta = State.SelectionModeMetadata;
+        if (meta == null) return;
+        if (meta.SelectionType != SelectionType.Account) throw new Exception("Invalid selection mode!");
+
+        meta.SelectedId = args.Item.Name;
+
+        await JSRuntime.InvokeVoidAsync("history.back");
     }
 
     /// <summary>

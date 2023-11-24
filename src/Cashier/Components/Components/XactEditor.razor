@@ -4,11 +4,13 @@
 
 @inject AppState State
 @inject NavigationManager NavMan
+@inject IDexieDAL db
+@inject ISettingsService settings
 
 @* Date *@
 <MudDatePicker @ref="_datePicker" Placeholder="Date" DateFormat="@FixedSettings.DateFormat"
                AutoClose="true" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.CalendarDays"
-               @bind-Date="date">
+               @bind-Date="date" PickerVariant="PickerVariant.Dialog">
     <PickerActions>
         <MudButton Class="mr-auto align-self-start" OnClick="Today">Today</MudButton>
     </PickerActions>
@@ -83,11 +85,11 @@
 
         if (State.SelectionModeMetadata != null)
         {
-            handleSelection();
+            await handleSelection();
         }
     }
 
-    void handleSelection()
+    async Task handleSelection()
     {
         if (State.Xact == null)
         {
@@ -100,7 +102,26 @@
         switch (meta.SelectionType)
         {
             case SelectionType.Account:
+                // get the posting
+                if (meta.PostingIndex == null) throw new Exception("Invalid posting index in selection metadata!");
+                var posting = State.Xact?.Postings?[meta.PostingIndex.Value];
+                if (posting == null) throw new Exception("Posting not found!");
+                // load the account
+                // if (meta.SelectedId)
+                var account = await db.Accounts.Get(meta.SelectedId!);
+                if (account == null) throw new Exception("Account not found!");
+                var svc = new AccountService();
+                var defaultCurrency = await settings.GetSetting<string>(SettingsKeys.currency);
+                var balance = svc.GetAccountBalance(account, defaultCurrency);
+
+                posting.Account = account.Name;
+                if (posting.Money == null)
+                {
+                    posting.Money = new Money();
+                }
+                posting.Money!.Currency = balance.Currency;
                 break;
+
             case SelectionType.Payee:
                 State.Xact.Payee = meta.SelectedId;
                 // todo: load last transaction
@@ -112,7 +133,14 @@
 
     void OnAccountClicked(int? index)
     {
-        Console.WriteLine("account clicked on line {0}", index);
+        var selectionMode = new SelectionModeMetadata()
+            {
+                // save the index of the posting being edited
+                PostingIndex = index,
+                SelectionType = SelectionType.Account
+            };
+
+        State.SelectionModeMetadata = selectionMode;
 
         NavMan.NavigateTo("/accounts");
     }
@@ -120,9 +148,9 @@
     void OnPayeeClick()
     {
         var selectionMode = new SelectionModeMetadata()
-        {
-            SelectionType = SelectionType.Payee
-        };
+            {
+                SelectionType = SelectionType.Payee
+            };
 
         State.SelectionModeMetadata = selectionMode;
 
