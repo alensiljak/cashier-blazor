@@ -64,14 +64,16 @@
         }
 
         // Do we need the id?
-        // xact.Id = 0;
+        if (xact.Id == null)
+        {
+            xact.Id = DateTime.UtcNow.Ticks;
+        }
 
         try
         {
-            DebugPrinter.PrintJson(xact);
+            var result = await _db.Xacts.Put(xact);
+            Console.WriteLine("after save: {0}", result);
 
-            // var result = await _db.Xacts.Put(xact);
-            var result = await _db.Xacts.Add(xact);
             Notification.Success("Xact saved: " + result);
         }
         catch (Exception ex)

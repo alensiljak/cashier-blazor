@@ -118,14 +118,14 @@
         await _db.Accounts.Add(new Account("Expenses"));
         await _db.Accounts.Add(new Account("Income"));
 
-        await _db.Xacts.Add(new Xact(DateTime.Parse("2023-10-29"), "Oebb", null, null));
+        await _db.Xacts.Add(new Xact(DateOnly.Parse("2023-10-29"), "Oebb", null, null));
 
         var postings = new List<Posting>
         {
                 new Posting("Expenses:Groceries", new Money(20, "EUR")),
                 new Posting("Assets:Checking", null)
         };
-        await _db.Xacts.Add(new Xact(DateTime.Parse("2023-10-30"), "Drakon", null, postings));
+        await _db.Xacts.Add(new Xact(DateOnly.Parse("2023-10-30"), "Drakon", null, postings));
 
         await LoadData();
     }
@@ -136,7 +136,7 @@
 
         // await _db.Transaction(async tx =>
         // {
-        var key = await _db.Xacts.Add(new Xact(DateTime.Parse("2023-11-01"), "Halloween", null, null));
+        var key = await _db.Xacts.Add(new Xact(DateOnly.Parse("2023-11-01"), "Halloween", null, null));
         var xact = await _db.Xacts.Get(key);
         // });
 
@@ -152,7 +152,7 @@
             // await _db.Transaction(async tx =>
             // {
             await _db.Xacts.Clear();
-            var key = await _db.Xacts.Add(new Xact(DateTime.Parse("2023-10-18"), "Supermarket", null, null));
+            var key = await _db.Xacts.Add(new Xact(DateOnly.Parse("2023-10-18"), "Supermarket", null, null));
             var xact = await _db.Xacts.Get(key);
             if (xact == null)
             {

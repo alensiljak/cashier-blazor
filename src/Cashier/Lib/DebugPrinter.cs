@@ -20,7 +20,7 @@ namespace Cashier.Lib
             }
         }
 
-        public static void PrintJson(object obj)
+        public static void PrintJson(object? obj)
         {
             var output = JsonConvert.SerializeObject(obj);
 

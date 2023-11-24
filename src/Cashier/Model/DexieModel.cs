@@ -60,13 +60,4 @@ namespace Cashier.Model
         public string? Account { get; set; } = account;
         public Money? Money { get; set; } = money;
     }
-
-    public class Xact(DateTime date, string? payee = null, string? note = null, List<Posting>? postings = null)
-    {
-        public int? Id { get; set; }
-        public DateTime Date { get; set; } = date;
-        public string? Payee { get; set; } = payee;
-        public string? Note { get; set; } = note;
-        public List<Posting>? Postings { get; set; } = postings;
-    }
 }

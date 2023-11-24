@@ -107,5 +107,17 @@ namespace Cashier.Services
 
             return accounts;
         }
+
+        /// <summary>
+        /// Returns the next available Xact Id number.
+        /// The insert/put is complicated even though the Id is an autoincrement field.
+        /// </summary>
+        /// <returns></returns>
+        public int GetNextXactId()
+        {
+            //DAL.Xacts.OrderBy("id").;
+            // DAL.Xacts.PrimaryKeys()
+            return 0;
+        }
     }
 }

@@ -46,7 +46,8 @@
     {
         get
         {
-            return State?.Xact?.Date;
+            var dtValue = State?.Xact?.Date.ToDateTime(TimeOnly.MinValue);
+            return dtValue;
         }
         set
         {
@@ -55,7 +56,13 @@
                 return;
             }
 
-            State.Xact.Date = value ?? DateTime.Today;
+            var dtValue = value;
+            if (dtValue == null)
+            {
+                value = DateTime.Today;
+            }
+            var doValue = DateOnly.FromDateTime(dtValue!.Value);
+            State.Xact.Date = doValue;
         }
     }
 
