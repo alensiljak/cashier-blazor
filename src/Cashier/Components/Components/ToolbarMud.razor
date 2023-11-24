@@ -14,11 +14,11 @@
     </MudText>
 
     <MudSpacer />
-    @* <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" /> *@
     @if (ContextMenuItems != null)
     {
-        <MudMenu Icon="@IconsMud.MoreVertical" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.TopRight"
-            Color="Color.Inherit">
+        <MudMenu Icon="@IconsMud.MoreVertical" @ref="mudMenu"
+        AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.TopRight"
+                 Color="Color.Inherit">
             @ContextMenuItems
         </MudMenu>
     }
@@ -33,6 +33,20 @@
 
     [Parameter]
     public RenderFragment? ContextMenuItems { get; set; }
+
+    private MudMenu? mudMenu;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        appState.OnCloseMenu += CloseMenu;
+    }
+
+    private void CloseMenu()
+    {
+        mudMenu?.CloseMenu();
+    }
 
     private void OnMenuClick()
     {

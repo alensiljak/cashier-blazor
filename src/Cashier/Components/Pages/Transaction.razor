@@ -10,8 +10,8 @@
 <ToolbarMud>
     <Title>Journal Entry</Title>
     <ContextMenuItems>
-        <MudMenuItem Icon="@IconsMud.Save" @onclick="OnSaveClicked">Save</MudMenuItem>
-        <MudMenuItem Icon="@IconsMud.XCircle">Reset</MudMenuItem>
+        <MudListItem Icon="@IconsMud.Save" @onclick="OnSaveClicked">Save</MudListItem>
+        <MudListItem Icon="@IconsMud.XCircle" @onclick="OnResetClick">Reset</MudListItem>
     </ContextMenuItems>
 
 </ToolbarMud>
@@ -39,8 +39,15 @@
         OnSaveClicked();
     }
 
+    void OnResetClick()
+    {
+        State.CloseMenu();
+    }
+
     void OnSaveClicked()
     {
+        State.CloseMenu();
+
         Notification.Warning("not implemented");
     }
 }

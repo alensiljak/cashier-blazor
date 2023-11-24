@@ -7,6 +7,19 @@ namespace Cashier.Data
     /// </summary>
     public class AppState
     {
+        /// <summary>
+        /// Menu closing. This is necessary at the moment due to a bug where tapping the menu items simply
+        /// propagates the event to the control below due to quick closing of the menu in MudBlazor. Hence
+        /// the menu items are replaced with List Items. 
+        /// Now closing of the menu has to be done manually, after the desired operation has completed or
+        /// whenever necessary.
+        /// </summary>
+        public void CloseMenu()
+        {
+            OnCloseMenu?.Invoke();
+        }
+        public event Action? OnCloseMenu;
+
         // For use with MudBlazor.
         public bool DrawerOpen { get; set; } = true;
 

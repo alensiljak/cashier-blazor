@@ -5,6 +5,7 @@
 @inject ISettingsService settings
 @inject NotificationService Notification
 @inject HttpClient HttpClient
+@inject AppState State
 
 @using Cashier.Services
 @using MudBlazor
@@ -12,7 +13,7 @@
 <ToolbarMud>
     <Title>Cashier Sync</Title>
     <ContextMenuItems>
-        <MudMenuItem Icon="@IconsMud.Power" IconSize="Size.Medium" @onclick="OnShutDownClick">Shut down server</MudMenuItem>
+        <MudListItem Icon="@IconsMud.Power" IconSize="Size.Medium" @onclick="OnShutDownClick">Shut down server</MudListItem>
     </ContextMenuItems>
 </ToolbarMud>
 
@@ -134,6 +135,8 @@
         {
             Notification.Warning(ex.Message);
         }
+
+        State.CloseMenu();
     }
 
     ///  <summary>

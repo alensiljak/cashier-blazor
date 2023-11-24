@@ -21,11 +21,30 @@
 </MudPaper>
 
 @* Accounts list *@
+@*
 <MudDataGrid T="Account" Items="accounts" Height="85vh" Virtualize="true" RowClick="@OnRowClick">
     <Columns>
         <PropertyColumn Property="@(a => a.Name)" HeaderStyle="display: none;" CellClass="px-1" />
     </Columns>
 </MudDataGrid>
+*@
+@if (accounts == null)
+{
+    <MudText>Loading accounts...</MudText>
+}
+else
+{
+    <MudSimpleTable Style="height: 85vh; overflow-y: scroll;">
+        <tbody>
+            @foreach (var account in accounts)
+            {
+                <tr @onclick="@(() => OnTrClick(account.Name!))">
+                    <td>@account.Name</td>
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+}
 
 @code {
     string? searchTerm;
@@ -62,13 +81,12 @@
 
     async Task OnRowClick(DataGridRowClickEventArgs<Account> args)
     {
-        var meta = State.SelectionModeMetadata;
-        if (meta == null) return;
-        if (meta.SelectionType != SelectionType.Account) throw new Exception("Invalid selection mode!");
+        await SelectAccount(args.Item.Name!);
+    }
 
-        meta.SelectedId = args.Item.Name;
-
-        await JSRuntime.InvokeVoidAsync("history.back");
+    async Task OnTrClick(string accountName)
+    {
+        await SelectAccount(accountName);
     }
 
     /// <summary>
@@ -77,5 +95,22 @@
     async Task OnSearch()
     {
         await loadData();
+    }
+
+    /// <summary>
+    /// Separated so that it can be shared with the two events.
+    /// </summary>
+    /// <param name="accountName"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    async Task SelectAccount(string accountName)
+    {
+        var meta = State.SelectionModeMetadata;
+        if (meta == null) return;
+        if (meta.SelectionType != SelectionType.Account) throw new Exception("Invalid selection mode!");
+
+        meta.SelectedId = accountName;
+
+        await JSRuntime.InvokeVoidAsync("history.back");
     }
 }
