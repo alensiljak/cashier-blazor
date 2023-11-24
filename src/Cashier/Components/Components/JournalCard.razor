@@ -2,6 +2,7 @@
     Journal Card
 *@
 @inject ISnackbar Snackbar
+@inject IDexieDAL _db
 
 @using MudBlazor
 
@@ -18,8 +19,28 @@
             @* <MudIcon Icon="@IconsMud.Settings" /> *@
         </CardHeaderActions>
     </MudCardHeader>
-    <MudCardContent>
-        Status:
+    <MudCardContent Class="pa-0">
+        @if (Xacts == null || Xacts.Count == 0)
+        {
+            <MudText>There are no local transactions</MudText>
+        } else
+        {
+            <MudSimpleTable Dense>
+                <tbody>
+                    @foreach (var xact in Xacts)
+                    {
+                        var index = Xacts.IndexOf(xact);
+                        Console.WriteLine("index: {0}", index);
+                        var balance = Balances.ElementAtOrDefault(index);
+
+                        <tr>
+                            <td class="pl-2 pr-1">@xact?.Payee</td>
+                            <td style="text-align: end;" class="pl-1 pr-2">@balance?.Amount @balance?.Currency</td>
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
+        }
     </MudCardContent>
     <MudCardActions Class="justify-center">
         <MudButton StartIcon="@IconsMud.FileUp" Variant="Variant.Outlined" Color="Color.Tertiary"
@@ -31,6 +52,26 @@
 @code {
     [Parameter]
     public string? Class { get; set; }
+
+    private List<Xact> Xacts { get; set; } = [];
+    private List<Money> Balances { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await loadData();
+    }
+
+    async Task loadData()
+    {
+        Xacts = await _db.Xacts.OrderBy("date")
+            .Reverse()
+            .Limit(5)
+            .ToList();
+
+        Balances = new TransactionAugmenter().calculateTxAmounts(Xacts);
+    }
 
     void OnExportClick()
     {
