@@ -46,27 +46,30 @@
     </MudStack>
 </MudPaper>
 
-@if (State?.Xact?.Postings != null)
+@if (Xact?.Postings != null)
 {
     @foreach (var posting in Postings)
     {
-        var index = State.Xact?.Postings.IndexOf(posting);
+        var index = Xact?.Postings.IndexOf(posting);
         <PostingEditor Posting="posting" OnAccountClick="@(() => OnAccountClicked(index))" />
     }
 }
 
 @code {
+    [Parameter, EditorRequired]
+    public Xact? Xact { get; set; }
+
     MudDatePicker _datePicker = default!;
     DateTime? date
     {
         get
         {
-            var dtValue = State?.Xact?.Date.ToDateTime(TimeOnly.MinValue);
+            var dtValue = Xact?.Date.ToDateTime(TimeOnly.MinValue);
             return dtValue;
         }
         set
         {
-            if (State == null || State.Xact == null)
+            if (Xact == null)
             {
                 return;
             }
@@ -77,7 +80,7 @@
                 value = DateTime.Today;
             }
             var doValue = DateOnly.FromDateTime(dtValue!.Value);
-            State.Xact.Date = doValue;
+            Xact.Date = doValue;
         }
     }
 
@@ -85,11 +88,11 @@
     {
         get
         {
-            return State?.Xact?.Payee ?? string.Empty;
+            return Xact?.Payee ?? string.Empty;
         }
         set
         {
-            State.Xact!.Payee = value;
+            Xact!.Payee = value;
         }
     }
 
@@ -97,7 +100,7 @@
     {
         get
         {
-            return State.Xact?.Postings ?? new List<Posting>();
+            return Xact?.Postings ?? new List<Posting>();
         }
     }
 
@@ -115,7 +118,7 @@
 
     async Task handleSelection()
     {
-        if (State.Xact == null)
+        if (Xact == null)
         {
             throw new Exception("No Transaction found in state!");
         }
@@ -128,7 +131,7 @@
             case SelectionType.Account:
                 // get the posting
                 if (meta.PostingIndex == null) throw new Exception("Invalid posting index in selection metadata!");
-                var posting = State.Xact?.Postings?[meta.PostingIndex.Value];
+                var posting = Xact?.Postings?[meta.PostingIndex.Value];
                 if (posting == null) throw new Exception("Posting not found!");
                 // load the account
                 // if (meta.SelectedId)
@@ -147,7 +150,7 @@
                 break;
 
             case SelectionType.Payee:
-                State.Xact.Payee = meta.SelectedId;
+                Xact.Payee = meta.SelectedId;
                 // todo: load last transaction
                 break;
         }
@@ -171,13 +174,13 @@
 
     void OnAddPostingClick()
     {
-        if (State.Xact is null)
+        if (Xact is null)
         {
             Notification.Error("The transaction is not initialized!");
             return;
         }
 
-        State.Xact?.Postings?.Add(new Posting());
+        Xact?.Postings?.Add(new Posting());
     }
 
     void OnDeletePostingsClicked()

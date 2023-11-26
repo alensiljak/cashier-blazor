@@ -7,6 +7,7 @@
 @inject ISettingsService _settings
 @inject IDexieDAL _db
 @inject IJSRuntime _jsRuntime
+@inject IDialogService DialogService
 
 @using MudBlazor
 
@@ -23,9 +24,16 @@
 <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check"
         Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 
-<XactEditor />
+<XactEditor Xact="@Xact" />
 
 @code {
+    Xact? Xact
+    {
+        get
+        {
+            return State.Xact;
+        }
+    }
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -42,9 +50,22 @@
         await OnSaveClicked();
     }
 
-    void OnResetClick()
+    async Task OnResetClick()
     {
         State.CloseMenu();
+
+        // confirm with a dialog
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you want to clear all the fields?");
+        parameters.Add(x => x.ConfirmationButtonColor, Color.Secondary);
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Delete", parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Large });
+        var result = await dialog.Result;
+        if (result.Canceled) return;
+
+        //
+        var xact = new TransactionActions().CreateNew();
+        State.Xact = xact;
     }
 
     async Task OnSaveClicked()
