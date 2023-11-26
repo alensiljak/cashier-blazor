@@ -1,11 +1,45 @@
 ﻿@page "/export"
+@page "/export/{dataType?}"
+@using MudBlazor
+@inject IDexieDAL _db
 
 <ToolbarMud>
-    Export
+    Export @dataType
 </ToolbarMud>
 
-<h3>Export</h3>
+<div>
+    <p>Export your data - {{ dataType }}:</p>
+    <p>
+        Note: Journal is exported in ledger format, Scheduled Transactions in
+        JSON.
+    </p>
+</div>
+
+<MudTextField T="string" Lines="10" AutoGrow="true"></MudTextField>
 
 @code {
+    [Parameter]
+    public string dataType { get; set; } = "journal";
 
+    string? output;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await LoadData();
+    }
+
+    async Task LoadData()
+    {
+        switch(dataType)
+        {
+            case "journal":
+                output = await new AppService(_db).GetExportTransactions();
+                break;
+            case "scheduled":
+                // loadScheduledTransactions
+                break;
+        }
+    }
 }

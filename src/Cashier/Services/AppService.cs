@@ -8,6 +8,7 @@ using Microsoft.JSInterop;
 using MudBlazor;
 using MudBlazor.Charts;
 using System.Dynamic;
+using System.Text;
 
 namespace Cashier.Services
 {
@@ -26,6 +27,24 @@ namespace Cashier.Services
         public async Task deleteAccounts()
         {
             await DAL.Accounts.Clear();
+        }
+
+        /// <summary>
+        /// Returns all the register transactions as text,
+        /// ready to be exported as a file or copied as a string.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> GetExportTransactions()
+        {
+            var xacts = await DAL.Xacts.OrderBy("date").ToList();
+            var output = new StringBuilder();
+
+            foreach (var xact in xacts)
+            {
+                output.AppendLine(TranslateToLedger(xact));
+            }
+
+            return output.ToString();
         }
 
         public async Task<string?> ImportBalanceSheet(string[] lines)
@@ -120,6 +139,48 @@ namespace Cashier.Services
             //DAL.Xacts.OrderBy("id").;
             // DAL.Xacts.PrimaryKeys()
             return 0;
+        }
+
+        // Private
+
+        /// <summary>
+        /// Translates Transaction into a ledger entry.
+        /// </summary>
+        /// <param name="xact"></param>
+        /// <returns></returns>
+        private string TranslateToLedger(Xact xact)
+        {
+            var output = new StringBuilder();
+
+            output.Append(xact.Date.ToString(Constants.ISODateFormat));
+            output.Append(' ');
+            output.AppendLine(xact.Payee);
+
+            if (xact.Note != null)
+            {
+                output.Append("    ; ");
+                output.AppendLine(xact.Note);
+            }
+
+            // Postings.
+            if (xact.Postings != null && xact.Postings.Count > 0)
+            {
+                foreach (var posting in xact.Postings)
+                {
+                    output.Append("    ");
+                    output.Append(posting.Account);
+
+                    if (posting.Amount != null)
+                    {
+                        output.Append("  ");
+                        output.Append(posting.Amount.Quantity);
+                        output.Append(' ');
+                        output.AppendLine(posting.Amount.Currency);
+                    }
+                }
+            }
+
+            return output.ToString();
         }
     }
 }
