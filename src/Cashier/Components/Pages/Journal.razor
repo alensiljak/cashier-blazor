@@ -52,6 +52,8 @@
 
     void OnItemClicked(Xact xact)
     {
-        Console.WriteLine("Xact clicked {0}", xact);
+        // Console.WriteLine("Xact clicked {0}", xact);
+        State.Xact = xact;
+        NavMan.NavigateTo("/tx");
     }
 }
