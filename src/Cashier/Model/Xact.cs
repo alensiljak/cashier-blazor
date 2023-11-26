@@ -13,10 +13,13 @@ namespace Cashier.Model
         public override string ToString()
         {
             var postings = new StringWriter();
-            foreach(var posting in Postings)
+            if (Postings != null)
             {
-                postings.Write(posting.ToString());
-                postings.Write(", ");
+                foreach (var posting in Postings)
+                {
+                    postings.Write(posting.ToString());
+                    postings.Write(", ");
+                }
             }
             return string.Format($"{Date.ToString(Constants.ISODateFormat)} {Payee}, {Note ?? "<no note>"}, {postings}");
         }
