@@ -28,7 +28,13 @@ namespace Cashier.Services
 
         public async Task<string> GetDefaultCurrency()
         {
-            return await GetSetting<string>(SettingsKeys.currency);
+            var setting = await GetSetting<string>(SettingsKeys.currency);
+            if (string.IsNullOrEmpty(setting))
+            {
+                throw new Exception("The default currency not set! Please adjust in Settings.");
+            }
+
+            return setting;
         }
 
         public async Task<string> GetSyncServerUrl()

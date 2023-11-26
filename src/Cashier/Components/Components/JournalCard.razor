@@ -4,6 +4,7 @@
 @inject ISnackbar Snackbar
 @inject IDexieDAL _db
 @inject NavigationManager NavMan
+@inject NotificationService Notification
 
 @using MudBlazor
 
@@ -24,14 +25,14 @@
         @if (Xacts == null || Xacts.Count == 0)
         {
             <MudText>There are no local transactions</MudText>
-        } else
+        }
+        else
         {
             <MudSimpleTable Dense>
                 <tbody>
                     @foreach (var xact in Xacts)
                     {
                         var index = Xacts.IndexOf(xact);
-                        Console.WriteLine("index: {0}", index);
                         var balance = Balances.ElementAtOrDefault(index);
 
                         <tr>
@@ -45,7 +46,7 @@
     </MudCardContent>
     <MudCardActions Class="justify-center">
         <MudButton StartIcon="@IconsMud.FileUp" Variant="Variant.Outlined" Color="Color.Tertiary"
-            @onclick="OnExportClick">Export</MudButton>
+                   @onclick="OnExportClick">Export</MudButton>
     </MudCardActions>
 
 </MudCard>
@@ -66,12 +67,21 @@
 
     async Task loadData()
     {
-        Xacts = await _db.Xacts.OrderBy("date")
-            .Reverse()
-            .Limit(5)
-            .ToList();
+        try
+        {
+            Xacts = await _db.Xacts.OrderBy("date")
+                .Reverse()
+                .Limit(5)
+                .ToList();
 
-        Balances = new TransactionAugmenter().calculateTxAmounts(Xacts);
+            Balances = new TransactionAugmenter().calculateTxAmounts(Xacts);
+
+            DebugPrinter.PrintJson(Balances);
+        }
+        catch (Exception ex)
+        {
+            Notification.Error(ex.Message);
+        }
     }
 
     void OnCardClick()

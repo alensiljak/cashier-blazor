@@ -99,7 +99,7 @@ namespace Cashier.Lib
                 }
 
                 // use the currency (first?)
-                var currency = currencies.First();
+                var currency = currencies.FirstOrDefault();
 
                 // do we have empty postings?
                 var amounts = postings.Select((posting) => posting.Amount?.Quantity);
@@ -109,7 +109,7 @@ namespace Cashier.Lib
 
                 // put this value into the empty posting.
                 var emptyPostings = postings.Where((posting) => posting.Amount == null || posting.Amount?.Quantity == null);
-                Console.WriteLine("empty postings: {0}", emptyPostings.Count());
+                //Console.WriteLine("empty postings: {0}", emptyPostings.Count());
 
                 switch(emptyPostings.Count())
                 {
