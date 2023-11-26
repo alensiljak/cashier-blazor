@@ -170,12 +170,12 @@ namespace Cashier.Services
                     output.Append("    ");
                     output.Append(posting.Account);
 
-                    if (posting.Amount != null)
+                    if (posting.Amount != null && posting.Amount.Quantity != null)
                     {
                         output.Append("  ");
                         output.Append(posting.Amount.Quantity);
                         output.Append(' ');
-                        output.AppendLine(posting.Amount.Currency);
+                        output.Append(posting.Amount.Currency);
                     }
                 }
             }
