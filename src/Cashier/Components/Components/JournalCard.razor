@@ -43,29 +43,11 @@
                         <tr>
                             <td class="pl-2 pr-1">@xact.Date.ToString(Constants.ISODateFormat)</td>
                             <td class="flex-grow-1">@xact?.Payee</td>
-                            <td style="text-align: end;" class="pl-1 pr-2">@balance?.Quantity @balance?.Currency</td>
+                            <td style="text-align: end; @($"color: {GetXactColour(index)};")" class="pl-1 pr-2">@balance?.Quantity @balance?.Currency</td>
                         </tr>
                     }
                 </tbody>
             </MudSimpleTable>
-            @*
-            <MudList Dense="true" onclick="event.stopPropagation()" Clickable="false" DisableGutters="true" Class="px-1"
-                     DisablePadding="true">
-                @foreach (var xact in Xacts)
-                {
-                    var index = Xacts.IndexOf(xact);
-                    var balance = Balances.ElementAtOrDefault(index);
-
-                    <MudListItem Dense="true">
-                        <MudStack Row="true">
-                            <p>@xact.Date</p>
-                            <span class="flex-grow-1">@xact.Payee</span>
-                            <span style="text-align: end;">@balance?.Quantity @balance?.Currency</span>
-                        </MudStack>
-                    </MudListItem>
-                }
-            </MudList>
-        *@
         }
     </MudCardContent>
     <MudCardActions Class="justify-center">
@@ -87,6 +69,34 @@
         await base.OnInitializedAsync();
 
         await loadData();
+    }
+
+    string GetXactColour(int index)
+    {
+        var amount = Balances[index];
+        string colour = string.Empty;
+
+        switch (amount.Quantity)
+        {
+            case var n when n < 0:
+                colour = "red";
+                break;
+            case var n when n == 0:
+                colour = "yellow";
+                break;
+            case var n when n > 0:
+                colour = "green";
+                break;
+        }
+
+        // Transfers are yellow
+        var tx = Xacts[index];
+        if (tx.Postings?.Count(p => p.Account!.StartsWith("Assets:")) == 2)
+        {
+            colour = "yellow";
+        }
+
+        return colour;
     }
 
     async Task loadData()
