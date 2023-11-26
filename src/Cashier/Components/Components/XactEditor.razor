@@ -6,6 +6,7 @@
 @inject NavigationManager NavMan
 @inject IDexieDAL db
 @inject ISettingsService settings
+@inject NotificationService Notification
 
 @* Date *@
 <MudDatePicker @ref="_datePicker" Placeholder="Date" DateFormat="@FixedSettings.DateFormat"
@@ -23,12 +24,26 @@
 <MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.FileText" />
 
 @* Postings *@
-<MudText Align="Align.Center" Class="pt-1">Postings</MudText>
+<MudPaper Class="px-4 pt-1 mt-2">
+    <MudStack Row="true">
+        <div class="flex-grow-1">
+            <MudText Align="Align.Center">Postings</MudText>
+        </div>
+        <MudIcon Icon="@IconsMud.Sigma" />
+    </MudStack>
 
-<MudPaper Class="d-flex justify-center gap-10">
-    <MudIconButton Icon="@IconsMud.PlusCircle" />
-    <MudIconButton Icon="@IconsMud.ArrowUpDown" />
-    <MudIconButton Icon="@IconsMud.Trash" />
+    <MudStack Row="true">
+        @* Postings actions *@
+        <MudStack Row="true" Class="justify-center gap-10 flex-grow-1">
+            <MudIconButton Icon="@IconsMud.PlusCircle" @onclick="OnAddPostingClick" />
+            <MudIconButton Icon="@IconsMud.ArrowUpDown" @onclick="OnReorderPostingsClick" />
+            <MudIconButton Icon="@IconsMud.Trash" @onclick="OnDeletePostingsClicked" />
+        </MudStack>
+        @* Sum *@
+        <div class="justify-center my-auto">
+            <MudText>@Sum</MudText>
+        </div>
+    </MudStack>
 </MudPaper>
 
 @if (State?.Xact?.Postings != null)
@@ -85,6 +100,8 @@
             return State.Xact?.Postings ?? new List<Posting>();
         }
     }
+
+    private decimal Sum { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -152,6 +169,22 @@
         NavMan.NavigateTo("/accounts");
     }
 
+    void OnAddPostingClick()
+    {
+        if (State.Xact is null)
+        {
+            Notification.Error("The transaction is not initialized!");
+            return;
+        }
+
+        State.Xact?.Postings?.Add(new Posting());
+    }
+
+    void OnDeletePostingsClicked()
+    {
+        NavMan.NavigateTo("/postings-delete");
+    }
+
     void OnPayeeClick()
     {
         var selectionMode = new SelectionModeMetadata()
@@ -162,6 +195,11 @@
         State.SelectionModeMetadata = selectionMode;
 
         NavMan.NavigateTo("/payees");
+    }
+
+    void OnReorderPostingsClick()
+    {
+        NavMan.NavigateTo("/postings-reorder");
     }
 
     private async Task Today()

@@ -3,10 +3,11 @@
 *@
 @inject ISnackbar Snackbar
 @inject IDexieDAL _db
+@inject NavigationManager NavMan
 
 @using MudBlazor
 
-<MudCard Class="@Class" Outlined="true">
+<MudCard Class="@Class" Outlined="true" @onclick="OnCardClick">
     <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="px-2 pt-2 pb-1">
         <CardHeaderAvatar>
             <MudIcon Icon="@IconsMud.Scroll" Size="Size.Medium" />
@@ -71,6 +72,11 @@
             .ToList();
 
         Balances = new TransactionAugmenter().calculateTxAmounts(Xacts);
+    }
+
+    void OnCardClick()
+    {
+        NavMan.NavigateTo("/journal");
     }
 
     void OnExportClick()

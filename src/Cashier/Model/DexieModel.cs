@@ -54,10 +54,4 @@ namespace Cashier.Model
         public string Key { get; set; } = key;
         public string Value { get; set; } = value;
     }
-
-    public class Posting(string? account = null, Money? money = null)
-    {
-        public string? Account { get; set; } = account;
-        public Money? Amount { get; set; } = money;
-    }
 }

@@ -1,9 +1,11 @@
 ﻿using BlazorDexie.Database;
 using BlazorDexie.JsModule;
+using Cashier.Components.Components;
 using Cashier.Components.Pages;
 using Cashier.Data;
 using Cashier.Model;
 using Microsoft.JSInterop;
+using MudBlazor;
 using MudBlazor.Charts;
 using System.Dynamic;
 

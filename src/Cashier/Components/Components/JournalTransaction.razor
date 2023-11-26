@@ -1,0 +1,49 @@
+﻿@using MudBlazor
+@*
+    Journal Transaction read-only entry for display in lists
+*@
+
+<div @onclick="OnItemClick">
+    <MudStack Row="true">
+        <MudText>
+            @Xact.Date.ToString(Constants.ISODateFormat)
+        </MudText>
+        <MudText>
+            @Xact.Payee
+        </MudText>
+    </MudStack>
+
+    <MudText>
+        @Xact.Note
+    </MudText>
+
+    @if (Xact.Postings != null)
+    {
+        @foreach (var p in Xact.Postings)
+        {
+            <MudStack Row="true">
+                <MudText>@p.Account</MudText> ... <MudText>@p.Amount</MudText>
+            </MudStack>
+        }
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public Xact Xact { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<Xact> OnItemClicked { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+
+    }
+
+    async Task OnItemClick()
+    {
+        await OnItemClicked.InvokeAsync(Xact);
+    }
+}

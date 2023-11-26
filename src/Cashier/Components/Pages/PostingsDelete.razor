@@ -1,0 +1,65 @@
+﻿@page "/postings-delete"
+@using MudBlazor
+@inject AppState State
+@inject NotificationService Notification
+@inject IDialogService DialogService
+@inject IJSRuntime JsRuntime
+
+<ToolbarMud>
+    Delete Postings
+</ToolbarMud>
+
+<MudList>
+    @foreach (var posting in _postings)
+    {
+        <MudListItem>
+            <MudStack Row="true">
+                <MudText Class="flex-grow-1">@posting.Account</MudText>
+                <MudIconButton Icon="@IconsMud.Trash" Color="Color.Secondary" @onclick="@((e) => OnDeleteClick(posting))" />
+            </MudStack>
+        </MudListItem>
+    }
+</MudList>
+
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check"
+        Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
+
+@code {
+    List<Posting> _postings = [];
+
+    protected override void OnInitialized()
+    {
+        base.OnInitializedAsync();
+
+        loadData();
+    }
+
+    void loadData()
+    {
+        if (State.Xact is null)
+        {
+            Notification.Error("No transaction found in state.");
+            return;
+        }
+
+        _postings = State.Xact.Postings ?? [];
+    }
+
+    async Task OnDeleteClick(Posting posting)
+    {
+        // confirm with a dialog
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you want to delete the selected Posting?");
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Delete", parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Large });
+        var result = await dialog.Result;
+        if (result.Canceled) return;
+
+        _postings!.Remove(posting);
+    }
+
+    async Task OnFab()
+    {
+        await new RouterService(JsRuntime).Back();
+    }
+}

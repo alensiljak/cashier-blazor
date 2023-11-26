@@ -1,17 +1,57 @@
 ﻿@page "/journal"
+@using MudBlazor
+
+@inject IDexieDAL _db
+@inject NavigationManager NavMan
+@inject AppState State
 
 <ToolbarMud>
     <Title>
         Journal
     </Title>
+    <ContextMenuItems>
+        <MudListItem>Yo!</MudListItem>
+    </ContextMenuItems>
 </ToolbarMud>
 
-<article>
-    <h3>Journal</h3>
+<MudList>
+    @foreach (var xact in _xacts)
+    {
+        <MudListItem>
+            <JournalTransaction Xact="@xact" OnItemClicked="@OnItemClicked" />
+        </MudListItem>
+    }
+</MudList>
 
-    <p>Journal is the list of local transactions (Xacts).</p>
-</article>
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus"
+        Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 
 @code {
+    List<Xact> _xacts = [];
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await loadData();
+    }
+
+    private async Task loadData()
+    {
+        _xacts = await _db.Xacts.ToList();
+    }
+
+    void OnFab()
+    {
+        // create new transaction in the app store
+        var xact = new TransactionActions().CreateNew();
+        State.Xact = xact;
+
+        NavMan.NavigateTo("/tx");
+    }
+
+    void OnItemClicked(Xact xact)
+    {
+        Console.WriteLine("Xact clicked {0}", xact);
+    }
 }
