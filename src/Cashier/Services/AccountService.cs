@@ -27,7 +27,7 @@ namespace Cashier.Services
             var defaultBalance = account.Balances.FirstOrDefault(account => account.Currency == defaultCurrency);
             if (defaultBalance != null)
             {
-                result.Amount = defaultBalance.Amount;
+                result.Quantity = defaultBalance.Quantity;
                 result.Currency = defaultBalance.Currency;
                 return result;
             }

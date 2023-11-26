@@ -107,12 +107,12 @@ namespace Cashier.Services
         private void CalculateOffsets()
         {
             var root = _assetClassIndex.First();
-            var total = root.Value.CurrentValue.Amount!.Value;
+            var total = root.Value.CurrentValue.Quantity!.Value;
 
             foreach (var ac in classes)
             {
                 // calculate current allocation
-                ac.CurrentAllocation = ac.CurrentValue.Amount!.Value * 100 / total;
+                ac.CurrentAllocation = ac.CurrentValue.Quantity!.Value * 100 / total;
 
                 // diff
                 ac.Diff = ac.CurrentAllocation - ac.Allocation;
@@ -124,7 +124,7 @@ namespace Cashier.Services
                 ac.AllocatedValue = (ac.Allocation * total) / 100;
 
                 // diff amount
-                ac.DiffAmount = ac.CurrentValue.Amount.Value - ac.AllocatedValue;
+                ac.DiffAmount = ac.CurrentValue.Quantity.Value - ac.AllocatedValue;
             }
         }
 
@@ -181,7 +181,7 @@ namespace Cashier.Services
                 // the the account balance.
                 account.AccountBalance = acctBalance;
 
-                if (account.AccountBalance.Amount == 0) continue;
+                if (account.AccountBalance.Quantity == 0) continue;
 
                 commodity = account.AccountBalance.Currency;
 
@@ -193,7 +193,7 @@ namespace Cashier.Services
                 }
 
                 var assetClass = _assetClassIndex[assetClassName];
-                assetClass.CurrentValue.Amount += amount;
+                assetClass.CurrentValue.Quantity += amount;
                 assetClass.CurrentValue.Currency = currency;
             }
         }
@@ -269,22 +269,22 @@ namespace Cashier.Services
 
             var sum = SumChildren(root);
             
-            root.CurrentValue.Amount = sum;
+            root.CurrentValue.Quantity = sum;
         }
 
         private Decimal SumChildren(AssetClass item)
         {
             var children = FindChildren(item);
             if (children.Count == 0) {
-                return item.CurrentValue?.Amount ?? 0;
+                return item.CurrentValue?.Quantity ?? 0;
             }
 
             var sum = 0m;
             foreach (var child in children)
             {
                 //var sum = children.Sum(child => child.CurrentValue.Amount);
-                child.CurrentValue.Amount = SumChildren(child);
-                sum += child.CurrentValue.Amount ?? 0;
+                child.CurrentValue.Quantity = SumChildren(child);
+                sum += child.CurrentValue.Quantity ?? 0;
             }
             return sum;
         }

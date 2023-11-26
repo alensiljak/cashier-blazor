@@ -58,6 +58,6 @@ namespace Cashier.Model
     public class Posting(string? account = null, Money? money = null)
     {
         public string? Account { get; set; } = account;
-        public Money? Money { get; set; } = money;
+        public Money? Amount { get; set; } = money;
     }
 }

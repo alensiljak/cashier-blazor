@@ -10,27 +10,41 @@
             }
         }
 
+        // public static Money Create(decimal amount, st)
+
         public Money() { }
 
         public Money(decimal amount, string currency)
         {
-            Amount = amount;
+            Quantity = amount;
             Currency = currency;
         }
 
-        public decimal? Amount { get; set; }
+        public Money(int amount, string currency)
+        {
+            Quantity = (decimal)amount;
+            Currency = currency;
+        }
+
+        public Money(float amount, string currency)
+        {
+            Quantity = (decimal)amount;
+            Currency = currency;
+        }
+
+        public decimal? Quantity { get; set; }
         public string? Currency { get; set; }
 
         public override string ToString()
         {
             //return base.ToString();
 
-            return $"{Amount} {Currency}";
+            return $"{Quantity} {Currency}";
         }
 
         public static Money operator +(Money a, Decimal b)
         {
-            a.Amount += b;
+            a.Quantity += b;
             return a;
         }
     }
