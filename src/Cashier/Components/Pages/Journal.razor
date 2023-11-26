@@ -4,13 +4,16 @@
 @inject IDexieDAL _db
 @inject NavigationManager NavMan
 @inject AppState State
+@inject IDialogService DialogService
+@inject NotificationService Notification
 
 <ToolbarMud>
     <Title>
         Journal
     </Title>
     <ContextMenuItems>
-        <MudListItem>Yo!</MudListItem>
+        <MudListItem Icon="@IconsMud.FileDown" @onclick="OnExportClick">Export</MudListItem>
+        <MudListItem Icon="@IconsMud.Trash" OnClick="onDeleteAllClicked">Delete All</MudListItem>
     </ContextMenuItems>
 </ToolbarMud>
 
@@ -23,7 +26,7 @@
     }
 </MudList>
 
-<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus"
+<MudFab Class="z-60" Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus"
         Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 
 @code {
@@ -41,6 +44,30 @@
         _xacts = await _db.Xacts.ToList();
     }
 
+    async Task onDeleteAllClicked()
+    {
+        // confirm with a dialog
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you want to delete all the Transactions?");
+        parameters.Add(x => x.ConfirmationButtonColor, Color.Secondary);
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Delete", parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Large });
+        var result = await dialog.Result;
+        if (result.Canceled) return;
+
+        // delete all transactions
+        await _db.Xacts.Clear();
+
+        Notification.Success("All local transactions deleted.");
+
+        await loadData();
+    }
+
+    void OnExportClick()
+    {
+        NavMan.NavigateTo("/export");
+    }
+
     void OnFab()
     {
         // create new transaction in the app store
@@ -52,7 +79,6 @@
 
     void OnItemClicked(Xact xact)
     {
-        // Console.WriteLine("Xact clicked {0}", xact);
         State.Xact = xact;
         NavMan.NavigateTo("/tx");
     }

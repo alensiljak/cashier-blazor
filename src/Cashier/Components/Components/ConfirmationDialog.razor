@@ -5,13 +5,13 @@
 
 @using MudBlazor
 
-<MudDialog>
+<MudDialog Class="bg-primary">
     <DialogContent>
         @ContentText
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton Color="@ConfirmationButtonColor" OnClick="Submit">Ok</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -21,6 +21,9 @@
 
     [Parameter]
     public string? ContentText { get; set; }
+
+    [Parameter]
+    public Color ConfirmationButtonColor { get; set; } = Color.Primary;
 
     void Submit() => MudDialog!.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog!.Cancel();
