@@ -27,12 +27,6 @@ namespace Cashier.Model
         public string? CurrentCurrency { get; set;}
     }
 
-    public class LastXact
-    {
-        public string? Payee { get; set; }
-        public Xact? Xact { get; set; }
-    }
-
     public class Payee
     {
         public string? Name { get; set; }

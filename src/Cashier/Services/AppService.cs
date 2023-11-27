@@ -141,6 +141,27 @@ namespace Cashier.Services
             return 0;
         }
 
+        /// <summary>
+        /// Saves the given transaction as the Last Transaction for the Payee.
+        /// This is retrieved when the Payee is selected on a new transaction, or when editing.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> saveLastTransaction(Xact xact)
+        {
+            var record = new LastXact
+            {
+                Payee = xact.Payee,
+                Xact = xact,
+            };
+
+            // Delete unneeded properties - the ids, date, etc.
+            record.Xact.Id = null;
+            // record.Xact.Date = null;
+
+            await DAL.LastTransactions.Put(record);
+            return true;
+        }
+
         // Private
 
         /// <summary>

@@ -4,8 +4,8 @@
 
 @inject AppState State
 @inject NavigationManager NavMan
-@inject IDexieDAL db
-@inject ISettingsService settings
+@inject IDexieDAL _db
+@inject ISettingsService _settings
 @inject NotificationService Notification
 
 @* Date *@
@@ -56,8 +56,19 @@
 }
 
 @code {
-    [Parameter, EditorRequired]
-    public Xact? Xact { get; set; }
+    // [Parameter, EditorRequired]
+    // public Xact? Xact { get; set; }
+    Xact? Xact
+    {
+        get
+        {
+            return State.Xact;
+        }
+        set
+        {
+            State.Xact = value;
+        }
+    }
 
     MudDatePicker _datePicker = default!;
     DateTime? date
@@ -116,6 +127,11 @@
         }
     }
 
+    public void Refresh()
+    {
+        StateHasChanged();
+    }
+
     async Task handleSelection()
     {
         if (Xact == null)
@@ -135,10 +151,10 @@
                 if (posting == null) throw new Exception("Posting not found!");
                 // load the account
                 // if (meta.SelectedId)
-                var account = await db.Accounts.Get(meta.SelectedId!);
+                var account = await _db.Accounts.Get(meta.SelectedId!);
                 if (account == null) throw new Exception("Account not found!");
                 var svc = new AccountService();
-                var defaultCurrency = await settings.GetSetting<string>(SettingsKeys.currency);
+                var defaultCurrency = await _settings.GetSetting<string>(SettingsKeys.currency);
                 var balance = svc.GetAccountBalance(account, defaultCurrency);
 
                 posting.Account = account.Name;
@@ -150,12 +166,41 @@
                 break;
 
             case SelectionType.Payee:
-                Xact.Payee = meta.SelectedId;
-                // todo: load last transaction
+                if (!string.IsNullOrEmpty(meta.SelectedId))
+                {
+                    Xact.Payee = meta.SelectedId;
+                    await loadLastTransaction(meta.SelectedId);
+                }
                 break;
         }
 
         State.SelectionModeMetadata = null;
+    }
+
+    /// <summary>
+    /// Load the last transaction for the payee.
+    /// </summary>
+    /// <returns></returns>
+    async Task loadLastTransaction(string payee)
+    {
+        if (Xact is null)
+        {
+            throw new Exception("No transaction loaded!");
+        }
+
+        // do this only if enabled
+        var enabled = await _settings.GetSetting<bool>(SettingsKeys.rememberLastTransaction);
+        if (!enabled) return;
+        // and we are not on an existing transaction
+        if (Xact.Id.HasValue) return;
+
+        var lastXact = await _db.LastTransactions.Get(payee);
+        if (lastXact == null) return;
+
+        // use the current date
+        lastXact.Xact!.Date = Xact.Date;
+        // Replace the current transaction.
+        State.Xact = lastXact.Xact;
     }
 
     void OnAccountClicked(int? index)

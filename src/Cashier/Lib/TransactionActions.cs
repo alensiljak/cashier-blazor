@@ -9,10 +9,11 @@ namespace Cashier.Lib
     {
         public Xact CreateNew()
         {
-            var xact = new Xact(DateOnly.FromDateTime(DateTime.Today));
-
-            // Add two Postings by default.
-            xact.Postings = [new Posting(), new Posting()];
+            var xact = new Xact(DateOnly.FromDateTime(DateTime.Today))
+            {
+                // Add two Postings by default.
+                Postings = [new Posting(), new Posting()]
+            };
 
             return xact;
         }

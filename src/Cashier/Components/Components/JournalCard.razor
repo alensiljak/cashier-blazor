@@ -110,8 +110,6 @@
                 .ToList();
 
             Balances = new TransactionAugmenter().calculateTxAmounts(Xacts);
-
-            DebugPrinter.PrintJson(Balances);
         }
         catch (Exception ex)
         {

@@ -24,16 +24,11 @@
 <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check"
         Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 
-<XactEditor Xact="@Xact" />
+<XactEditor @ref="_editor" />
 
 @code {
-    Xact? Xact
-    {
-        get
-        {
-            return State.Xact;
-        }
-    }
+    XactEditor _editor = default!;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -66,6 +61,8 @@
         //
         var xact = new TransactionActions().CreateNew();
         State.Xact = xact;
+
+        _editor.Refresh();
     }
 
     async Task OnSaveClicked()
@@ -104,8 +101,12 @@
             return;
         }
 
-        // todo: Should we memorize the last transaction?
+        // Should we memorize the last transaction?
         var remember = await _settings.GetSetting<bool>(SettingsKeys.rememberLastTransaction);
+        if (remember)
+        {
+            await new AppService(_db).saveLastTransaction(xact);
+        }
 
         await new RouterService(_jsRuntime).Back();
     }

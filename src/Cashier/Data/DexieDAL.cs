@@ -13,7 +13,7 @@ namespace Cashier.Data
         
         public Store<AssetAllocation, string> AssetAllocations { get; set; } = new(nameof(AssetAllocation.FullName));
         
-        public Store<LastXact, long> LastTransactions { get; set; } = new(nameof(LastXact.Payee));
+        public Store<LastXact, string> LastTransactions { get; set; } = new(nameof(LastXact.Payee));
         
         public Store<Payee, string> Payees { get; set; } = new(nameof(Payee.Name));
         
@@ -23,10 +23,6 @@ namespace Cashier.Data
             new("++" + nameof(ScheduledXact.Id), nameof(ScheduledXact.NextDate));
         
         public Store<Xact, long> Xacts { get; set; } = new("++" + nameof(Xact.Id), nameof(Xact.Date));
-
-        //public DexieDAL(IModuleFactory moduleFactory)
-        //    : base("Cashier", 1, new DbVersion[] { }, moduleFactory)
-        //{ }
 
         public DexieDAL(IJSRuntime jsRuntime)
             : base("Cashier", 1, new DbVersion[] { }, CreateModuleFactory(jsRuntime))
