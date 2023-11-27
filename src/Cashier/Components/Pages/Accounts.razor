@@ -5,9 +5,13 @@
 @inject IDexieDAL db
 @inject AppState State
 @inject IJSRuntime JSRuntime
+@inject NotificationService Notification
 
 <ToolbarMud>
     <Title>Accounts</Title>
+    <ContextMenuItems>
+        <MudListItem Icon="@IconsMud.Check" @onclick="OnShowAllClicked">Show All</MudListItem>
+    </ContextMenuItems>
 </ToolbarMud>
 
 @* Search *@
@@ -49,6 +53,7 @@ else
 @code {
     string? searchTerm;
     List<Account> accounts = [];
+    bool _limitList = true;     // Show only a limited number of items to reduce load time.
 
     protected override async Task OnInitializedAsync()
     {
@@ -59,29 +64,47 @@ else
 
     async Task loadData()
     {
-        var records = await db.Accounts
-            .OrderBy("name")
-            // .Limit(100)
-            .ToList();
+        BlazorDexie.Database.Collection<Account, string> records;
 
+        records = db.Accounts.OrderBy("name");
+
+        // Search by using .filter() query directly on the storage.
         if (searchTerm != null)
         {
-            var regex = new ListSearch().getRegex(searchTerm);
-            accounts = records.FindAll(acc => regex.Match(acc.Name!).Success);
-            // var filter = await table.Filter("test").ToList();
-        }
-        else
-        {
-            accounts = records;
+            var regex = new ListSearch().GetJsFilterFunction("name");
+            records = records.Filter(regex, new[] { searchTerm });
         }
 
-        // take only the top 100 results
-        accounts = accounts.Take(100).ToList();
+        // Limit results
+        if (_limitList)
+        {
+            records = records.Limit(25);
+        }
+
+        accounts = await records.ToList();
     }
 
     async Task OnRowClick(DataGridRowClickEventArgs<Account> args)
     {
         await SelectAccount(args.Item.Name!);
+    }
+
+    async Task OnShowAllClicked()
+    {
+        State.CloseMenu();
+
+        _limitList = !_limitList;
+
+        if (_limitList)
+        {
+            Notification.Info("Showing limited data");
+        }
+        else
+        {
+            Notification.Info("Showing all data");
+        }
+
+        await loadData();
     }
 
     async Task OnTrClick(string accountName)
