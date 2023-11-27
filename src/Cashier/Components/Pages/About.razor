@@ -14,21 +14,12 @@
 
 <h3>About</h3>
 
-Version: @version
-
 @code {
     string? version;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
-        version = GetVersionInfo();
-    }
-
-    string GetVersionInfo()
-    {
-        return Constants.VersionNumber;
     }
 
     void OnWebDavClick()
