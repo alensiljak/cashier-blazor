@@ -42,5 +42,35 @@ namespace Cashier.Lib
             expression += ".*$";
             return expression;
         }
+
+        /// <summary>
+        /// Returns the filter function as JavaScript, for use with DexieBlazor.
+        /// Items.Filter(filter, new {"PayeeName"})
+        /// </summary>
+        /// <returns></returns>
+        public string GetJsFilterFunction(string fieldName)
+        {
+            // return i.name === p[0]
+         
+            var fn = @"
+const searchTerm = p[0];
+
+const searchTerms = searchTerm.split(' ');
+var expression = '^';
+for (let i = 0; i < searchTerms.length; i++) {
+    if (!searchTerms[i]) continue;
+
+    expression += '(?=.*' + searchTerms[i] + ')';
+}
+expression += '.*$';
+
+const regex = new RegExp(expression, 'i');
+
+return regex.test(i.%fieldName%);
+";
+            fn = fn.Replace("%fieldName%", fieldName);
+
+            return fn;
+        }
     }
 }

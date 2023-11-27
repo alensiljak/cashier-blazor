@@ -10,6 +10,10 @@
 
 <ToolbarMud>
     <Title>Payees</Title>
+    <ContextMenuItems>
+        <MudListItem Icon="@IconsMud.Check" @onclick="OnShowAllClicked">Show All</MudListItem>
+
+    </ContextMenuItems>
 </ToolbarMud>
 
 @if (payees == null)
@@ -57,6 +61,7 @@ else
 @code {
     string? searchTerm;
     List<Payee> payees = [];
+    bool _limitList = true;     // Show only a limited number of items to reduce load time.
 
     private bool IsPickerMode
     {
@@ -91,20 +96,26 @@ else
 
     async Task loadData()
     {
-        var records = await db.Payees.ToList();
+        BlazorDexie.Database.Collection<Payee, string> records;
 
+        // Search by using .filter() query directly on the storage.
         if (searchTerm != null)
         {
-            var regex = new ListSearch().getRegex(searchTerm);
-            payees = records.FindAll(acc => regex.Match(acc.Name!).Success);
+            var regex = new ListSearch().GetJsFilterFunction("name");
+            records = db.Payees.Filter(regex, new[] { searchTerm });
         }
         else
         {
-            payees = records;
+            records = db.Payees;
         }
 
-        // load only the first 100
-        // payees = payees.Take(100).ToList();
+        // Limit results
+        if (_limitList)
+        {
+            records = records.Limit(25);
+        }
+
+        payees = await records.ToList();
     }
 
     /// <summary>
@@ -131,6 +142,24 @@ else
     /// </summary>
     async Task OnSearch()
     {
+        await loadData();
+    }
+
+    async Task OnShowAllClicked()
+    {
+        State.CloseMenu();
+
+        _limitList = !_limitList;
+
+        if (_limitList)
+        {
+            Notification.Info("Showing limited data");
+        }
+        else
+        {
+            Notification.Info("Showing all data");
+        }
+
         await loadData();
     }
 
