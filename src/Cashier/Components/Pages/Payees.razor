@@ -6,6 +6,7 @@
 @inject AppState State
 @inject NavigationManager NavMan
 @inject IJSRuntime JSRuntime
+@inject NotificationService Notification
 
 <ToolbarMud>
     <Title>Payees</Title>
@@ -22,12 +23,12 @@ else
         <div style="width: 500px;">
             <MudTextField AutoFocus="true" T="string" Adornment="Adornment.End" AdornmentIcon="@IconsMud.Search" Label="Search"
                           Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" FullWidth="false"
-                          DebounceInterval="300" OnDebounceIntervalElapsed="OnSearch" 
+                          DebounceInterval="300" OnDebounceIntervalElapsed="OnSearch"
                           @bind-Value="searchTerm" />
         </div>
     </MudPaper>
 
-@*
+    @*
     <MudDataGrid T="Payee" Items="@payees" Height="85vh" Virtualize="true" RowClick="@OnRowClick">
         <Columns>
             <PropertyColumn Property="@(p => p.Name)" HeaderStyle="display: none;" CellClass="px-1" />
@@ -44,12 +45,42 @@ else
             }
         </tbody>
     </MudSimpleTable>
+}
 
+@* FAB *@
+@if (ShowNewPayeeButton)
+{
+    <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check"
+            Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 }
 
 @code {
     string? searchTerm;
     List<Payee> payees = [];
+
+    private bool IsPickerMode
+    {
+        get
+        {
+            // DebugPrinter.PrintJson(State.SelectionModeMetadata);
+
+            return (State.SelectionModeMetadata != null);
+        }
+    }
+
+    /// <summary>
+    /// The FAB is used when searching for a name and there is no item in the list.
+    /// Tapping the button will accept the search text as the new Payee.
+    /// This is only used in Picker mode. There is no point in adding Payees on its own.
+    /// </summary>
+    private bool ShowNewPayeeButton
+    {
+        get
+        {
+            var show = IsPickerMode && !string.IsNullOrWhiteSpace(searchTerm) && payees.Count == 0;
+            return show;
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -74,6 +105,20 @@ else
 
         // load only the first 100
         // payees = payees.Take(100).ToList();
+    }
+
+    /// <summary>
+    /// Accepts the search text as the new Payee.
+    /// </summary>
+    async Task OnFab()
+    {
+        if(string.IsNullOrWhiteSpace(searchTerm))
+        {
+            Notification.Warning("The search term is empty!");
+            return;
+        }
+
+        await SelectPayee(searchTerm);
     }
 
     async Task OnRowClick(DataGridRowClickEventArgs<Payee> args)

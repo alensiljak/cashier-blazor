@@ -26,5 +26,10 @@
         public string? SelectedId { get;set; }
 
         public SelectionModeMetadata() { }
+
+        //public override string ToString()
+        //{
+        //    // return string.Format($"");
+        //}
     }
 }
