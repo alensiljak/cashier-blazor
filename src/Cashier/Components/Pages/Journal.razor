@@ -46,6 +46,8 @@
 
     async Task onDeleteAllClicked()
     {
+        State.CloseMenu();
+
         // confirm with a dialog
         var parameters = new DialogParameters<ConfirmationDialog>();
         parameters.Add(x => x.ContentText, "Do you want to delete all the Transactions?");
@@ -65,6 +67,8 @@
 
     void OnExportClick()
     {
+        State.CloseMenu();
+
         NavMan.NavigateTo("/export");
     }
 
