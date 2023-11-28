@@ -153,6 +153,10 @@
                 if (account == null) throw new Exception("Account not found!");
                 var svc = new AccountService();
                 var defaultCurrency = await _settings.GetSetting<string>(SettingsKeys.currency);
+                if (defaultCurrency is null)
+                {
+                    throw new Exception("Default currency not set!");
+                }
                 var balance = svc.GetAccountBalance(account, defaultCurrency);
 
                 posting.Account = account.Name;

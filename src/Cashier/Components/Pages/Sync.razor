@@ -111,7 +111,7 @@
 
     async Task loadSettings()
     {
-        ServerUrl = await settings.GetSyncServerUrl();
+        ServerUrl = await settings.GetSyncServerUrl() ?? string.Empty;
         rootInvestmentAccount = await settings.GetRootInvestmentAccount();
         currency = await settings.GetDefaultCurrency();
 

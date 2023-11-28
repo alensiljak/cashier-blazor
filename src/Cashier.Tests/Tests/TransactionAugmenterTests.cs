@@ -34,7 +34,8 @@ namespace Cashier.Tests.Tests
             Assert.Equal(2, xacts.First().Postings!.Count);
             // The second posting should have the -25 EUR amount.
             var actual = xacts.First().Postings![1];
-            Assert.Equivalent(new Money(-25, "EUR"), actual.Money);
+            Assert.Equivalent(Decimal.Parse("-25"), actual.Amount);
+            Assert.Equivalent("EUR", actual.Currency);
         }
 
         [Fact]

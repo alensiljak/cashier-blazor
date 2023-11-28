@@ -55,7 +55,7 @@ namespace Cashier.Tests.Infrastructure
             var mock = new Mock<ISettingsService>();
             mock.Setup<Task<string>>(x => x.GetDefaultCurrency())
                 .ReturnsAsync("EUR");
-            mock.Setup<Task<string>>(x => x.GetRootInvestmentAccount())
+            mock.Setup<Task<string?>>(x => x.GetRootInvestmentAccount())
                 .ReturnsAsync("Assets:Investments");
 
             return mock;

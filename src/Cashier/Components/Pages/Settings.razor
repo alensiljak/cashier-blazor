@@ -12,6 +12,7 @@
 @inject IDialogService DialogService
 @inject NavigationManager NavMan
 @inject IStorageManagerService StorageManagerService
+@inject NotificationService Notification
 
 <ToolbarMud>
     <Title>Settings</Title>
@@ -211,17 +212,21 @@
         var result = await settings.SetDefaultCurrency(mainCurrency ?? "");
         Console.WriteLine("saving currency: {0}", result);
 
-        // root investment account
-        result = await settings.SetRootInvestmentAccount(investmentRoot);
-        Console.WriteLine("saving investment root: {0}", result);
-
         if (result != string.Empty)
         {
-            Snackbar.Add("Currency saved", Severity.Success);
+            Notification.Success("Currency saved");
         }
         else
         {
-            Snackbar.Add("Could not save the currency.", Severity.Error);
+            Notification.Error("Could not save the currency.");
         }
+
+        // root investment account
+        if (investmentRoot != null)
+        {
+            result = await settings.SetRootInvestmentAccount(investmentRoot);
+            Notification.Success("Saved investment root account");
+        }
+
     }
 }

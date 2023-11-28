@@ -18,11 +18,5 @@ namespace Cashier.Tests.E2E.Tests
             // Always start here
             await Page.GotoAsync(TestConfig.BaseURL);
         }
-
-        [Test]
-        public async Task TestJournalCardDisplay()
-        {
-            // todo: 
-        }
     }
 }

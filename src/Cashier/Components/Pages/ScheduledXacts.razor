@@ -35,13 +35,11 @@ else
 
 @code {
     List<ScheduledXact> _list = [];
-    AppService _appService;
+    AppService _appService = new AppService();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
-        _appService = new AppService();
 
         await loadData();
     }
