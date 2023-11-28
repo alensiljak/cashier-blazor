@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cashier.Tests.E2E
+namespace Cashier.Tests.E2E.Tests
 {
     [Parallelizable(ParallelScope.Self)]
     [TestFixture]

@@ -74,6 +74,8 @@
 
     string GetXactColour(int index)
     {
+        if (index > Balances.Count - 1) return string.Empty;
+
         var amount = Balances[index];
         string colour = string.Empty;
 
@@ -113,6 +115,7 @@
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex.ToString());
             Notification.Error(ex.Message);
         }
     }

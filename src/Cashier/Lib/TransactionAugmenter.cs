@@ -50,10 +50,17 @@ namespace Cashier.Lib
                     
                     case 2:
                         var firstPosting = postings.First();
+                        if (firstPosting.Amount is null) continue;
 
                         // involves a transfer
-                        balance.Quantity = Math.Abs(firstPosting.Amount!.Quantity!.Value);
-                        balance.Currency = firstPosting.Amount.Currency;
+                        if (firstPosting.Amount.Quantity != null)
+                        {
+                            balance.Quantity = Math.Abs(firstPosting.Amount.Quantity.Value);
+                        }
+                        if (firstPosting.Amount.Currency != null)
+                        {
+                            balance.Currency = firstPosting.Amount.Currency;
+                        }
 
                         // Treat the liability account as an expense.
                         var assetPostings = postings.Where(p => p.Account!.StartsWith("Assets:"));
