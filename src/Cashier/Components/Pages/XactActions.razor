@@ -8,6 +8,7 @@
 @inject NavigationManager NavMan
 @inject IJSRuntime JSRuntime
 @inject NotificationService Notification
+@inject IDialogService DialogService
 
 <MudContainer>
 
@@ -43,7 +44,7 @@
         </MudButton>
 
         <MudButton Color="Color.Secondary" Size="Size.Large" Variant="Variant.Filled" FullWidth Style="color: var(--mud-palette-tertiary);"
-                   StartIcon="@IconsMud.Trash" IconSize="Size.Large">
+                   StartIcon="@IconsMud.Trash" IconSize="Size.Large" @onclick="OnDeleteClick">
             Delete
         </MudButton>
     </MudContainer>
@@ -83,6 +84,30 @@
         await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
 
         Notification.Success("Transaction copied to clipboard");
+    }
+
+    async Task OnDeleteClick()
+    {
+        if (xact is null)
+        {
+            Notification.Warning("Transaction is empty! Please select a transaction.");
+            return;
+        }
+
+        // confirm with a dialog
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you want to delete the Transaction?");
+        parameters.Add(x => x.ConfirmationButtonColor, Color.Secondary);
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Delete", parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Large });
+        var result = await dialog.Result;
+        if (result.Canceled) return;
+
+        // delete Xact
+        await _db.Xacts.Delete(xact.Id!.Value);
+
+        // go back
+        await new RouterService(JSRuntime).Back();
     }
 
     void OnEditClick()
