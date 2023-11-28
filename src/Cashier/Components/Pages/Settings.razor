@@ -28,7 +28,7 @@
                   Label="Root investment account" />
 
     <MudText Typo="Typo.h5" Class="mt-4">Last Transaction</MudText>
-    <MudCheckBox T="bool" @bind-Checked="rememberLastTransaction"
+    <MudCheckBox T="bool?" @bind-Checked="rememberLastTransaction"
                  Label="Remember last transaction for payees. Reuses the information for new transactions." />
 
     <MudCheckBox T="bool" Label="Use Dark Mode" />
@@ -96,9 +96,9 @@
 </MudForm>
 
 @code {
-    string mainCurrency { get; set; } = default!;
-    string investmentRoot { get; set; } = default!;
-    bool rememberLastTransaction { get; set; }
+    string? mainCurrency;
+    string? investmentRoot;
+    bool? rememberLastTransaction;
 
     protected override async Task OnInitializedAsync()
     {

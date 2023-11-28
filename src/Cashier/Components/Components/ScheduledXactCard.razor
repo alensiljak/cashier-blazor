@@ -27,11 +27,15 @@
         else
         {
             <MudSimpleTable Dense>
+                <colgroup>
+                    <col style="width: 50px;" />
+                    <col style="flex-grow: 1;" />
+                </colgroup>
                 <tbody>
                     @foreach(var schXact in _scheduledXacts)
                     {
                         <tr>
-                            <td class="pl-2">@schXact.NextDate</td>
+                            <td class="pl-2 pr-1">@schXact.NextDate</td>
                             <td>@schXact.Transaction?.Payee</td>
                         </tr>
                     }
