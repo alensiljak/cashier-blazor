@@ -51,6 +51,24 @@ namespace Cashier.Services
             return output.ToString();
         }
 
+        public string GetDateColour(DateOnly date)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            switch (date)
+            {
+                case var n when n < today:
+                    return "var(--mud-palette-secondary)";
+
+                case var n when n == today:
+                    return "var(--mud-palette-tertiary)";
+
+                case var n when n > today:
+                    return "var(--mud-palette-primary)";
+            }
+            return string.Empty;
+        }
+
         public async Task<string?> ImportBalanceSheet(IDexieDAL db, string[] lines)
         {
             if (lines.Length == 0)

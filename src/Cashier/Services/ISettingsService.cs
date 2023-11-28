@@ -7,17 +7,18 @@ namespace Cashier.Services
         Task<string> BulkPut(List<Setting> items);
 
         Task<T?> GetSetting<T>(string key);
-        Task<string> SetSetting<T>(string key, T value);
+        Task<string?> SetSetting<T>(string key, T value);
 
         Task<string> GetDefaultCurrency();
 
         Task<Account?[]> GetFavouriteAccounts(int? take = null);
         Task<bool> GetRememberLastTransaction();
-        Task<string> GetRootInvestmentAccount();
+        Task<string?> GetRootInvestmentAccount();
         Task<bool> GetSyncAaValues();
         Task<bool> GetSyncAccounts();
         Task<bool> GetSyncPayees();
-        Task<string> GetSyncServerUrl();
+        Task<string?> GetSyncServerUrl();
+        
         Task<string> SetDefaultCurrency(string value);
         Task<string> SetRootInvestmentAccount(string value);
         Task<string> SetSyncAaValues(bool value);

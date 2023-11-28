@@ -3,7 +3,7 @@
     public class ScheduledXact
     {
         public long? Id { get; set; }
-        public string? NextDate { get; set; }
+        public DateOnly NextDate { get; set; }
         public Xact? Transaction { get; set; }
         public string? Period { get; set; }
         public string? Count { get; set; }

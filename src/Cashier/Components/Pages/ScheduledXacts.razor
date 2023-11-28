@@ -2,6 +2,7 @@
 @using MudBlazor
 
 @inject NavigationManager NavMan
+@inject IDexieDAL _db
 
 <ToolbarMud>
     <Title>Scheduled</Title>
@@ -11,9 +12,54 @@
     </ContextMenuItems>
 </ToolbarMud>
 
-<h3>ScheduledXacts</h3>
+@if (_list.Count == 0)
+{
+    <MudText>Loading...</MudText>
+}
+else
+{
+    <MudList>
+        @foreach (var stx in _list)
+        {
+            <MudListItem>
+                <MudStack Row>
+                    <span class="mr-1" style="color: @GetDateColour(stx.NextDate);">
+                        @stx.NextDate.ToString(Constants.ISODateFormat)
+                    </span>
+                    @stx.Transaction?.Payee
+                </MudStack>
+            </MudListItem>
+        }
+    </MudList>
+}
 
 @code {
+    List<ScheduledXact> _list = [];
+    AppService _appService;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _appService = new AppService();
+
+        await loadData();
+    }
+
+    async Task loadData()
+    {
+        _list = await _db.ScheduledXacts
+            .OrderBy(nameof(ScheduledXact.NextDate))
+            .ToList();
+
+        // sort also by payee, case insensitive
+
+    }
+
+    string GetDateColour(DateOnly date)
+    {
+        return _appService.GetDateColour(date);
+    }
 
     void OnRestoreClick()
     {

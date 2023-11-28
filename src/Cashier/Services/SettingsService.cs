@@ -37,14 +37,14 @@ namespace Cashier.Services
             return setting;
         }
 
-        public async Task<string> GetSyncServerUrl()
+        public async Task<string?> GetSyncServerUrl()
         {
-            return await GetSetting<string>(SettingsKeys.syncServerUrl);
+            return await GetSetting<string?>(SettingsKeys.syncServerUrl);
         }
 
-        public async Task<string> GetRootInvestmentAccount()
+        public async Task<string?> GetRootInvestmentAccount()
         {
-            return await GetSetting<string>(SettingsKeys.rootInvestmentAccount);
+            return await GetSetting<string?>(SettingsKeys.rootInvestmentAccount);
         }
 
         public async Task<bool> GetRememberLastTransaction()

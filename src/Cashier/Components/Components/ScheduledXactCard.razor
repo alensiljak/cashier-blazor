@@ -5,8 +5,9 @@
 
 @inject NotificationService Notification
 @inject IDexieDAL _db
+@inject NavigationManager NavMan
 
-<MudCard Class="@Class" Outlined="true">
+<MudCard Class="@Class" Outlined="true" @onclick="OnCardClick">
     <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="px-2 pt-2 pb-1">
         <CardHeaderAvatar>
             <MudIcon Icon="@IconsMud.CalendarClock" Size="Size.Medium" />
@@ -35,8 +36,12 @@
                     @foreach(var schXact in _scheduledXacts)
                     {
                         <tr>
-                            <td class="pl-2 pr-1">@schXact.NextDate</td>
-                            <td>@schXact.Transaction?.Payee</td>
+                            <td class="pl-2 pr-1" style="color: @GetDateColour(schXact.NextDate)">
+                                @schXact.NextDate
+                            </td>
+                            <td>
+                                @schXact.Transaction?.Payee
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -54,23 +59,27 @@
     [Parameter]
     public string? Class { get; set; }
 
-    private DateOnly _today;
-    private List<ScheduledXact> _scheduledXacts { get; set; } = [];
+    List<ScheduledXact> _scheduledXacts { get; set; } = [];
+    AppService _appService = default!;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        _today = DateOnly.FromDateTime(DateTime.Now);
+        _appService = new AppService();
 
         await loadData();
+    }
+
+    string GetDateColour(DateOnly date)
+    {
+        return _appService.GetDateColour(date);
     }
 
     async Task loadData()
     {
         _scheduledXacts = await _db.ScheduledXacts
-            .OrderBy("nextDate")
-            .Reverse()
+            .OrderBy(nameof(ScheduledXact.NextDate))
             .Limit(5)
             .ToList();
     }
@@ -78,5 +87,10 @@
     void OnCalendarClick()
     {
         Notification.Info("Not Implemented");
+    }
+
+    void OnCardClick()
+    {
+        NavMan.NavigateTo("/scheduled-xacts");
     }
 }
