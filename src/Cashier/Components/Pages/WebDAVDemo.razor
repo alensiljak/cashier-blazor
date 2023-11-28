@@ -1,10 +1,10 @@
 ﻿@page "/webdav-demo"
 
-@inject NotificationService Notification
-@inject HttpClient httpClient
-
 @using MudBlazor
 @using System.Text
+
+@inject NotificationService Notification
+@inject HttpClient httpClient
 
 <ToolbarMud>
     WebDAV Demo
@@ -51,16 +51,16 @@
     /// List the root directory using a WebDAV Client.
     /// </summary>
     /// <returns></returns>
-    async Task OnClientLs()
+    void OnClientLs()
     {
         /*
         httpClient.BaseAddress = GetUri("/");
         using var client = new WebDav.WebDavClient(httpClient);
         var result = await client.Propfind("/");
         if (!result.IsSuccessful)
-        {
+            {
             Console.WriteLine("error connecting");
-            return;
+        return;
         }
         */
         Notification.Info("WebDAV Client throws a CORS exception");
@@ -106,6 +106,8 @@
 
             Notification.Info(response.StatusCode.ToString());
 
+            // await ParsePropfindResponse(response);
+
             _content = await response.Content.ReadAsStringAsync();
         }
         catch (Exception ex)
@@ -113,6 +115,22 @@
             _content = ex.Message;
         }
     }
+
+    /*
+    async Task ParsePropfindResponse(HttpResponseMessage response)
+    {
+        var parser = new PropfindResponseParser(new LockResponseParser());
+        var resp = await response.Content.ReadAsStringAsync();
+        var result = parser.Parse(resp, (int) response.StatusCode, response.ReasonPhrase);
+
+        Console.WriteLine(result);
+
+        foreach(var res in result.Resources)
+        {
+            Console.WriteLine(res.DisplayName);
+        }
+    }
+    */
 
     async Task OnOptionsClick()
     {

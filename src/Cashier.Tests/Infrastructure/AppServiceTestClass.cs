@@ -12,14 +12,13 @@ namespace Cashier.Tests.Infrastructure
 {
     internal class AppServiceTestClass : AppService
     {
-        public AppServiceTestClass(IDexieDAL dal) : base(dal)
+        public AppServiceTestClass() : base()
         {
         }
 
         public List<Account> PublicParseAccounts(string[] lines)
         {
             return ParseAccounts(lines);
-            
         }
     }
 }

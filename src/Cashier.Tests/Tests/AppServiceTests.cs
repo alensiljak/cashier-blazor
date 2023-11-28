@@ -16,9 +16,9 @@ namespace Cashier.Tests.Tests
 
         public AppServiceTests()
         {
-            var helper = new TestHelpers();
-            var dal = helper.CreateMockDAL();
-            _appService = new AppServiceTestClass(dal.Object);
+            //var helper = new TestHelpers();
+            //var dal = helper.CreateMockDAL();
+            _appService = new AppServiceTestClass();
         }
 
         [Fact]
