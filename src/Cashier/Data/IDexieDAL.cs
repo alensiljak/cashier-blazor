@@ -10,7 +10,7 @@ namespace Cashier.Data
         Store<LastXact, string> LastTransactions { get; set; }
         Store<Payee, string> Payees { get; set; }
         //Store<Posting, string> Postings { get; set; }
-        Store<ScheduledXact, string> ScheduledXacts { get; set; }
+        Store<ScheduledXact, long> ScheduledXacts { get; set; }
         Store<Setting, string> Settings { get; set; }
         Store<Xact, long> Xacts { get; set; }
     }

@@ -32,17 +32,6 @@ namespace Cashier.Model
         public string? Name { get; set; }
     }
 
-    public class ScheduledXact
-    {
-        public int? Id { get; set; }
-        public string? NextDate { get; set; }
-        public Xact? Xact { get; set; }
-        public string? Period { get; set; }
-        public string? Count { get; set; }
-        public string? EndDate { get; set; }
-        public string? Remarks { get; set; }
-    }
-
     public class Setting(string key, string value)
     {
         public string Key { get; set; } = key;

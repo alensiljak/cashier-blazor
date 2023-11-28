@@ -1,11 +1,22 @@
 ﻿@page "/scheduled-xacts"
+@using MudBlazor
+
+@inject NavigationManager NavMan
 
 <ToolbarMud>
     <Title>Scheduled</Title>
+    <ContextMenuItems>
+        <MudListItem Icon="@IconsMud.PackageOpen" @onclick="OnRestoreClick">Restore</MudListItem>
+
+    </ContextMenuItems>
 </ToolbarMud>
 
 <h3>ScheduledXacts</h3>
 
 @code {
 
+    void OnRestoreClick()
+    {
+        NavMan.NavigateTo("/restore/scheduled");
+    }
 }

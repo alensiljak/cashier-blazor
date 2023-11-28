@@ -19,7 +19,7 @@ namespace Cashier.Data
         
         //public Store<Posting, string> Postings { get; set; } = new(nameof(Posting.Account));
         
-        public Store<ScheduledXact, string> ScheduledXacts { get; set; } =
+        public Store<ScheduledXact, long> ScheduledXacts { get; set; } =
             new("++" + nameof(ScheduledXact.Id), nameof(ScheduledXact.NextDate));
         
         public Store<Xact, long> Xacts { get; set; } = new("++" + nameof(Xact.Id), nameof(Xact.Date));

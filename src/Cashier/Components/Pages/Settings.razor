@@ -164,7 +164,6 @@
         // confirm with a dialog
         var parameters = new DialogParameters<ConfirmationDialog>();
         parameters.Add(x => x.ContentText, "Do you want to restore the selected settings file?");
-
         var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Restore", parameters,
             new DialogOptions { MaxWidth = MaxWidth.Large });
         var result = await dialog.Result;

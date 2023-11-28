@@ -1,0 +1,113 @@
+﻿@page "/restore/{type}"
+@using MudBlazor
+@using Newtonsoft.Json
+
+@inject IDialogService DialogService
+@inject NotificationService Notification
+@inject IDexieDAL _db
+
+<ToolbarMud>
+    Restore @type
+</ToolbarMud>
+
+<p>You can currently restore the backup of Scheduled Transactions</p>
+<p>
+    Note that this will overwrite all your current records of the same type!
+</p>
+
+<MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="OnFileSelected">
+    <ButtonTemplate>
+        <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" for="@context" />
+    </ButtonTemplate>
+    <SelectedTemplate>
+        @if (context != null)
+        {
+            <MudText>@context.Name</MudText>
+        }
+        else
+        {
+            <MudText>Select a backup file to restore</MudText>
+        }
+    </SelectedTemplate>
+</MudFileUpload>
+
+<MudTextField T="string" Value="_fileContent" Lines="20" />
+
+<MudContainer Class="pt-4 d-flex align-center justify-center">
+    <MudButton Variant="Variant.Filled" Color="Color.Tertiary" Style="color: var(--mud-palette-secondary);"
+               @onclick="RestoreScheduled">
+        Restore
+    </MudButton>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public string? type { get; set; }
+
+    string? _fileContent;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+
+    async Task OnFileSelected(IBrowserFile file)
+    {
+        _fileContent = string.Empty;
+
+        var stream = file.OpenReadStream();
+        using var reader = new StreamReader(stream);
+        var content = await reader.ReadToEndAsync();
+        if (content is null)
+        {
+            Notification.Warning("No content found in the selected file");
+            return;
+        }
+
+        _fileContent = content;
+    }
+
+    async Task RestoreScheduled()
+    {
+        // confirm with a dialog
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you want to restore the selected file?");
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Restore", parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Large });
+        var result = await dialog.Result;
+        if (result.Canceled) return;
+
+        // Restore
+
+        var content = _fileContent;
+        if (content is null)
+        {
+            Notification.Warning("No content to restore");
+            return;
+        }
+
+        // Deserialize JSON
+        List<ScheduledXact>? scheduledXacts;
+        try
+        {
+            scheduledXacts = JsonConvert.DeserializeObject<List<ScheduledXact>>(content);
+        }
+        catch (Exception ex)
+        {
+            Notification.Warning("Error deserializing the backup file.");
+            Console.WriteLine("Error deserializing the Settings backup file:\n{0}", ex.Message);
+            return;
+        }
+        if (scheduledXacts is null)
+        {
+            Notification.Info("No settings found in the file.");
+            return;
+        }
+
+        // save to database
+        var lastId = await _db.ScheduledXacts.BulkPut(scheduledXacts);
+
+        Notification.Success($"Imported scheduled transactions. Last id: {lastId}");
+    }
+}
