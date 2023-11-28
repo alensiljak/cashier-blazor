@@ -6,7 +6,7 @@ namespace Cashier.Services
     {
         Task<string> BulkPut(List<Setting> items);
 
-        Task<T> GetSetting<T>(string key);
+        Task<T?> GetSetting<T>(string key);
         Task<string> SetSetting<T>(string key, T value);
 
         Task<string> GetDefaultCurrency();

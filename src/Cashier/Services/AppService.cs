@@ -215,12 +215,12 @@ namespace Cashier.Services
                     output.Append("    ");
                     output.Append(posting.Account);
 
-                    if (posting.Money != null && posting.Money.Quantity != null)
+                    if (posting.Amount != null)
                     {
                         output.Append("  ");
-                        output.Append(posting.Money.Quantity);
+                        output.Append(posting.Amount);
                         output.Append(' ');
-                        output.Append(posting.Money.Currency);
+                        output.Append(posting.Currency);
                     }
                     output.AppendLine();
                 }

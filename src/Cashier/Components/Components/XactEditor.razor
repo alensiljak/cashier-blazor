@@ -156,11 +156,7 @@
                 var balance = svc.GetAccountBalance(account, defaultCurrency);
 
                 posting.Account = account.Name;
-                if (posting.Money == null)
-                {
-                    posting.Money = new Money();
-                }
-                posting.Money!.Currency = balance.Currency;
+                posting.Currency = balance.Currency;
                 break;
 
             case SelectionType.Payee:

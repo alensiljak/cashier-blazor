@@ -145,13 +145,16 @@ namespace Cashier.Services
             return await SetSetting(SettingsKeys.syncServerUrl, value);
         }
 
-        public async Task<T> GetSetting<T>(string key)
+        public async Task<T?> GetSetting<T>(string key)
         {
             var record = await _db.Settings.Get(key);
             if (record == null)
             {
                 var msg = string.Format("Setting with the given key {0} not found.", key);
-                throw new NullReferenceException(msg);
+                //throw new NullReferenceException(msg);
+                Console.WriteLine(msg);
+
+                return default(T);
             }
 
             var result = JsonConvert.DeserializeObject<T>(record.Value);

@@ -38,28 +38,28 @@ namespace Cashier.Lib
                     case 1:
                         // a clear payment case with one source (asset/liability) account.
                         var posting = postings.First();
-                        if (posting.Money is null)
+                        if (posting.Amount is null)
                         {
                             Console.WriteLine("Invalid amount encountered!");
                             continue;
                         }
 
-                        balance.Quantity = posting.Money.Quantity;
-                        balance.Currency = posting.Money.Currency;
+                        balance.Quantity = posting.Amount;
+                        balance.Currency = posting.Currency;
                         break;
                     
                     case 2:
                         var firstPosting = postings.First();
-                        if (firstPosting.Money is null) continue;
+                        if (firstPosting.Amount is null) continue;
 
                         // involves a transfer
-                        if (firstPosting.Money.Quantity != null)
+                        if (firstPosting.Amount != null)
                         {
-                            balance.Quantity = Math.Abs(firstPosting.Money.Quantity.Value);
+                            balance.Quantity = Math.Abs(firstPosting.Amount.Value);
                         }
-                        if (firstPosting.Money.Currency != null)
+                        if (firstPosting.Currency != null)
                         {
-                            balance.Currency = firstPosting.Money.Currency;
+                            balance.Currency = firstPosting.Currency;
                         }
 
                         // Treat the liability account as an expense.
@@ -68,7 +68,7 @@ namespace Cashier.Lib
                             postings.Count(p => p.Account!.StartsWith("Liabilities:")) > 0)
                         {
                             // Take the sign from the Asset posting
-                            balance.Quantity = assetPostings.First()!.Money!.Quantity;
+                            balance.Quantity = assetPostings.First()!.Amount;
                         }
                         break;
 
@@ -97,8 +97,8 @@ namespace Cashier.Lib
 
                 // do we have multiple currencies? Exclude nulls.
                 var currencies = postings
-                    .Where(p => p.Money != null)
-                    .Select((posting) => posting.Money?.Currency).Distinct();
+                    .Where(p => p.Currency != null)
+                    .Select((posting) => posting.Currency).Distinct();
                 if (currencies.Count() > 1) {
                     Console.WriteLine("Multiple currencies fund in a transactions. Ignoring.");
                     DebugPrinter.PrintJson(currencies);
@@ -109,14 +109,13 @@ namespace Cashier.Lib
                 var currency = currencies.FirstOrDefault();
 
                 // do we have empty postings?
-                var amounts = postings.Select((posting) => posting.Money?.Quantity);
+                var amounts = postings.Select((posting) => posting.Amount);
                 if (amounts.Count() == 0) continue;
 
                 var total = amounts.Sum();
 
                 // put this value into the empty posting.
-                var emptyPostings = postings.Where((posting) => posting.Money == null || posting.Money?.Quantity == null);
-                //Console.WriteLine("empty postings: {0}", emptyPostings.Count());
+                var emptyPostings = postings.Where((posting) => posting.Amount == null);
 
                 switch(emptyPostings.Count())
                 {
@@ -131,14 +130,10 @@ namespace Cashier.Lib
 
                 // add the values to the (only) empty posting.
                 var emptyPosting = emptyPostings.First();
-                if (emptyPosting.Money == null)
+                emptyPosting.Amount = total * (-1);
+                if (emptyPosting.Currency == null)
                 {
-                    emptyPosting.Money = new Money();
-                }
-                emptyPosting.Money.Quantity = total * (-1);
-                if (emptyPosting.Money.Currency == null)
-                {
-                    emptyPosting.Money.Currency = currency;
+                    emptyPosting.Currency = currency;
                 }
             }
 

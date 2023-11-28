@@ -23,10 +23,10 @@
         {
             <MudStack Row="true" Class="pl-5">
                 <MudText Typo="Typo.body2">@p.Account</MudText>
-                @if (p.Money != null && p.Money.Quantity != null)
+                @if (p.Amount != null)
                 {
                     <MudSpacer />
-                    <MudText Typo="Typo.body2" Class="pl-4">@p.Money</MudText>
+                    <MudText Typo="Typo.body2" Class="pl-4">@p.Amount @p.Currency</MudText>
                 }
             </MudStack>
         }
