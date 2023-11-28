@@ -2,11 +2,11 @@ using Cashier.Tests.E2E.Infrastructure;
 using Microsoft.Playwright.NUnit;
 using System.Text.RegularExpressions;
 
-namespace Cashier.Tests.E2E;
+namespace Cashier.Tests.E2E.Tests;
 
 [Parallelizable(ParallelScope.Self)]
 [TestFixture]
-public class Tests : PageTest
+public class DemoTests : PageTest
 {
     [SetUp]
     public async Task Setup()

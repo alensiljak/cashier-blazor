@@ -162,14 +162,12 @@ namespace Cashier.Services
             return true;
         }
 
-        // Private
-
         /// <summary>
         /// Translates Transaction into a ledger entry.
         /// </summary>
         /// <param name="xact"></param>
         /// <returns></returns>
-        private string TranslateToLedger(Xact xact)
+        public string TranslateToLedger(Xact xact)
         {
             var output = new StringBuilder();
 
@@ -198,6 +196,7 @@ namespace Cashier.Services
                         output.Append(' ');
                         output.Append(posting.Amount.Currency);
                     }
+                    output.AppendLine();
                 }
             }
 

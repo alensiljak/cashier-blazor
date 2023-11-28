@@ -1,4 +1,5 @@
 ﻿@page "/tx"
+@* @page "/tx/{xactId}" *@
 
 @inject ISnackbar Snackbar
 @inject NavigationManager NavMan
@@ -27,11 +28,17 @@
 <XactEditor @ref="_editor" />
 
 @code {
+    /// <summary>
+    /// The transaction Id, when used to open an existing transaction.
+    /// </summary>
+    // [Parameter]
+    // public string? xactId { get; set; }
+
     XactEditor _editor = default!;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
         if (State.Xact == null)
         {
