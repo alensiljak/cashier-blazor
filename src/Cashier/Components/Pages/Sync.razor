@@ -214,13 +214,13 @@
             return;
         }
 
-        var appService = new AppService(db);
-        await appService.deleteAccounts();
+        var appService = new AppService();
+        await appService.deleteAccounts(db);
 
         // Import
         try
         {
-            await appService.ImportBalanceSheet(accounts);
+            await appService.ImportBalanceSheet(db, accounts);
         }
         catch (Exception ex)
         {
@@ -247,8 +247,8 @@
         // delete all payees only after we have retrieved the new ones.
         await db.Payees.Clear();
 
-        var app = new AppService(db);
-        var result = await app.ImportPayees(payeeNames);
+        var app = new AppService();
+        var result = await app.ImportPayees(db, payeeNames);
 
         Notification.Success("Imported Payees");
     }

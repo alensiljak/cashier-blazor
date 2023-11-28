@@ -17,16 +17,18 @@ namespace Cashier.Services
     /// </summary>
     public class AppService
     {
-        public IDexieDAL DAL { get; set; }
-
-        public AppService(IDexieDAL dal)
+        public AppService()
         {
-            DAL = dal;
         }
 
-        public async Task deleteAccounts()
+        public async Task CopyToClipboard(IJSRuntime jsRuntime, string text)
         {
-            await DAL.Accounts.Clear();
+            await jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+        }
+
+        public async Task deleteAccounts(IDexieDAL db)
+        {
+            await db.Accounts.Clear();
         }
 
         /// <summary>
@@ -34,9 +36,9 @@ namespace Cashier.Services
         /// ready to be exported as a file or copied as a string.
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GetExportTransactions()
+        public async Task<string> GetExportTransactions(IDexieDAL db)
         {
-            var xacts = await DAL.Xacts.OrderBy("date").ToList();
+            var xacts = await db.Xacts.OrderBy("date").ToList();
             var output = new StringBuilder();
 
             foreach (var xact in xacts)
@@ -47,7 +49,7 @@ namespace Cashier.Services
             return output.ToString();
         }
 
-        public async Task<string?> ImportBalanceSheet(string[] lines)
+        public async Task<string?> ImportBalanceSheet(IDexieDAL db, string[] lines)
         {
             if (lines.Length == 0)
             {
@@ -56,7 +58,7 @@ namespace Cashier.Services
 
             var accounts = ParseAccounts(lines);
 
-            var saveResult = await DAL.Accounts.BulkPut(accounts);
+            var saveResult = await db.Accounts.BulkPut(accounts);
             return saveResult;
         }
 
@@ -64,10 +66,10 @@ namespace Cashier.Services
         /// Imports the payees into storage.
         /// </summary>
         /// <returns></returns>
-        public async Task<string> ImportPayees(string[] payeeNames)
+        public async Task<string> ImportPayees(IDexieDAL db, string[] payeeNames)
         {
             var payees = payeeNames.Select(payee => new Payee { Name = payee });
-            var result = await DAL.Payees.BulkAdd(payees);
+            var result = await db.Payees.BulkAdd(payees);
             return result;
         }
 
@@ -146,7 +148,7 @@ namespace Cashier.Services
         /// This is retrieved when the Payee is selected on a new transaction, or when editing.
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> saveLastTransaction(Xact xact)
+        public async Task<bool> saveLastTransaction(IDexieDAL db, Xact xact)
         {
             var record = new LastXact
             {
@@ -158,7 +160,7 @@ namespace Cashier.Services
             record.Xact.Id = null;
             // record.Xact.Date = null;
 
-            await DAL.LastTransactions.Put(record);
+            await db.LastTransactions.Put(record);
             return true;
         }
 

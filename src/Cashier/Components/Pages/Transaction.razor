@@ -112,7 +112,7 @@
         var remember = await _settings.GetSetting<bool>(SettingsKeys.rememberLastTransaction);
         if (remember)
         {
-            await new AppService(_db).saveLastTransaction(xact);
+            await new AppService().saveLastTransaction(_db, xact);
         }
 
         await new RouterService(_jsRuntime).Back();

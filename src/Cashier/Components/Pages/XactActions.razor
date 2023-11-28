@@ -78,10 +78,10 @@
         }
 
         // get a journal version
-        var text = new AppService(_db).TranslateToLedger(xact);
+        var text = new AppService().TranslateToLedger(xact);
 
         // copy to clipboard
-        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+        await new AppService().CopyToClipboard(JSRuntime, text);
 
         Notification.Success("Transaction copied to clipboard");
     }
