@@ -7,7 +7,9 @@
         <MudIconButton Icon="@IconsMud.Star" />
     </MudItem>
     <MudItem xs="6">
-        <MudTextField T="decimal?" @bind-Value="Amount" InputType="InputType.Number" Placeholder="Amount" Class="text-right" />
+        <MudTextField T="decimal?" @ref="amountField" @bind-Value="Amount" InputType="InputType.Number"
+                      Placeholder="Amount" Class="text-right"
+                      @onfocus="async () => await amountField!.SelectAsync()" />
     </MudItem>
     <MudItem lg="4" xs="4" Class="pl-0">
         <MudTextField T="string" @bind-Value="Currency" Placeholder="Currency" />
@@ -57,6 +59,8 @@
             Posting.Amount.Currency = value;
         }
     }
+
+    MudTextField<decimal?> amountField { get; set; } = default!;
 
     private async Task OnAccountClicked()
     {
