@@ -19,9 +19,12 @@
 
 <MudStack Row="true" AlignItems="AlignItems.Center">
     <MudButton @onclick="OnGetClick">Get</MudButton>
+    <MudButton @onclick="OnOptionsClick">Options</MudButton>
+
     <MudButton @onclick="OnDirectFileClick">GetFile</MudButton>
     <MudButton @onclick="OnDirectPropfindClick">PropFind</MudButton>
     <MudButton @onclick="OnUploadClick">Upload</MudButton>
+    <MudButton @onclick="OnClientLs">Client ls</MudButton>
 </MudStack>
 
 <MudTextField T="string" Lines="15" @bind-Value="_content" />
@@ -42,6 +45,25 @@
     void OnClearClick()
     {
         _content = null;
+    }
+
+    ///  <summary>
+    /// List the root directory using a WebDAV Client.
+    /// </summary>
+    /// <returns></returns>
+    async Task OnClientLs()
+    {
+        /*
+        httpClient.BaseAddress = GetUri("/");
+        using var client = new WebDav.WebDavClient(httpClient);
+        var result = await client.Propfind("/");
+        if (!result.IsSuccessful)
+        {
+            Console.WriteLine("error connecting");
+            return;
+        }
+        */
+        Notification.Info("WebDAV Client throws a CORS exception");
     }
 
     /// <summary>
@@ -78,6 +100,25 @@
         try
         {
             var method = new HttpMethod("PROPFIND");
+            var request = new HttpRequestMessage(method, serverUrl);
+            // request.Headers.ReferralPolicy
+            var response = await httpClient.SendAsync(request);
+
+            Notification.Info(response.StatusCode.ToString());
+
+            _content = await response.Content.ReadAsStringAsync();
+        }
+        catch (Exception ex)
+        {
+            _content = ex.Message;
+        }
+    }
+
+    async Task OnOptionsClick()
+    {
+        try
+        {
+            var method = new HttpMethod("OPTIONS");
             var request = new HttpRequestMessage(method, serverUrl);
             // request.Headers.ReferralPolicy
             var response = await httpClient.SendAsync(request);
