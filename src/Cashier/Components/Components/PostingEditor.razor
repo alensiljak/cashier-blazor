@@ -30,16 +30,16 @@
     {
         get
         {
-            return Posting.Amount?.Quantity;
+            return Posting.Money?.Quantity;
         }
         set
         {
-            if (Posting.Amount == null)
+            if (Posting.Money == null)
             {
-                Posting.Amount = new Money();
+                Posting.Money = new Money();
             }
 
-            Posting.Amount.Quantity = value;
+            Posting.Money.Quantity = value;
         }
     }
 
@@ -47,16 +47,16 @@
     {
         get
         {
-            return Posting.Amount?.Currency;
+            return Posting.Money?.Currency;
         }
         set
         {
-            if (Posting.Amount == null)
+            if (Posting.Money == null)
             {
-                Posting.Amount = new Money();
+                Posting.Money = new Money();
             }
 
-            Posting.Amount.Currency = value;
+            Posting.Money.Currency = value;
         }
     }
 

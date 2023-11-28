@@ -1,8 +1,10 @@
 ﻿@*
     Scheduled Transactions Card
 *@
-@inject ISnackbar Snackbar
 @using MudBlazor
+
+@inject NotificationService Notification
+@inject IDexieDAL _db
 
 <MudCard Class="@Class" Outlined="true">
     <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="px-2 pt-2 pb-1">
@@ -17,12 +19,29 @@
             @* <MudIcon Icon="@IconsMud.Settings" /> *@
         </CardHeaderActions>
     </MudCardHeader>
-    <MudCardContent>
-        Status:
+    <MudCardContent Class="pa-0">
+        @if (_scheduledXacts == null || _scheduledXacts.Count == 0)
+        {
+            <MudText>There are no scheduled transactions</MudText>
+        }
+        else
+        {
+            <MudSimpleTable Dense>
+                <tbody>
+                    @foreach(var schXact in _scheduledXacts)
+                    {
+                        <tr>
+                            <td class="pl-2">@schXact.NextDate</td>
+                            <td>@schXact.Transaction?.Payee</td>
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
+        }
     </MudCardContent>
     <MudCardActions Class="justify-center">
         <MudButton StartIcon="@IconsMud.CalendarDays" Variant="Variant.Outlined" Color="Color.Tertiary"
-            @onclick="OnCalendarClick">Calendar</MudButton>
+                   @onclick="OnCalendarClick">Calendar</MudButton>
     </MudCardActions>
 
 </MudCard>
@@ -31,8 +50,29 @@
     [Parameter]
     public string? Class { get; set; }
 
+    private DateOnly _today;
+    private List<ScheduledXact> _scheduledXacts { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _today = DateOnly.FromDateTime(DateTime.Now);
+
+        await loadData();
+    }
+
+    async Task loadData()
+    {
+        _scheduledXacts = await _db.ScheduledXacts
+            .OrderBy("nextDate")
+            .Reverse()
+            .Limit(5)
+            .ToList();
+    }
+
     void OnCalendarClick()
     {
-        Snackbar.Add("Not Implemented");
+        Notification.Info("Not Implemented");
     }
 }

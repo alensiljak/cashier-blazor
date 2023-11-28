@@ -106,7 +106,8 @@
     {
         try
         {
-            Xacts = await _db.Xacts.OrderBy("date")
+            Xacts = await _db.Xacts
+                .OrderBy("date")
                 .Reverse()
                 .Limit(5)
                 .ToList();

@@ -49,7 +49,7 @@
                         <ul>
                             @foreach (var posting in xact.Postings)
                             {
-                                <li>@posting.Account @posting.Amount?.Quantity @posting.Amount?.Currency</li>
+                                <li>@posting.Account @posting.Money?.Quantity @posting.Money?.Currency</li>
                             }
                         </ul>
                     }

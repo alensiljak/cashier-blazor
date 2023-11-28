@@ -3,10 +3,12 @@ using BlazorDexie.JsModule;
 using Cashier.Components.Components;
 using Cashier.Components.Pages;
 using Cashier.Data;
+using Cashier.Lib;
 using Cashier.Model;
 using Microsoft.JSInterop;
 using MudBlazor;
 using MudBlazor.Charts;
+using Newtonsoft.Json;
 using System.Dynamic;
 using System.Text;
 
@@ -71,6 +73,28 @@ namespace Cashier.Services
             var payees = payeeNames.Select(payee => new Payee { Name = payee });
             var result = await db.Payees.BulkAdd(payees);
             return result;
+        }
+
+        /// <summary>
+        /// Restores Scheduled Transactions from a JSON string.
+        /// </summary>
+        /// <param name="serializedList"></param>
+        /// <returns></returns>
+        public async Task ImportScheduledTransactions(IDexieDAL db, string json)
+        {
+            List<ScheduledXact>? scheduledXacts;
+            scheduledXacts = JsonConvert.DeserializeObject<List<ScheduledXact>>(json);
+
+            if (scheduledXacts is null)
+            {
+                throw new Exception("No settings found in the file.");
+            }
+
+            // Clear existing records
+            await db.ScheduledXacts.Clear();
+
+            // save to database
+            var lastId = await db.ScheduledXacts.BulkPut(scheduledXacts);
         }
 
         protected List<Account> ParseAccounts(string[] lines)
@@ -191,12 +215,12 @@ namespace Cashier.Services
                     output.Append("    ");
                     output.Append(posting.Account);
 
-                    if (posting.Amount != null && posting.Amount.Quantity != null)
+                    if (posting.Money != null && posting.Money.Quantity != null)
                     {
                         output.Append("  ");
-                        output.Append(posting.Amount.Quantity);
+                        output.Append(posting.Money.Quantity);
                         output.Append(' ');
-                        output.Append(posting.Amount.Currency);
+                        output.Append(posting.Money.Currency);
                     }
                     output.AppendLine();
                 }

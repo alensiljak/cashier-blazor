@@ -72,9 +72,8 @@
     {
         // confirm with a dialog
         var parameters = new DialogParameters<ConfirmationDialog>();
-        parameters.Add(x => x.ContentText, "Do you want to restore the selected file?");
-        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Restore", parameters,
-            new DialogOptions { MaxWidth = MaxWidth.Large });
+        parameters.Add(x => x.ContentText, "Do you want to restore the selected file?\nThis will overwrite your current Scheduled Transactions.");
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Restore", parameters);
         var result = await dialog.Result;
         if (result.Canceled) return;
 
@@ -88,10 +87,9 @@
         }
 
         // Deserialize JSON
-        List<ScheduledXact>? scheduledXacts;
         try
         {
-            scheduledXacts = JsonConvert.DeserializeObject<List<ScheduledXact>>(content);
+            await new AppService().ImportScheduledTransactions(_db, content);
         }
         catch (Exception ex)
         {
@@ -99,15 +97,7 @@
             Console.WriteLine("Error deserializing the Settings backup file:\n{0}", ex.Message);
             return;
         }
-        if (scheduledXacts is null)
-        {
-            Notification.Info("No settings found in the file.");
-            return;
-        }
 
-        // save to database
-        var lastId = await _db.ScheduledXacts.BulkPut(scheduledXacts);
-
-        Notification.Success($"Imported scheduled transactions. Last id: {lastId}");
+        Notification.Success($"Scheduled transactions restored");
     }
 }
