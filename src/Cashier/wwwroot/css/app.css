@@ -82,6 +82,8 @@ a,
   content: 'An error has occurred.';
 }
 */
+
+/* The original Blazor progress indicator */
 .loading-progress {
     position: relative;
     display: block;
@@ -153,6 +155,7 @@ a,
 .progressbar {
     height: 20px;
     width: 60vw;
+    max-width: 400px;
     border-radius: 10rem;
     background-color: tan;
     margin: 2rem auto;
