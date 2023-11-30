@@ -21,12 +21,14 @@ else
     <MudList>
         @foreach (var stx in _list)
         {
-            <MudListItem>
+            <MudListItem Class="px-1">
                 <MudStack Row>
-                    <span class="mr-1" style="color: @GetDateColour(stx.NextDate);">
+                    <MudText Class="mr-1" Style="@GetDateStyle(stx)">
                         @stx.NextDate.ToString(Constants.ISODateFormat)
-                    </span>
-                    @stx.Transaction?.Payee
+                    </MudText>
+                    <MudText>
+                        @stx.Transaction?.Payee
+                    </MudText>
                 </MudStack>
             </MudListItem>
         }
@@ -34,8 +36,8 @@ else
 }
 
 @code {
-    List<ScheduledXact> _list = [];
-    AppService _appService = new AppService();
+        List<ScheduledXact> _list = [];
+        AppService _appService = new AppService();
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,6 +54,11 @@ else
 
         // sort also by payee, case insensitive
 
+    }
+
+    string GetDateStyle(ScheduledXact stx)
+    {
+        return $"color: {GetDateColour(stx.NextDate)};";
     }
 
     string GetDateColour(DateOnly date)

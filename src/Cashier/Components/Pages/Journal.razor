@@ -26,7 +26,7 @@
     {
         @foreach (var xact in _xacts)
         {
-            <MudListItem>
+            <MudListItem Class="px-1">
                 <JournalTransactionRow Xact="@xact" OnItemClicked="@OnItemClicked" />
             </MudListItem>
         }
