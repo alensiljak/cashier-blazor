@@ -84,13 +84,15 @@
         switch (amount.Quantity)
         {
             case var n when n < 0:
-                colour = "var(--mud-palette-secondary)";
+                colour = "#E53935"; // red Darken1
                 break;
+
             case var n when n == 0:
-                colour = "var(--mud-palette-tertiary)";
+                colour = ""; // yellow
                 break;
+
             case var n when n > 0:
-                colour = "var(--mud-palette-primary)";
+                colour = "#43A047"; // green Darken1
                 break;
         }
 
@@ -98,7 +100,7 @@
         var tx = Xacts[index];
         if (tx.Postings?.Count(p => p.Account!.StartsWith("Assets:")) == 2)
         {
-            colour = "yellow";
+            colour = ""; // yellow
         }
 
         return colour;
