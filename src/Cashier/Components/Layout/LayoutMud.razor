@@ -8,11 +8,10 @@
 <MudThemeProvider @ref="_mudThemeProvider" @bind-IsDarkMode="_isDarkMode" Theme="@theme" />
 <MudDialogProvider CloseOnEscapeKey="true" />
 <MudSnackbarProvider />
+<PWAUpdater Align="PWAUpdater.Aligns.Buttom" />
 
 <MudSwipeArea OnSwipeEnd="@OnSwipeEnd" Style="height: 100vh;" Sensitivity="150">
     <MudLayout>
-        <PWAUpdater Align="PWAUpdater.Aligns.Top" />
-
 @*         <MudAppBar>
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" 
                 OnClick="@((e) => DrawerToggle())" />
