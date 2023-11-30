@@ -42,50 +42,43 @@
 
     @* Restore Settings *@
     <MudText Typo="Typo.h5" Class="mt-4">Restore Settings</MudText>
-    <MudStack Row="true">
-        <MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="RestoreSettings">
-            <ButtonTemplate>
+    <MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="RestoreSettings">
+        <ButtonTemplate>
+            <div style="text-align: center;">
                 <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" for="@context" />
-            </ButtonTemplate>
-            <SelectedTemplate>
-                @if (context != null)
-                {
-                    <MudText>@context.Name</MudText>
-                }
-                else
-                {
-                    <MudText>No file selected</MudText>
-                }
-            </SelectedTemplate>
-        </MudFileUpload>
-        <MudText>Tap the file icon to select the file to restore</MudText>
-    </MudStack>
+            </div>
+        </ButtonTemplate>
+        <SelectedTemplate>
+            @if (context != null)
+            {
+                <MudText>@context.Name</MudText>
+            }
+            else
+            {
+                <MudText Align="Align.Center">select file to restore</MudText>
+            }
+        </SelectedTemplate>
+    </MudFileUpload>
 
     @* Asset Allocation *@
     <MudText Typo="Typo.h5" Class="mt-4">Asset Allocation</MudText>
-    <MudStack Row="true">
-        <MudFileUpload T="IBrowserFile" Accept=".toml" FilesChanged="RestoreAssetAllocation">
-            <ButtonTemplate>
+    <MudFileUpload T="IBrowserFile" Accept=".toml" FilesChanged="RestoreAssetAllocation">
+        <ButtonTemplate>
+            <div style="text-align: center;">
                 <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" for="@context" />
-                @*             <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" for="">
-                Select File
-                </MudButton>
-                *@
-            </ButtonTemplate>
-            <SelectedTemplate>
-                @if (context != null)
-                {
-                    <MudText>@context.Name</MudText>
-                }
-                else
-                {
-                    <MudText>No file selected</MudText>
-                }
-            </SelectedTemplate>
-        </MudFileUpload>
-        <MudText>Tap the file icon to select the file to restore</MudText>
-        @* <MudTextField T="string" Label="Asset Allocation settings file" /> *@
-    </MudStack>
+            </div>
+        </ButtonTemplate>
+        <SelectedTemplate>
+            @if (context != null)
+            {
+                <MudText>@context.Name</MudText>
+            }
+            else
+            {
+                <MudText Align="Align.Center">select file</MudText>
+            }
+        </SelectedTemplate>
+    </MudFileUpload>
 
     @* Reload App *@
     <MudText Typo="Typo.h5" Class="mt-4">Reload App</MudText>
