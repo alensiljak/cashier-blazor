@@ -20,17 +20,42 @@
 
 <MudTextField T="string" Value="@output" Lines="10" AutoGrow="true"></MudTextField>
 
-<MudContainer Class="pt-4 d-flex justify-center">
+<MudContainer Class="pt-4 d-flex justify-space-around" MaxWidth="MaxWidth.Small">
     <MudIconButton Icon="@IconsMud.Copy" Color="Color.Primary" Variant="Variant.Filled" Class="rounded-xl"
-                   OnClick="OnClipboardClick" Size="Size.Large" />
+                   OnClick="OnClipboardClick" />
     @* pCloud Save *@
     @* WebShare *@
     @* Download *@
+    <MudIconButton Icon="@IconsMud.FileDown" Color="Color.Primary" Variant="Variant.Filled" Class="rounded-xl"
+                   OnClick="OnDownloadClick" />
 </MudContainer>
+
+<script>
+    var saveFile = async (fileName, content) => {
+        const arrayBuffer = await content.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(blob);
+
+        var link = document.createElement('a');
+        link.download = fileName;
+        // link.href = "data:text/plain;charset=utf-8," + encodeURIComponent(content);
+        link.href = url;
+
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    }
+</script>
 
 @code {
     [Parameter]
-    public string dataType { get; set; } = "journal";
+    public string dataType { get; set; } = ExportType.Journal.ToString();
+
+    enum ExportType
+    {
+        Journal,
+        Scheduled
+    }
 
     string? output;
 
@@ -41,14 +66,43 @@
         await LoadData();
     }
 
+    string GetFileExtension()
+    {
+        var enumType = Enum.Parse(typeof(ExportType), dataType, true);
+
+        switch(enumType)
+        {
+            case ExportType.Journal:
+                return ".ledger";
+
+            case ExportType.Scheduled:
+                return ".json";
+
+            default:
+                return ".txt";
+        }
+    }
+
+    string GetFileName()
+    {
+        // create the file name for the downloaded export file.
+        var extension = GetFileExtension();
+
+        var now = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+        var filename = string.Format($"cashier_{dataType}_{now}{extension}");
+        return filename;
+    }
+
     async Task LoadData()
     {
-        switch(dataType)
+        var enumType = Enum.Parse(typeof(ExportType), dataType, true);
+
+        switch (enumType)
         {
-            case "journal":
+            case ExportType.Journal:
                 output = await new AppService().GetExportTransactions(_db);
                 break;
-            case "scheduled":
+            case ExportType.Scheduled:
                 // loadScheduledTransactions
                 break;
         }
@@ -65,5 +119,26 @@
         await new AppService().CopyToClipboard(_js, output);
 
         Notification.Success(dataType + " copied to clipboard");
+    }
+
+    async Task OnDownloadClick()
+    {
+        await DownloadFile();
+    }
+
+    async Task DownloadFile()
+    {
+        if(output is null)
+        {
+            output = "Hello, world!";
+        }
+        var fileName = GetFileName();
+
+        // var bytes = System.Text.Encoding.UTF8.GetBytes(output);
+        // await _js.InvokeVoidAsync("saveFile", fileName, bytes);
+
+        var fileStream = new MemoryStream(new System.Text.UTF8Encoding(true).GetBytes(output));
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+        await _js.InvokeVoidAsync("saveFile", fileName, streamRef);
     }
 }
