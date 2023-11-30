@@ -84,13 +84,13 @@
         switch (amount.Quantity)
         {
             case var n when n < 0:
-                colour = "red";
+                colour = "var(--mud-palette-secondary)";
                 break;
             case var n when n == 0:
-                colour = "yellow";
+                colour = "var(--mud-palette-tertiary)";
                 break;
             case var n when n > 0:
-                colour = "green";
+                colour = "var(--mud-palette-primary)";
                 break;
         }
 
