@@ -127,11 +127,10 @@ a,
 }
 
 .text-right {
-    text-align: right;
+    text-align: end;
 }
-
     .text-right input {
-        text-align: right;
+        text-align: end;
     }
 
 @keyframes spin {

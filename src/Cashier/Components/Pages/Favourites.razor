@@ -20,18 +20,51 @@
 }
 else
 {
+    @*
+    <MudSimpleTable Dense>
+        <tbody>
+            @foreach (var account in accounts)
+            {
+                <tr>
+                    <td class="pl-2 pr-1">
+                        @account.Name
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pl-0 pr-2" style="text-align: end;">
+                        @account.AccountBalance
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+    *@
+    
     <MudList>
         @foreach (var account in accounts)
         {
-            <MudListItem Class="px-1 py-1">
-                @account.Name @account.AccountBalance
+            <MudListItem Class="px-2 py-1">
+                <MudText>
+                    @account.Name
+                </MudText>
+                <MudText Align="Align.End" Typo="Typo.body2">
+                    @account.AccountBalance
+                </MudText>
             </MudListItem>
         }
     </MudList>
+    
+    @*
+    <MudTreeView T="Account" Items="@_accountsHashSet">
+
+    </MudTreeView>
+    *@
 }
 
 @code {
     List<Account> accounts = [];
+    HashSet<Account> _accountsHashSet = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,6 +73,9 @@ else
         // todo: handle selection
 
         await loadData();
+
+        // create a tree view
+        // CreateTreeView();
     }
 
     async Task loadData()
@@ -48,6 +84,11 @@ else
         accounts = await app.LoadFavouriteAccounts(_db);
 
         var aug = new TransactionAugmenter();
-        // aug.ad
+        await aug.AdjustAccountBalances(_db, accounts);
+    }
+
+    void CreateTreeView()
+    {
+        _accountsHashSet = accounts.ToHashSet();
     }
 }
