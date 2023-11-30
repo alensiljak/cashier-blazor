@@ -11,6 +11,8 @@
 
 <MudSwipeArea OnSwipeEnd="@OnSwipeEnd" Style="height: 100vh;" Sensitivity="150">
     <MudLayout>
+        <PWAUpdater Align="PWAUpdater.Aligns.Top" />
+
 @*         <MudAppBar>
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" 
                 OnClick="@((e) => DrawerToggle())" />
@@ -25,7 +27,6 @@
         <MudMainContent>
             <MudContainer MaxWidth="MaxWidth.Medium" Class="px-1">
                 @Body
-                <PWAUpdater Align="PWAUpdater.Aligns.Buttom" />
             </MudContainer>
         </MudMainContent>
     </MudLayout>
