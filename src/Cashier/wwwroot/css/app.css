@@ -83,11 +83,11 @@ a,
 }
 */
 .loading-progress {
-  position: relative;
-  display: block;
-  width: 8rem;
-  height: 8rem;
-  margin: 20vh auto 1rem auto;
+    position: relative;
+    display: block;
+    width: 8rem;
+    height: 8rem;
+    margin: 20vh auto 1rem auto;
 }
 
     .loading-progress circle {
@@ -106,26 +106,19 @@ a,
         }
 
 .loading-progress-text {
-  position: absolute;
-  text-align: center;
-  font-weight: bold;
-  inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+    position: absolute;
+    text-align: center;
+    font-weight: bold;
+    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
 }
 
-.loading-progress-text:after {
-  content: var(--blazor-load-percentage-text, 'Loading');
-}
+    .loading-progress-text:after {
+        content: var(--blazor-load-percentage-text, 'Loading');
+    }
 
 .glossy {
-  background-image: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.3),
-    rgba(255, 255, 255, 0) 50%,
-    rgba(0, 0, 0, 0.12) 51%,
-    rgba(0, 0, 0, 0.04)
-  ) !important;
+    background-image: linear-gradient( to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.12) 51%, rgba(0, 0, 0, 0.04) ) !important;
 }
-
 
 .mud-nav-link.active {
     background-color: var(--mud-palette-secondary) !important;
@@ -134,9 +127,10 @@ a,
 .text-right {
     text-align: right;
 }
-.text-right input {
-    text-align: right;
-}
+
+    .text-right input {
+        text-align: right;
+    }
 
 @keyframes spin {
     from {
@@ -154,3 +148,20 @@ a,
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 }
+
+/* loading */
+.progressbar {
+    height: 20px;
+    width: 60vw;
+    border-radius: 10rem;
+    background-color: tan;
+    margin: 2rem auto;
+}
+
+    .progressbar .progress {
+        height: 100%;
+        background-color: #076461;
+        border-radius: 10rem;
+        width: var(--blazor-load-percentage);
+        transition: width 0.5s ease;
+    }
