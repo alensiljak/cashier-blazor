@@ -1,6 +1,6 @@
 ﻿@page "/sync"
 
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime _js
 @inject IDexieDAL db
 @inject ISettingsService settings
 @inject NotificationService Notification
@@ -185,7 +185,7 @@
         var svc = new SyncService(HttpClient, ServerUrl);
         try
         {
-            await svc.ReadCurrentValues(JSRuntime);
+            await svc.ReadCurrentValues(_js);
             Notification.Success("Asset Allocation values loaded");
         }
         catch (Exception ex)

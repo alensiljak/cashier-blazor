@@ -7,7 +7,7 @@
 @inject NotificationService Notification
 @inject ISettingsService _settings
 @inject IDexieDAL _db
-@inject IJSRuntime _jsRuntime
+@inject IJSRuntime _js
 @inject IDialogService DialogService
 
 @using MudBlazor
@@ -115,6 +115,6 @@
             await new AppService().saveLastTransaction(_db, xact);
         }
 
-        await new RouterService(_jsRuntime).Back();
+        await new RouterService(_js).Back();
     }
 }

@@ -6,7 +6,7 @@
 @inject AppState State
 @inject IDexieDAL _db
 @inject NavigationManager NavMan
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime _js
 @inject NotificationService Notification
 @inject IDialogService DialogService
 
@@ -81,7 +81,7 @@
         var text = new AppService().TranslateToLedger(xact);
 
         // copy to clipboard
-        await new AppService().CopyToClipboard(JSRuntime, text);
+        await new AppService().CopyToClipboard(_js, text);
 
         Notification.Success("Transaction copied to clipboard");
     }
@@ -111,7 +111,7 @@
         Notification.Success("Transaction deleted");
 
         // go back
-        await new RouterService(JSRuntime).Back();
+        await new RouterService(_js).Back();
     }
 
     void OnEditClick()

@@ -28,9 +28,9 @@ namespace Cashier.Data
             : base("Cashier", 1, new DbVersion[] { }, CreateModuleFactory(jsRuntime))
         { }
 
-        private static IModuleFactory CreateModuleFactory(IJSRuntime jsRuntime)
+        private static IModuleFactory CreateModuleFactory(IJSRuntime js)
         {
-            return new EsModuleFactory(jsRuntime);
+            return new EsModuleFactory(js);
         }
     }
 }

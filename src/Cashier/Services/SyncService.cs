@@ -63,9 +63,9 @@ namespace Cashier.Services
         /// </summary>
         /// <returns></returns>
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-        public async Task<string> ReadCurrentValues(IJSRuntime jsRuntime)
+        public async Task<string> ReadCurrentValues(IJSRuntime js)
         {
-            var dal = new DexieDAL(jsRuntime);
+            var dal = new DexieDAL(js);
             var settings = new SettingsService(dal);
             var rootAccount = await settings.GetRootInvestmentAccount();
             if (rootAccount == null)
@@ -89,7 +89,7 @@ namespace Cashier.Services
 
             var currentValues = ParseCurrentValues(result, rootAccount);
 
-            await ImportCurrentValuesJson(currentValues, jsRuntime);
+            await ImportCurrentValuesJson(currentValues, js);
             return "OK";
         }
 

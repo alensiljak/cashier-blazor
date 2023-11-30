@@ -3,7 +3,7 @@
 @inject AppState State
 @inject NotificationService Notification
 @inject IDialogService DialogService
-@inject IJSRuntime JsRuntime
+@inject IJSRuntime _js
 
 <ToolbarMud>
     Delete Postings
@@ -60,6 +60,6 @@
 
     async Task OnFab()
     {
-        await new RouterService(JsRuntime).Back();
+        await new RouterService(_js).Back();
     }
 }

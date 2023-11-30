@@ -4,7 +4,7 @@
 
 @inject IDexieDAL db
 @inject AppState State
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime _js
 @inject NotificationService Notification
 
 <ToolbarMud>
@@ -134,6 +134,6 @@ else
 
         meta.SelectedId = accountName;
 
-        await JSRuntime.InvokeVoidAsync("history.back");
+        await _js.InvokeVoidAsync("history.back");
     }
 }

@@ -6,7 +6,7 @@
 @using Cashier.Services
 @using System.Text.Json
 
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime _js
 @inject ISettingsService settings
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
@@ -120,8 +120,7 @@
 
     async Task reloadApp()
     {
-        // window.location.reload(true)
-        await JSRuntime.InvokeVoidAsync("window.location.reload", true);
+        await _js.InvokeVoidAsync("window.location.reload", true);
     }
 
     async Task RestoreAssetAllocation(IBrowserFile aaFile)

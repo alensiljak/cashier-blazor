@@ -3,7 +3,7 @@
 
 @using MudBlazor
 @inject IDexieDAL _db
-@inject IJSRuntime _jsRuntime
+@inject IJSRuntime _js
 @inject NotificationService Notification
 
 <ToolbarMud>
@@ -62,7 +62,7 @@
             return;
         }
 
-        await new AppService().CopyToClipboard(_jsRuntime, output);
+        await new AppService().CopyToClipboard(_js, output);
 
         Notification.Success(dataType + " copied to clipboard");
     }
