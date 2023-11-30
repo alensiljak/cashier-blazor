@@ -3,6 +3,7 @@
 *@
 
 @inject IJSRuntime JSRuntime
+@inject IDexieDAL _db
 @inject ISettingsService settings
 @inject ISnackbar Snackbar
 @inject NavigationManager NavMan
@@ -21,7 +22,7 @@
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent Class="pa-0">
-        @if (accounts == null || accounts.Length == 0)
+        @if (accounts == null || accounts.Count == 0)
         {
             <MudText>There are no favourite accounts defined</MudText>
         }
@@ -43,7 +44,7 @@
 </MudCard>
 
 @code {
-    Account?[]? accounts;
+    List<Account> accounts = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,7 +59,8 @@
         // var defaultCurrency = await svc.GetDefaultCurrency();
         // Console.WriteLine("default currency: {0}", defaultCurrency);
 
-        accounts = await settings.GetFavouriteAccounts(5);
+        var app = new AppService();
+        accounts = await app.LoadFavouriteAccounts(_db, 5);
 
         StateHasChanged();
     }

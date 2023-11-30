@@ -1,11 +1,48 @@
 ﻿using Cashier.Components.Pages;
+using Cashier.Data;
 using Cashier.Model;
+using Cashier.Services;
 using System.Linq;
 
 namespace Cashier.Lib
 {
     public class TransactionAugmenter
     {
+        /// <summary>
+        /// Corrects the account balance by adding the local transactions into the calculation.
+        /// The initial value is the account's balance from Ledger. Then we calculate the
+        /// local transactions and adjust the balance accordingly.
+        /// 
+        /// The records are modified in-place.
+        /// </summary>
+        /// <param name="accounts">List of Accounts</param>
+        public async Task AdjustAccountBalances(IDexieDAL db, List<Account> accounts)
+        {
+            if(accounts.Count == 0)
+            {
+                Console.WriteLine("No accounts sent for balance adjustment.");
+                return;
+            }
+
+            var accSvc = new AccountService();
+            var settings = new SettingsService(db);
+            var defaultCurrency = await settings.GetDefaultCurrency();
+
+            foreach(var account in accounts)
+            {
+                // handle empty balances
+                if(account.AccountBalance is null)
+                {
+                    account.AccountBalance = accSvc.GetAccountBalance(account, defaultCurrency);
+                }
+
+                var sum = account.AccountBalance.Quantity;
+                // var xacts = new AppService().lo
+
+                // TODO: complete
+            }
+        }
+
         /// <summary>
         /// Identifies the amount to display, from the user's perspective - a debit, credit, transfer for
         /// a Transaction.

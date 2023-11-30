@@ -6,6 +6,7 @@ using BlazorDexie.JsModule;
 using Microsoft.JSInterop;
 using Cashier.Data;
 using Newtonsoft.Json;
+using BlazorDexie.Database;
 
 namespace Cashier.Services
 {
@@ -67,13 +68,9 @@ namespace Cashier.Services
             return await GetSetting<bool>(SettingsKeys.syncPayees);
         }
 
-        /// <summary>
-        /// Loads favourite accounts.
-        /// The account names are stored in the Settings. Then, the Accounts are loaded from the database by name.
-        /// </summary>
-        /// <param name="take">Take only the first N accounts.</param>
-        /// <returns></returns>
-        public async Task<Account?[]> GetFavouriteAccounts(int? take = null)
+        // Save methods
+
+        public async Task<string[]> GetFavouriteAccountNames()
         {
             var setting = await _db.Settings.Get(SettingsKeys.favouriteAccounts);
             if (setting == null)
@@ -89,31 +86,8 @@ namespace Cashier.Services
                 return [];
             }
 
-            // Take only top n.
-            if (take != null)
-            {
-                keys = keys.Take(5).ToArray();
-            }
-
-            var accounts = await _db.Accounts.BulkGet(keys);
-            if (accounts == null)
-            {
-                return [];
-            }
-
-            // Handle any accounts that have not been found in the Accounts table.
-            var result = new List<Account>();
-            foreach (var account in accounts)
-            {
-                if (account != null)
-                {
-                    result.Add(account);
-                }
-            }
-            return result.ToArray();
+            return keys;
         }
-
-        // Save methods
 
         public async Task<string> SetDefaultCurrency(string value)
         {

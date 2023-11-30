@@ -10,6 +10,7 @@ using MudBlazor;
 using MudBlazor.Charts;
 using Newtonsoft.Json;
 using System.Dynamic;
+using System.Runtime;
 using System.Text;
 
 namespace Cashier.Services
@@ -19,9 +20,7 @@ namespace Cashier.Services
     /// </summary>
     public class AppService
     {
-        public AppService()
-        {
-        }
+        public AppService() { }
 
         public async Task CopyToClipboard(IJSRuntime jsRuntime, string text)
         {
@@ -113,6 +112,41 @@ namespace Cashier.Services
 
             // save to database
             var lastId = await db.ScheduledXacts.BulkPut(scheduledXacts);
+        }
+
+        /// <summary>
+        /// Loads favourite accounts.
+        /// The account names are stored in the Settings. Then, the Accounts are loaded from the database by name.
+        /// </summary>
+        /// <param name="take">Take only the first N accounts.</param>
+        /// <returns></returns>
+        public async Task<List<Account>> LoadFavouriteAccounts(IDexieDAL db, int? take = null)
+        {
+            var settings = new SettingsService(db);
+            var keys = await settings.GetFavouriteAccountNames();
+
+            // Take only top n.
+            if (take != null)
+            {
+                keys = keys.Take(5).ToArray();
+            }
+
+            var accounts = await db.Accounts.BulkGet(keys);
+            if (accounts == null)
+            {
+                return [];
+            }
+
+            // Handle any accounts that have not been found in the Accounts table.
+            var result = new List<Account>();
+            foreach (var account in accounts)
+            {
+                if (account != null)
+                {
+                    result.Add(account);
+                }
+            }
+            return result.ToList();
         }
 
         protected List<Account> ParseAccounts(string[] lines)

@@ -11,7 +11,8 @@ namespace Cashier.Services
 
         Task<string> GetDefaultCurrency();
 
-        Task<Account?[]> GetFavouriteAccounts(int? take = null);
+        Task<string[]> GetFavouriteAccountNames();
+
         Task<bool> GetRememberLastTransaction();
         Task<string?> GetRootInvestmentAccount();
         Task<bool> GetSyncAaValues();

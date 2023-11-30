@@ -1,11 +1,53 @@
 ﻿@page "/favourites"
 
+@using MudBlazor
+
+@inject IDexieDAL _db
+
 <ToolbarMud>
     <Title>Favourites</Title>
+    <ContextMenuItems>
+        <MudListItem Icon="@IconsMud.PlusCircle">Add</MudListItem>
+        <MudListItem Icon="@IconsMud.Trash">Delete All</MudListItem>
+        <MudListItem Icon="@IconsMud.ArrowUpDown">Reorder</MudListItem>
+    </ContextMenuItems>
 </ToolbarMud>
 
-<h3>Favourites</h3>
+@* Accounts List *@
+@if (accounts.Count == 0)
+{
+    <MudText>No favourite accounts set</MudText>
+}
+else
+{
+    <MudList>
+        @foreach (var account in accounts)
+        {
+            <MudListItem Class="px-1 py-1">
+                @account.Name @account.AccountBalance
+            </MudListItem>
+        }
+    </MudList>
+}
 
 @code {
+    List<Account> accounts = [];
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // todo: handle selection
+
+        await loadData();
+    }
+
+    async Task loadData()
+    {
+        var app = new AppService();
+        accounts = await app.LoadFavouriteAccounts(_db);
+
+        var aug = new TransactionAugmenter();
+        // aug.ad
+    }
 }
