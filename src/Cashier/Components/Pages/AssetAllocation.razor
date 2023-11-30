@@ -13,6 +13,7 @@
     <Title>Asset Allocation</Title>
 </ToolbarMud>
 
+<MudContainer Style="max-width: 660px;" Class="pa-0">
 <MudSimpleTable Dense>
     <thead>
         <tr>
@@ -37,7 +38,7 @@
             <tr>
                 <td>
                     <MudLink Class="@(string.Format("pl-{0}", ((item.Depth - 1) * 3)))"
-                        Color="Color.Surface" @onclick="@(() => ShowDetails(item.FullName))">@item.Name</MudLink>
+                             Color="Color.Surface" @onclick="@(() => ShowDetails(item.FullName))">@item.Name</MudLink>
                 </td>
                 <td style="text-align: end;">
                     <MudText>
@@ -77,6 +78,7 @@
         }
     </tbody>
 </MudSimpleTable>
+</MudContainer>
 
 <style>
     .mud-simple-table table * tr td {
@@ -84,16 +86,17 @@
     }
 </style>
 
+@*
 <MudText>File output:</MudText>
 
 <pre>
     @content
 </pre>
-
+*@
 
 @code {
     const string NUMBER = "#,##0.00";
-    string? content;
+    // string? content;
     List<AssetClass> allocation = [];
 
     protected override async Task OnInitializedAsync()
@@ -121,8 +124,9 @@
             Notification.Error(ex.Message);
         }
         allocation = aa.classes;
+
         // text output
-        content = aa.GetTextReport();
+        // TODO: content = aa.GetTextReport();
     }
 
     /// <summary>
