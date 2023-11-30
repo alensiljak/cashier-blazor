@@ -18,11 +18,18 @@
 </ToolbarMud>
 
 <MudList>
-    @foreach (var xact in _xacts)
+    @if (_xacts.Count == 0)
     {
-        <MudListItem>
-            <JournalTransactionRow Xact="@xact" OnItemClicked="@OnItemClicked" />
-        </MudListItem>
+        <MudText Align="Align.Center">No local transactions found</MudText>
+    }
+    else
+    {
+        @foreach (var xact in _xacts)
+        {
+            <MudListItem>
+                <JournalTransactionRow Xact="@xact" OnItemClicked="@OnItemClicked" />
+            </MudListItem>
+        }
     }
 </MudList>
 
