@@ -158,9 +158,6 @@ namespace Cashier.Services
         /// <param name="currentValues"></param>
         private async Task ImportCurrentValuesJson(Dictionary<string, string> currentValues, IJSRuntime jsRuntime)
         {
-            Log.log($"current values {currentValues}");
-            Log.debug(currentValues);
-
             var accounts = currentValues.Keys;
             foreach (var key in accounts)
             {
