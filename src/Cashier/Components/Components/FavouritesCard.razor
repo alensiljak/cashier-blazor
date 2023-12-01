@@ -1,15 +1,14 @@
 ﻿@*
     Favourites card
 *@
+@using BlazorDexie.JsModule
+@using Cashier.Services
+@using MudBlazor
 
 @inject IDexieDAL _db
 @inject ISettingsService settings
 @inject ISnackbar Snackbar
 @inject NavigationManager NavMan
-
-@using BlazorDexie.JsModule
-@using Cashier.Services
-@using MudBlazor
 
 <MudCard @onclick="OnCardClick" Outlined="true">
     <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="px-2 pt-2 pb-1">

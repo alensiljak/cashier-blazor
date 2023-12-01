@@ -16,7 +16,7 @@ namespace Cashier.Lib
         /// The records are modified in-place.
         /// </summary>
         /// <param name="accounts">List of Accounts</param>
-        public async Task AdjustAccountBalances(IDexieDAL db, List<Account> accounts)
+        public async Task AdjustAccountBalances(IDexieDAL db, List<AccountViewModel> accounts)
         {
             if(accounts.Count == 0)
             {

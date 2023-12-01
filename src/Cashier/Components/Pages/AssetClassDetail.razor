@@ -1,21 +1,55 @@
 ﻿@* @page "/assetclassdetail" *@
 @page "/assetclassdetail/{fullname}"
+@using KristofferStrube.Blazor.FileSystem
+@using MudBlazor
 
-@inject ISettingsService settings
-@inject IDexieDAL db
+@inject ISettingsService _settings
+@inject IDexieDAL _db
+@inject IStorageManagerService StorageManagerService
+@inject HttpClient _httpClient
+@inject NotificationService Notification
 
 <ToolbarMud>
     Asset Class Detail
 </ToolbarMud>
 
 <div>@fullname</div>
+<div>Allocation: @_assetClass?.Allocation</div>
 
+<ul class="mt-4">
+    @foreach (var symbol in _stocks)
+    {
+        <li class="mt-3">
+            <MudText Typo="Typo.h6">
+                @symbol.Name
+            </MudText>
+
+            Analysis
+            Lots
+
+            @foreach (var account in symbol.Accounts)
+            {
+                <div>
+                    @account.Name,
+                    @account.AccountBalance?.Quantity @account.AccountBalance?.Currency,
+                    @account.CurrentValue @account.CurrentCurrency
+                </div>
+            }
+        </li>
+    }
+</ul>
 
 @code {
     [Parameter]
     public string? fullname { get; set; }
 
-    // private AssetClass
+    List<AccountViewModel> _investmentAccounts = [];
+    AssetClass? _assetClass;
+    List<AssetClass> _assetAllocation = [];
+    List<StockSymbol> _stocks = [];
+
+    string? _currency;
+    string? _serverUrl;
 
     protected override async Task OnInitializedAsync()
     {
@@ -27,15 +61,109 @@
     async Task loadData()
     {
         var acctSvc = new AccountService();
-        var accounts = await acctSvc.LoadInvestmentAccounts(settings, db);
+        var data = await acctSvc.LoadInvestmentAccounts(_settings, _db);
+        _investmentAccounts = data.ConvertAll(acc => new AccountViewModel(acc));
 
-        Console.WriteLine("accounts {0}", accounts.Count);
+        if(_investmentAccounts.Count == 0)
+        {
+            Notification.Warning("No investment accounts found");
+        }
+
+        await LoadAssetClass();
+
+        _currency = await _settings.GetDefaultCurrency();
+        _serverUrl = await _settings.GetSyncServerUrl();
+
+        await securityAnalysis();
     }
 
-    async Task LoadAssetClasses()
+    async Task LoadAssetClass()
     {
-        var ac = await db.AssetAllocations.Get(fullname!);
-        // ac.a
+        // LoadAssetClass
+        await LoadAssetAllocation();
+        _assetClass = _assetAllocation.Find(ac => ac.FullName == fullname) ?? new AssetClass();
+
+        getConstituents();
+    }
+
+    async Task LoadAssetAllocation()
+    {
+        var opfs = new OpfsService(StorageManagerService);
+        var definition = await opfs.ReadFromFile(Constants.AssetAllocationFilename);
+
+        var accountService = new AccountService();
+        var aa = new AssetAllocationService(_settings, _db, accountService);
+
+        await aa.loadFullAssetAllocation(definition);
+        _assetAllocation = aa.classes;
+    }
+
+    /// <summary>
+    /// Load all constituents - stocks, currencies.
+    /// </summary>
+    void getConstituents()
+    {
+        var childNames = _assetClass?.Symbols;
+        if (childNames is null) return;
+        if (childNames.Count == 0) return;
+
+        foreach (var childName in childNames)
+        {
+            var stock = new StockSymbol
+                {
+                    Name = childName
+                };
+            // find all accounts with this commodity
+            foreach (var account in _investmentAccounts)
+            {
+                if (account.AccountBalance?.Currency == childName)
+                {
+                    stock.Accounts.Add(account);
+                }
+            }
+
+            _stocks.Add(stock);
+        }
+    }
+
+    /// <summary>
+    /// Load security analysis for all symbols.
+    /// </summary>
+    /// <returns></returns>
+    async Task securityAnalysis()
+    {
+        if (string.IsNullOrWhiteSpace(_serverUrl))
+        {
+            throw new Exception("Sync Server URL not set");
+        }
+
+        var sync = new SyncService(_httpClient, _serverUrl);
+        var online = await RunServerCheck(sync);
+        // see if the server is online
+        if (!online) return;
+
+        foreach(var symbol in _stocks )
+        {
+            if (symbol.Analysis != null)
+            {
+                Console.WriteLine(symbol.Analysis);
+            }
+        }
+    }
+
+    async Task<bool> RunServerCheck(SyncService sync)
+    {
+        try
+        {
+            var online = await sync.healthCheck();
+            Console.WriteLine("Server is online? {0}", online);
+            return true;
+        }
+        catch (HttpRequestException rex)
+        {
+            Console.WriteLine(rex.Message);
+            return false;
+        }
 
     }
 }

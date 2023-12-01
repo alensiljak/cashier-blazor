@@ -1,5 +1,6 @@
 ﻿using BlazorDexie.JsInterop;
 using Cashier.Data;
+using Cashier.Lib;
 using Microsoft.JSInterop;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -22,6 +23,23 @@ namespace Cashier.Services
         {
             _httpClient = client;
             _serverUrl = serverUrl;
+        }
+
+        /// <summary>
+        /// See if the server is running.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> healthCheck()
+        {
+            var url = _serverUrl + "/ping";
+            
+            // OPTIONS request unfortunately not supported.
+            //var request = new HttpRequestMessage(HttpMethod.Options, url);
+            //var response = await _httpClient.SendAsync(request);
+            
+            var response = await _httpClient.GetAsync(url);
+
+            return response.IsSuccessStatusCode;
         }
 
         /// <summary>
@@ -115,6 +133,7 @@ namespace Cashier.Services
         {
             try
             {
+                Console.WriteLine("checking if the server is online...");
                 await _httpClient.GetAsync(_serverUrl + "/shutdown");
             }
             catch (Exception ex)
@@ -139,6 +158,9 @@ namespace Cashier.Services
         /// <param name="currentValues"></param>
         private async Task ImportCurrentValuesJson(Dictionary<string, string> currentValues, IJSRuntime jsRuntime)
         {
+            Log.log($"current values {currentValues}");
+            Log.debug(currentValues);
+
             var accounts = currentValues.Keys;
             foreach (var key in accounts)
             {

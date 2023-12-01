@@ -6,6 +6,7 @@
         public decimal Allocation { get; set; }
         public decimal AllocatedValue { get; set; }
         public decimal CurrentAllocation { get; set; }
+
         /// <summary>
         ///  Current value in the default currency.
         /// </summary>

@@ -63,8 +63,8 @@ else
 }
 
 @code {
-    List<Account> accounts = [];
-    HashSet<Account> _accountsHashSet = [];
+    List<AccountViewModel> accounts = [];
+    // HashSet<AccountViewModel> _accountsHashSet = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -81,14 +81,15 @@ else
     async Task loadData()
     {
         var app = new AppService();
-        accounts = await app.LoadFavouriteAccounts(_db);
+        var data = await app.LoadFavouriteAccounts(_db);
+        accounts = accounts.ConvertAll(acc => new AccountViewModel(acc));
 
         var aug = new TransactionAugmenter();
         await aug.AdjustAccountBalances(_db, accounts);
     }
 
-    void CreateTreeView()
-    {
-        _accountsHashSet = accounts.ToHashSet();
-    }
+    // void CreateTreeView()
+    // {
+    //     _accountsHashSet = accounts.ToHashSet();
+    // }
 }

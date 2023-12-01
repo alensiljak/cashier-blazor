@@ -1,14 +1,8 @@
 ﻿using Cashier.Data;
 using Cashier.Model;
-using Microsoft.JSInterop;
-using System.Numerics;
-using System.Reflection.Emit;
-using System.Security.Principal;
 using System.Text;
 using Tomlyn;
 using Tomlyn.Model;
-using Tomlyn.Syntax;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cashier.Services
 {
@@ -21,7 +15,6 @@ namespace Cashier.Services
 
         private Dictionary<string, AssetClass> _assetClassIndex = [];
         private Dictionary<string, string> _stockIndex = []; // symbol / asset class
-        //private IJSRuntime _jsRuntime;
         private ISettingsService _settings;
         private IDexieDAL _db;
         private IAccountService _accountService;
@@ -40,7 +33,6 @@ namespace Cashier.Services
             foreach (var asset in classes)
             {
                 // Indentation
-                //output.Append(' ', asset.Depth * 2);
                 var indent = new string(' ', asset.Depth * 2);
                 var nameWithIndent = indent + asset.Name;
 
@@ -111,8 +103,10 @@ namespace Cashier.Services
 
             foreach (var ac in classes)
             {
-                // calculate current allocation
-                ac.CurrentAllocation = ac.CurrentValue.Quantity!.Value * 100 / total;
+                // calculate current allocation %.
+                ac.CurrentAllocation = (total == 0)
+                    ? 0
+                    : ac.CurrentValue.Quantity!.Value * 100 / total;
 
                 // diff
                 ac.Diff = ac.CurrentAllocation - ac.Allocation;
@@ -124,7 +118,7 @@ namespace Cashier.Services
                 ac.AllocatedValue = (ac.Allocation * total) / 100;
 
                 // diff amount
-                ac.DiffAmount = ac.CurrentValue.Quantity.Value - ac.AllocatedValue;
+                ac.DiffAmount = ac.CurrentValue.Quantity!.Value - ac.AllocatedValue;
             }
         }
 
@@ -160,7 +154,8 @@ namespace Cashier.Services
         private async Task LoadCurrentValues()
         {
             var currency = await _settings.GetDefaultCurrency();
-            var invAccounts = await _accountService.LoadInvestmentAccounts(_settings, _db);
+            var data = await _accountService.LoadInvestmentAccounts(_settings, _db);
+            var invAccounts = _accountService.ConvertToViewModel(data);
 
             foreach (var account in invAccounts)
             {
@@ -268,14 +263,15 @@ namespace Cashier.Services
             var root = _assetClassIndex["Allocation"];
 
             var sum = SumChildren(root);
-            
+
             root.CurrentValue.Quantity = sum;
         }
 
         private Decimal SumChildren(AssetClass item)
         {
             var children = FindChildren(item);
-            if (children.Count == 0) {
+            if (children.Count == 0)
+            {
                 return item.CurrentValue?.Quantity ?? 0;
             }
 

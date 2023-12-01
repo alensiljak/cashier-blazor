@@ -3,7 +3,7 @@
 @using KristofferStrube.Blazor.FileSystem
 @using MudBlazor
 
-@inject IDexieDAL dal
+@inject IDexieDAL _db
 @inject ISettingsService settings
 @inject IStorageManagerService StorageManagerService
 @inject NotificationService Notification
@@ -113,7 +113,7 @@
         var definition = await opfs.ReadFromFile(Constants.AssetAllocationFilename);
         var accountService = new AccountService();
 
-        var aa = new AssetAllocationService(settings, dal, accountService);
+        var aa = new AssetAllocationService(settings, _db, accountService);
         try
         {
             await aa.loadFullAssetAllocation(definition);

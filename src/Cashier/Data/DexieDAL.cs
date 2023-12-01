@@ -11,7 +11,7 @@ namespace Cashier.Data
 
         public Store<Account, string> Accounts { get; set; } = new(nameof(Account.Name));
         
-        public Store<AssetAllocation, string> AssetAllocations { get; set; } = new(nameof(AssetAllocation.FullName));
+        //public Store<AssetAllocation, string> AssetAllocations { get; set; } = new(nameof(AssetAllocation.FullName));
         
         public Store<LastXact, string> LastTransactions { get; set; } = new(nameof(LastXact.Payee));
         

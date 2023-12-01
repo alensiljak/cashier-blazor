@@ -41,8 +41,8 @@ namespace Cashier.Tests.Infrastructure
             var mock = new Mock<IDexieDAL>();
             // var db = new DexieDAL();
 
-            var accounts = new BlazorDexie.Database.Store<Model.Account, string>("name");
-            accounts.Add(new Model.Account("Assets:Equity"));
+            var accounts = new Store<Account, string>("name");
+            accounts.Add(new Account("Assets:Equity"));
 
             mock.Setup(db => db.Accounts)
                 .Returns(accounts);

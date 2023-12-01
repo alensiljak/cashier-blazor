@@ -38,7 +38,7 @@ namespace Cashier.Services
             return result!;
         }
 
-        public async Task<List<Account>> LoadInvestmentAccounts(ISettingsService settings, IDexieDAL dal)
+        public async Task<List<Account>> LoadInvestmentAccounts(ISettingsService settings, IDexieDAL db)
         {
             var root = await settings.GetRootInvestmentAccount();
             if (root == null)
@@ -46,7 +46,7 @@ namespace Cashier.Services
                 throw new Exception("Root investment account not set!");
             }
 
-            var accounts = await dal.Accounts
+            var accounts = await db.Accounts
                 .Where("name").StartsWithIgnoreCase(root)
                 // .Filter
                 .ToList();
@@ -66,5 +66,9 @@ namespace Cashier.Services
             return accounts;
         }
 
+        public List<AccountViewModel> ConvertToViewModel(List<Account> accounts)
+        {
+            return accounts.ConvertAll(acc => new AccountViewModel(acc));
+        }
     }
 }
