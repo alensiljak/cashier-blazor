@@ -20,7 +20,7 @@
 <MudText>To update data from Ledger, the Cashier Server must be running and accessible.</MudText>
 <MudText>You can run the Cashier Server locally.</MudText>
 
-<MudPaper Class="px-2" Style="background-color: var(--mud-palette-background);">
+<MudPaper Class="mx-md-8 mx-xs-3 px-md-2" Style="background-color: var(--mud-palette-background);">
     <MudTextField T="string" Placeholder="http://localhost:3000" Label="Server URL" Value="@ServerUrl" ValueChanged="saveSyncServerUrl"
                   FullWidth="false" Class="pa-5" />
 </MudPaper>
@@ -33,12 +33,11 @@
             <div class="flex-grow-1">
                 <MudCheckBox T="bool" @bind-Checked="syncAccounts">Sync accounts list with balances</MudCheckBox>
             </div>
-            @if (showAccountProgress)
-            {
-                <div class="d-flex align-center">
-                    <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Small" Color="Color.Tertiary" Class="spin" />
-                </div>
-            }
+            @*
+            <div class="@(showAccountProgress ? "d-flex" : "d-none") align-center">
+                <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Small" Color="Color.Tertiary" Class="spin" />
+            </div>
+            *@
         </MudStack>
     </MudListItem>
     <MudListItem>
@@ -49,12 +48,11 @@
                     (ledger b ^&lt;root&gt; -X &lt;CUR&gt; --flat --no-total). Used for asset allocation.
                 </MudCheckBox>
             </div>
-            @if (showAssetProgress)
-            {
-                <div class="d-flex align-center">
-                    <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Small" Color="Color.Tertiary" Class="spin" />
-                </div>
-            }
+            @*
+            <div class="@(showAssetProgress ? "d-flex" : "d-none") align-center">
+                <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Small" Color="Color.Tertiary" Class="spin" />
+            </div>
+            *@
         </MudStack>
     </MudListItem>
     <MudListItem>
@@ -62,19 +60,19 @@
             <div class="flex-grow-1">
                 <MudCheckBox T="bool" @bind-Checked="syncPayees">Sync Payees</MudCheckBox>
             </div>
-            @if (showPayeesProgress)
-            {
-                <div class="d-flex align-center">
-                    <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Small" Color="Color.Tertiary" Class="spin" />
-                </div>
-            }
+            @*
+            <div class="@(showPayeesProgress ? "d-flex" : "d-none") align-center">
+                <MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Small" Color="Color.Tertiary" Class="spin" />
+            </div>
+            *@
         </MudStack>
     </MudListItem>
 </MudList>
 
 <MudContainer Class="d-flex justify-center mt-4">
     <MudButton Variant="Variant.Filled" Color="Color.Tertiary" Size="Size.Large"
-               StartIcon="@IconsMud.RefreshCW" Style="color: var(--mud-palette-secondary);" Class=""
+               StartIcon="@IconsMud.RefreshCW" Style="color: var(--mud-palette-secondary);"
+               IconClass="@((showAccountProgress || showAssetProgress || showPayeesProgress) ? "spin" : "")"
                @onclick="onSyncClicked">Sync</MudButton>
 </MudContainer>
 
