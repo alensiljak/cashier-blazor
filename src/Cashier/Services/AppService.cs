@@ -27,6 +27,17 @@ namespace Cashier.Services
             await jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
         }
 
+        public Xact CreateNewXact()
+        {
+            var xact = new Xact(DateUtils.Today)
+            {
+                // Add two Postings by default.
+                Postings = [new Posting(), new Posting()]
+            };
+
+            return xact;
+        }
+
         public async Task deleteAccounts(IDexieDAL db)
         {
             await db.Accounts.Clear();

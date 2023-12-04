@@ -34,7 +34,7 @@
     void OnFab()
     {
         // create new transaction in the app store
-        var xact = new TransactionActions().CreateNew();
+        var xact = new AppService().CreateNewXact();
         State.Xact = xact;
 
         NavMan.NavigateTo("/tx");

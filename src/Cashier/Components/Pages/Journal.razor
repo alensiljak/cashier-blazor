@@ -17,21 +17,21 @@
     </ContextMenuItems>
 </ToolbarMud>
 
-<MudList>
-    @if (_xacts.Count == 0)
-    {
-        <MudText Align="Align.Center">The device journal is empty</MudText>
-    }
-    else
-    {
+@if (_xacts.Count == 0)
+{
+    <MudText Align="Align.Center">The device journal is empty</MudText>
+}
+else
+{
+    <MudList>
         @foreach (var xact in _xacts)
         {
             <MudListItem Class="px-1">
                 <JournalTransactionRow Xact="@xact" OnItemClicked="@OnItemClicked" />
             </MudListItem>
         }
-    }
-</MudList>
+    </MudList>
+}
 
 <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus" Class="z-100"
         Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
@@ -82,8 +82,7 @@
     void OnFab()
     {
         // create new transaction in the app store
-        var xact = new TransactionActions().CreateNew();
-        State.Xact = xact;
+        State.Xact = new AppService().CreateNewXact();
 
         NavMan.NavigateTo("/tx");
     }

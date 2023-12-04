@@ -1,0 +1,23 @@
+﻿@page "/scheduledxacteditor"
+@using MudBlazor
+
+<ToolbarMud>
+    Scheduled Transaction Edit
+</ToolbarMud>
+
+<XactEditor />
+
+<MudDivider DividerType="DividerType.Middle" Class="mt-3 pt-3" />
+
+<ScheduleEditor />
+
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check" Class="z-100"
+        Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
+
+@code {
+
+    void OnFab()
+    {
+        
+    }
+}

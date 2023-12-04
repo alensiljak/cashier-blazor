@@ -36,6 +36,9 @@ else
     </MudList>
 }
 
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus" Class="z-100"
+        Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
+
 @code {
     List<ScheduledXact> _list = [];
     AppService _appService = new AppService();
@@ -65,6 +68,17 @@ else
     string GetDateColour(DateOnly date)
     {
         return _appService.GetDateColour(date);
+    }
+
+    void OnFab()
+    {
+        // create new transaction in the app state.
+        var app = new AppService();
+
+        _state.ScheduledXact = new ScheduledXact();
+        _state.Xact = app.CreateNewXact();
+        
+        NavMan.NavigateTo("/scheduledxacteditor");
     }
 
     void OnRestoreClick()

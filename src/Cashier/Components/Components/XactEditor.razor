@@ -22,7 +22,7 @@
               @bind-Value="Payee" @onclick="OnPayeeClick" />
 
 <MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.FileText"
-              @bind-Value="Xact.Note" />
+              @bind-Value="Note" />
 
 @* Postings *@
 <MudPaper Class="px-4 pt-1 mt-2">
@@ -47,11 +47,11 @@
     </MudStack>
 </MudPaper>
 
-@if (Xact?.Postings != null)
+@if (Postings != null)
 {
     @foreach (var posting in Postings)
     {
-        var index = Xact?.Postings.IndexOf(posting);
+        var index = Postings.IndexOf(posting);
         <PostingEditor Posting="posting" OnAccountClick="@(() => OnAccountClicked(index))" />
     }
 }
@@ -94,6 +94,18 @@
         }
     }
 
+    string Note
+    {
+        get
+        {
+            return Xact?.Note ?? string.Empty;
+        }
+        set
+        {
+            Xact!.Note = value;
+        }
+    }
+
     string Payee
     {
         get
@@ -110,7 +122,7 @@
     {
         get
         {
-            return Xact?.Postings ?? new List<Posting>();
+            return Xact?.Postings ?? [];
         }
     }
 
