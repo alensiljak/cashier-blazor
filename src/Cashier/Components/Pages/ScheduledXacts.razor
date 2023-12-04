@@ -19,7 +19,7 @@
 }
 else
 {
-    <MudList>
+    <MudList Clickable>
         @foreach (var stx in _list)
         {
             <MudListItem Class="px-1" @onclick="@(() => showTx(stx.Id))">
