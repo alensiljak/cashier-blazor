@@ -25,11 +25,11 @@
         @foreach (var p in Xact.Postings)
         {
             <MudStack Row="true" Class="pl-5">
-                <MudText Typo="Typo.body2">@p.Account</MudText>
+                <small>@p.Account</small>
                 @if (p.Amount != null)
                 {
                     <MudSpacer />
-                    <MudText Typo="Typo.body2" Class="pl-4">@p.Amount @p.Currency</MudText>
+                    <small class="pl-4">@p.Amount @p.Currency</small>
                 }
             </MudStack>
         }
