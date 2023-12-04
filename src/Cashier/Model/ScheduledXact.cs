@@ -1,4 +1,6 @@
-﻿namespace Cashier.Model
+﻿using Cashier.Lib;
+
+namespace Cashier.Model
 {
     public class ScheduledXact
     {
@@ -7,7 +9,7 @@
         public Xact? Transaction { get; set; }
         public string? Period { get; set; }
         public string? Count { get; set; }
-        public string? EndDate { get; set; }
+        public DateOnly? EndDate { get; set; }
         public string? Remarks { get; set; }
     }
 }

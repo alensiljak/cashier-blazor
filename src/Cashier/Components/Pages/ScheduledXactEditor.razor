@@ -1,5 +1,7 @@
-﻿@page "/scheduledxacteditor"
+﻿@page "/scheduled-xact-editor"
 @using MudBlazor
+
+@inject NotificationService Notification
 
 <ToolbarMud>
     Scheduled Transaction Edit
@@ -9,7 +11,7 @@
 
 <MudDivider DividerType="DividerType.Middle" Class="mt-3 pt-3" />
 
-<ScheduleEditor />
+<ScheduleEditor Class="mt-4" />
 
 <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check" Class="z-100"
         Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
@@ -18,6 +20,6 @@
 
     void OnFab()
     {
-        
+        Notification.Info("Incomplete");
     }
 }

@@ -66,8 +66,7 @@
         if (result.Canceled) return;
 
         //
-        var xact = new TransactionActions().CreateNew();
-        State.Xact = xact;
+        State.Xact = new AppService().CreateNewXact();
 
         _editor.Refresh();
     }

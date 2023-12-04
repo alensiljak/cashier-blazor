@@ -1,18 +1,116 @@
-﻿@* 
+﻿@*
     Schedule Editor
 *@
 @using MudBlazor
 
-<MudText>Repeats</MudText>
+@inject AppState _state
+@inject NotificationService Notification
+@inject NavigationManager NavMan
 
-@*
-<MudRadioGroup T="">
+<div class="@Class">
+    <MudText>Repeats</MudText>
 
-</MudRadioGroup>
-*@
+    <MudRadioGroup @bind-SelectedOption="@repeats">
+        <MudRadio Option="@("Never")">Never</MudRadio>
+        <MudRadio Option="@("Every")">Every ...</MudRadio>
+    </MudRadioGroup>
+    @if (repeats != "Never")
+    {
+        <MudGrid>
+            <MudItem xs="6">
+                <MudTextField T="int" Placeholder="Count" Class="text-right" />
+            </MudItem>
+            <MudItem xs="6">
+                <MudSelect T="string" @bind-Value="ScXact.Period">
+                    @foreach(var period in _periods)
+                    {
+                        <MudSelectItem Value="@period">@period</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+    }
 
-<MudText>Ends on</MudText>
+    <MudText Class="mt-4">
+        Ends on
+    </MudText>
+
+    <MudRadioGroup @bind-SelectedOption="@ends">
+        <MudRadio Option="@("Never")">Never</MudRadio>
+        <MudRadio Option="@("Every")">On ...</MudRadio>
+    </MudRadioGroup>
+    @if (ends != "Never")
+    {
+        <MudDatePicker Placeholder="Select Date" DateFormat="@FixedSettings.DateFormat" AutoClose
+                       @bind-Date="EndDate" />
+    }
+
+    <MudText Class="mt-4">Remarks</MudText>
+
+    <MudTextField T="string" Lines="5" @bind-Value="ScXact.Remarks" />
+</div>
 
 @code {
+    [Parameter]
+    public string Class { get; set; }
 
+    string repeats = "Never";
+    string ends = "Never";
+
+    ScheduledXact? ScXact;
+
+    List<string> _periods = [];
+
+    DateTime? EndDate
+    {
+        get
+        {
+            if (ScXact.EndDate is null)
+            {
+                return null;
+            }
+            else
+            {
+                var dtValue = ScXact?.EndDate.Value.ToDateTime(TimeOnly.MinValue);
+                return dtValue;
+            }
+        }
+        set
+        {
+            if (ScXact is null) return;
+
+            if (value == null)
+            {
+                ScXact.EndDate = null;
+            }
+            else
+            {
+                var doValue = DateOnly.FromDateTime(value.Value);
+                ScXact.EndDate = doValue;
+            }
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        ScXact = _state.ScheduledXact;
+        if (ScXact is null)
+        {
+            Notification.Warning("No Scheduled Transaction found!");
+            NavMan.NavigateTo("/scheduled-xacts");
+        }
+
+        PopulatePeriods();
+    }
+
+    void PopulatePeriods()
+    {
+        foreach(Periods period in Enum.GetValues(typeof(Periods)))
+        {
+            var name = PeriodNames.ToString(period);
+            _periods.Add(name);
+        }
+    }
 }

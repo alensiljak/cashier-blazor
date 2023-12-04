@@ -10,7 +10,7 @@
 
 @* Date *@
 <MudDatePicker @ref="_datePicker" Placeholder="Date" DateFormat="@FixedSettings.DateFormat"
-               AutoClose="true" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.CalendarDays"
+               AutoClose Adornment="Adornment.Start" AdornmentIcon="@IconsMud.CalendarDays"
                @bind-Date="date" PickerVariant="PickerVariant.Dialog">
     <PickerActions>
         <MudButton Class="mr-auto align-self-start" OnClick="Today">Today</MudButton>
