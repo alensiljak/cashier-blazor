@@ -21,7 +21,7 @@
                 <MudTextField T="int" Placeholder="Count" Class="text-right" />
             </MudItem>
             <MudItem xs="6">
-                <MudSelect T="string" @bind-Value="ScXact.Period">
+                <MudSelect T="string" @bind-Value="ScXact!.Period">
                     @foreach(var period in _periods)
                     {
                         <MudSelectItem Value="@period">@period</MudSelectItem>
@@ -52,7 +52,7 @@
 
 @code {
     [Parameter]
-    public string Class { get; set; }
+    public string? Class { get; set; }
 
     string repeats = "Never";
     string ends = "Never";
@@ -65,7 +65,7 @@
     {
         get
         {
-            if (ScXact.EndDate is null)
+            if (ScXact!.EndDate is null)
             {
                 return null;
             }
