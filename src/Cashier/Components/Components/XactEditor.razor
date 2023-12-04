@@ -21,7 +21,8 @@
 <MudTextField T="string" Placeholder="Payee" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.Users2"
               @bind-Value="Payee" @onclick="OnPayeeClick" />
 
-<MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.FileText" />
+<MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.FileText"
+              @bind-Value="Xact.Note" />
 
 @* Postings *@
 <MudPaper Class="px-4 pt-1 mt-2">
