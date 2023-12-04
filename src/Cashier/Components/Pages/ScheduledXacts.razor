@@ -3,6 +3,7 @@
 
 @inject NavigationManager NavMan
 @inject IDexieDAL _db
+@inject AppState _state
 
 <ToolbarMud>
     <Title>Scheduled</Title>
@@ -21,7 +22,7 @@ else
     <MudList>
         @foreach (var stx in _list)
         {
-            <MudListItem Class="px-1">
+            <MudListItem Class="px-1" @onclick="@(() => showTx(stx.Id))">
                 <MudStack Row>
                     <MudText Class="mr-1" Style="@GetDateStyle(stx)">
                         @stx.NextDate.ToString(Constants.ISODateFormat)
@@ -36,8 +37,8 @@ else
 }
 
 @code {
-        List<ScheduledXact> _list = [];
-        AppService _appService = new AppService();
+    List<ScheduledXact> _list = [];
+    AppService _appService = new AppService();
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,5 +70,16 @@ else
     void OnRestoreClick()
     {
         NavMan.NavigateTo("/restore/scheduled");
+    }
+
+    async Task showTx(long? sxId)
+    {
+        if (sxId is null) return;
+
+        var app = new AppService();
+        await app.LoadScheduledXact(_db, sxId.Value, _state);
+
+        // router
+        NavMan.NavigateTo($"/scheduledxactactions/{sxId}");
     }
 }

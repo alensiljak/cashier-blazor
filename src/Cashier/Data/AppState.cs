@@ -35,6 +35,7 @@ namespace Cashier.Data
 
         public SelectionModeMetadata? SelectionModeMetadata { get; set; }
 
+        public ScheduledXact? ScheduledXact { get; set; }
         public Xact? Xact { get; set; }
     }
 }

@@ -1,0 +1,94 @@
+﻿@page "/scheduledxactactions"
+@page "/scheduledxactactions/{sxid}"
+@using MudBlazor
+
+@inject AppState _state
+@inject IDexieDAL _db
+@inject NotificationService Notification
+
+<ToolbarMud>
+    Scheduled Transaction Actions
+</ToolbarMud>
+
+@if (_state.Xact is null)
+{
+    <MudText>
+        No Scheduled Transaction selected.
+    </MudText>
+}
+else
+{
+    <JournalTransactionRow Xact="_state.Xact" />
+
+    @* Actions *@
+    <MudContainer MaxWidth="MaxWidth.Small" Class="mt-10 align-center d-flex flex-column gap-8">
+
+        <MudButton Size="Size.Large" Variant="Variant.Filled" Color="Color.Tertiary" FullWidth StartIcon="@IconsMud.Scroll"
+                   Style="color: var(--mud-palette-secondary);" IconSize="Size.Large" @onclick="OnEnterClick">
+            Enter
+        </MudButton>
+
+        <MudButton Size="Size.Large" Variant="Variant.Filled" Color="Color.Primary" FullWidth StartIcon="@IconsMud.ChevronsRight"
+                   Style="color: var(--mud-palette-tertiary);" IconSize="Size.Large" @onclick="OnSkipClick">
+            Skip
+        </MudButton>
+
+        <MudButton Size="Size.Large" Variant="Variant.Filled" Color="Color.Tertiary" FullWidth StartIcon="@IconsMud.PenSquare"
+                   Style="color: var(--mud-palette-secondary);" IconSize="Size.Large" @onclick="OnEditClick">
+            Edit
+        </MudButton>
+
+        <MudButton Color="Color.Secondary" Size="Size.Large" Variant="Variant.Filled" FullWidth Style="color: var(--mud-palette-tertiary);"
+                   StartIcon="@IconsMud.Trash" IconSize="Size.Large" @onclick="OnDeleteClick">
+            Delete
+        </MudButton>
+
+    </MudContainer>
+}
+
+@code {
+    [Parameter]
+    public string? sxId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await loadData();
+    }
+
+    async Task loadData()
+    {
+        if (!long.TryParse(sxId, out var sxid)) return;
+        if (_state.ScheduledXact != null) return;
+
+        // load stx
+        var app = new AppService();
+        await app.LoadScheduledXact(_db, sxid, _state);
+    }
+
+    void OnDeleteClick()
+    {
+        NotImplemented();
+    }
+
+    void OnEditClick()
+    {
+        NotImplemented();
+    }
+
+    void OnEnterClick()
+    {
+        NotImplemented();
+    }
+
+    void OnSkipClick()
+    {
+        NotImplemented();
+    }
+
+    void NotImplemented()
+    {
+        Notification.Info("Not implemented");
+    }
+}

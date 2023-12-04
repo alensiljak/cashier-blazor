@@ -149,6 +149,21 @@ namespace Cashier.Services
             return result.ToList();
         }
 
+        public async Task<ScheduledXact> LoadScheduledXact(IDexieDAL db, long sxId, AppState state)
+        {
+            var sx = await db.ScheduledXacts.Get(sxId);
+
+            if (sx is null)
+            {
+                throw new Exception("Scheduled Transaction not found!");
+            }
+
+            state.ScheduledXact = sx;
+            state.Xact = sx.Transaction;
+
+            return sx;
+        }
+
         protected List<Account> ParseAccounts(string[] lines)
         {
             var accounts = new List<Account>();
