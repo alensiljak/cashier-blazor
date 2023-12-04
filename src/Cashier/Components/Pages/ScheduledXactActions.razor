@@ -20,6 +20,7 @@ else
 {
     <JournalTransactionRow Xact="_state.Xact" />
 
+    @* Recurrence details *@
     <div class="pt-4">
         @if(Count > 0)
         {
@@ -29,6 +30,11 @@ else
         {
             <span>until @EndDate</span>
         }
+    </div>
+
+    @* Remarks *@
+    <div class="pt-2">
+        @_state?.ScheduledXact?.Remarks
     </div>
 
     @* Actions *@
