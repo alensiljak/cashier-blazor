@@ -99,7 +99,7 @@
             var result = await _db.Xacts.Put(xact);
             Console.WriteLine("after save: {0}", result);
 
-            Notification.Success("Xact saved: " + result);
+            Notification.Success("Transaction saved");
         }
         catch (Exception ex)
         {
