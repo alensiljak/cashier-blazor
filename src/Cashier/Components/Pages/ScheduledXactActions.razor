@@ -20,6 +20,17 @@ else
 {
     <JournalTransactionRow Xact="_state.Xact" />
 
+    <div class="pt-4">
+        @if(Count > 0)
+        {
+            <span>Repeats every @_state?.ScheduledXact?.Count @_state?.ScheduledXact?.Period</span>
+        }
+        @if(EndDate.HasValue)
+        {
+            <span>until @EndDate</span>
+        }
+    </div>
+
     @* Actions *@
     <MudContainer MaxWidth="MaxWidth.Small" Class="mt-10 align-center d-flex flex-column gap-8">
 
@@ -49,6 +60,28 @@ else
 @code {
     [Parameter]
     public string? sxId { get; set; }
+
+    int Count
+    {
+        get
+        {
+            if (_state.ScheduledXact is null) return 0;
+            if (!int.TryParse(_state.ScheduledXact.Count, out var count)) return 0;
+
+            return count;
+        }
+    }
+
+    DateOnly? EndDate
+    {
+        get
+        {
+            if (_state.ScheduledXact is null) return null;
+            if (!_state.ScheduledXact.EndDate.HasValue) return null;
+
+            return _state.ScheduledXact.EndDate;
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {

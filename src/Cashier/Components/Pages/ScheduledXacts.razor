@@ -22,14 +22,15 @@ else
     <MudList Clickable>
         @foreach (var stx in _list)
         {
-            <MudListItem Class="px-1" @onclick="@(() => showTx(stx.Id))">
+            <MudListItem Class="px-1 py-1" @onclick="@(() => showTx(stx.Id))">
                 <MudStack Row>
                     <MudText Class="mr-1" Style="@GetDateStyle(stx)">
                         @stx.NextDate.ToString(Constants.ISODateFormat)
                     </MudText>
-                    <MudText>
-                        @stx.Transaction?.Payee
-                    </MudText>
+                    <MudItem>
+                        <MudText>@stx.Transaction?.Payee</MudText>
+                        <small>@GetFirstLine(stx.Remarks)</small>
+                    </MudItem>
                 </MudStack>
             </MudListItem>
         }
@@ -68,6 +69,13 @@ else
     string GetDateColour(DateOnly date)
     {
         return _appService.GetDateColour(date);
+    }
+
+    string GetFirstLine(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+
+        return text.Split('\n')[0];
     }
 
     void OnFab()
