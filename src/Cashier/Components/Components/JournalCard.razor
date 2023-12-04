@@ -61,8 +61,8 @@
 </MudCard>
 
 @code {
-    [Parameter]
-    public string? Class { get; set; }
+        [Parameter]
+        public string? Class { get; set; }
 
     private List<Xact> Xacts { get; set; } = [];
     private List<Money> Balances { get; set; } = [];
@@ -98,7 +98,7 @@
 
         // Transfers are yellow
         var tx = Xacts[index];
-        if (tx.Postings?.Count(p => p.Account!.StartsWith("Assets:")) == 2)
+        if (tx.Postings?.Count(p => (p.Account != null) && (p.Account.StartsWith("Assets:")) ) == 2)
         {
             colour = ""; // yellow
         }
