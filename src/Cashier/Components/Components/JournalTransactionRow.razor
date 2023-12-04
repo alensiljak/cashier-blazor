@@ -13,7 +13,7 @@
         </MudText>
     </MudStack>
 
-    @if (Xact.Note != null)
+    @if (!string.IsNullOrWhiteSpace(Xact.Note))
     {
         <MudText Typo="Typo.body2" Color="Color.Primary" Class="pl-5">
             ; @Xact.Note
