@@ -5,6 +5,8 @@
 @inject AppState _state
 @inject IDexieDAL _db
 @inject NotificationService Notification
+@inject IDialogService DialogService
+@inject NavigationManager NavMan
 
 <ToolbarMud>
     Scheduled Transaction Actions
@@ -22,11 +24,11 @@ else
 
     @* Recurrence details *@
     <div class="pt-4">
-        @if(Count > 0)
+        @if (Count > 0)
         {
             <span>Repeats every @_state?.ScheduledXact?.Count @_state?.ScheduledXact?.Period</span>
         }
-        @if(EndDate.HasValue)
+        @if (EndDate.HasValue)
         {
             <span>until @EndDate</span>
         }
@@ -106,6 +108,37 @@ else
         await app.LoadScheduledXact(_db, sxid, _state);
     }
 
+    /// <summary>
+    /// Enter the transaction into Journal and update the next date on schedule.
+    /// </summary>
+    /// <returns></returns>
+    async Task EnterTransaction()
+    {
+        if (_state.ScheduledXact is null || _state.ScheduledXact.Transaction is null)
+        {
+            Notification.Warning("Scheduled Transaction does not exist");
+            return;
+        }
+
+        // Create the journal transaction.
+        var app = new AppService();
+        var newXact = app.CreateNewXactFrom(_state.ScheduledXact.Transaction);
+        // todo: var id = await app.SaveXact(_db, newXact);
+
+        Log.debug(newXact);
+
+        // update the iteration date
+        await Skip();
+
+        Notification.Success("Transaction created");
+
+        // load transaction into store
+        _state.Xact = newXact;
+
+        // open the transaction. (Maintain page navigation history. <- there is no route overwrite in Blazor!)
+        NavMan.NavigateTo("/tx");
+    }
+
     void OnDeleteClick()
     {
         NotImplemented();
@@ -116,9 +149,26 @@ else
         NotImplemented();
     }
 
-    void OnEnterClick()
+    async Task OnEnterClick()
     {
-        NotImplemented();
+        // confirm with a dialog
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you want to enter this transaction into the journal?");
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Creation", parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Large });
+        var result = await dialog.Result;
+        if (result.Canceled) return;
+
+        // enter
+        try
+        {
+            await EnterTransaction();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Notification.Error(ex.Message);
+        }
     }
 
     void OnSkipClick()
@@ -129,5 +179,44 @@ else
     void NotImplemented()
     {
         Notification.Info("Not implemented");
+    }
+
+    /// <summary>
+    /// Skips the next iteration.
+    /// </summary>
+    /// <returns></returns>
+    async Task Skip()
+    {
+        var stx = _state.ScheduledXact;
+        if (stx is null)
+        {
+            throw new Exception("No Scheduled Transaction found in app state");
+        }
+
+        var startDate = stx.NextDate;
+        var count = stx.Count;
+        var period = stx.Period;
+        var endDate = stx.EndDate;
+
+        ValidateSchedule(stx);
+
+        // todo: handle the one-off occurrence (no count and no period)
+
+        // calculate the next iteration.
+
+        // update the date on the transaction
+
+    }
+
+    bool ValidateSchedule(ScheduledXact stx)
+    {
+        // A schedule can't have no repetitions and no end. Skipping the date would result
+        // in an invalid situation.
+        if ((stx.EndDate is null) && ((stx.Count is null) || (stx.Period is null)))
+        {
+            throw new Exception("A schedule must have either an end date or a repetition pattern.");
+        }
+
+        return true;
     }
 }

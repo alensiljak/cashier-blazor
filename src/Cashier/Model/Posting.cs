@@ -22,6 +22,17 @@
             }
         }
 
+        public Posting Clone()
+        {
+            var newItem = new Posting
+            {
+                Account = Account,
+                Amount = Amount,
+                Currency = Currency
+            };
+            return newItem;
+        }
+
         public override string ToString()
         {
             return string.Format($"{Account} {Amount} {Currency}");

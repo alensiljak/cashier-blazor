@@ -1,4 +1,8 @@
-﻿@page "/tx"
+﻿@*
+    Transaction (Xact) editor.
+    Always uses the Xact from the app state. Make sure that the Xact is loaded before opening the editor.
+*@
+@page "/tx"
 @* @page "/tx/{xactId}" *@
 
 @inject ISnackbar Snackbar
@@ -28,9 +32,9 @@
 <XactEditor @ref="_editor" />
 
 @code {
-    /// <summary>
-    /// The transaction Id, when used to open an existing transaction.
-    /// </summary>
+    // // <summary>
+    // // The transaction Id, when used to open an existing transaction.
+    // // </summary>
     // [Parameter]
     // public string? xactId { get; set; }
 
@@ -87,17 +91,11 @@
             return;
         }
 
-        // Do we need the id?
-        if (xact.Id == null)
-        {
-            xact.Id = DateTime.UtcNow.Ticks;
-        }
+        var app = new AppService();
 
         try
         {
-            var result = await _db.Xacts.Put(xact);
-            Console.WriteLine("after save: {0}", result);
-
+            await app.SaveXact(_db, xact);
             Notification.Success("Transaction saved");
         }
         catch (Exception ex)
@@ -111,7 +109,7 @@
         var remember = await _settings.GetSetting<bool>(SettingsKeys.rememberLastTransaction);
         if (remember)
         {
-            await new AppService().saveLastTransaction(_db, xact);
+            await app.saveLastTransaction(_db, xact);
         }
 
         await new RouterService(_js).Back();

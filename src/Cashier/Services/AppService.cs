@@ -1,5 +1,6 @@
 ﻿using BlazorDexie.Database;
 using BlazorDexie.JsModule;
+using Cashier.Components;
 using Cashier.Components.Components;
 using Cashier.Components.Pages;
 using Cashier.Data;
@@ -36,6 +37,27 @@ namespace Cashier.Services
             };
 
             return xact;
+        }
+
+        /// <summary>
+        /// Creates a clone of an existing Xact, without the Id.
+        /// </summary>
+        /// <param name="existing"></param>
+        /// <returns></returns>
+        public Xact CreateNewXactFrom(Xact existing)
+        {
+            var newXact = new Xact(DateUtils.Today)
+            {
+                Date = existing.Date,
+                Payee = existing.Payee,
+                Note = existing.Note,
+            };
+            if (existing.Postings != null)
+            {
+                newXact.Postings = existing.Postings.ConvertAll(p => p.Clone());
+            }
+
+            return newXact;
         }
 
         public async Task deleteAccounts(IDexieDAL db)
@@ -77,6 +99,11 @@ namespace Cashier.Services
                     return "var(--mud-palette-primary)";
             }
             return string.Empty;
+        }
+
+        public long GetNewId()
+        {
+            return DateTime.UtcNow.Ticks;
         }
 
         public async Task<string?> ImportBalanceSheet(IDexieDAL db, string[] lines)
@@ -234,18 +261,6 @@ namespace Cashier.Services
         }
 
         /// <summary>
-        /// Returns the next available Xact Id number.
-        /// The insert/put is complicated even though the Id is an autoincrement field.
-        /// </summary>
-        /// <returns></returns>
-        public int GetNextXactId()
-        {
-            //DAL.Xacts.OrderBy("id").;
-            // DAL.Xacts.PrimaryKeys()
-            return 0;
-        }
-
-        /// <summary>
         /// Saves the given transaction as the Last Transaction for the Payee.
         /// This is retrieved when the Payee is selected on a new transaction, or when editing.
         /// </summary>
@@ -264,6 +279,17 @@ namespace Cashier.Services
 
             await db.LastTransactions.Put(record);
             return true;
+        }
+
+        public async Task<long> SaveXact(IDexieDAL db, Xact xact)
+        {
+            if (xact.Id == null)
+            {
+                xact.Id = this.GetNewId();
+            }
+
+            var result = await db.Xacts.Put(xact);
+            return result;
         }
 
         /// <summary>
