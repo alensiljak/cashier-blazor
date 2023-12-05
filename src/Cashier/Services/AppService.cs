@@ -10,6 +10,7 @@ using Microsoft.JSInterop;
 using MudBlazor;
 using MudBlazor.Charts;
 using Newtonsoft.Json;
+using System.Drawing;
 using System.Dynamic;
 using System.Runtime;
 using System.Text;
@@ -24,7 +25,7 @@ namespace Cashier.Services
         public AppService() { }
 
         public async Task<DialogResult> ConfirmationDialog(IDialogService svc, string text, string title = "",
-            MaxWidth? maxWidth = null, Color? confirmationButtonColor = null)
+            MaxWidth? maxWidth = null, MudBlazor.Color? confirmationButtonColor = null)
         {
             var parameters = new DialogParameters<ConfirmationDialog>();
             parameters.Add(x => x.ContentText, text);
@@ -105,6 +106,35 @@ namespace Cashier.Services
             return output.ToString();
         }
 
+        /// <summary>
+        /// CSS Colours for amounts (<0, 0, >0).
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public string GetAmountColour(decimal amount)
+        {
+            switch (amount)
+            {
+                case var n when n < 0:
+                    return "#E53935"; // red Darken1
+
+                //case var n when n == 0:
+                //    return ""; // yellow
+
+                case var n when n > 0:
+                    return "#43A047"; // green Darken1
+            
+                default:
+                    return string.Empty;
+            }
+
+        }
+
+        /// <summary>
+        /// CSS colour for Scheduled Transactions (overdue, due).
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public string GetDateColour(DateOnly date)
         {
             var today = DateOnly.FromDateTime(DateTime.Now);

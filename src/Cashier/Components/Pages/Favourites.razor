@@ -3,6 +3,7 @@
 @using MudBlazor
 
 @inject IDexieDAL _db
+@inject NotificationService Notification
 
 <ToolbarMud>
     <Title>Favourites</Title>
@@ -40,21 +41,28 @@ else
         </tbody>
     </MudSimpleTable>
     *@
-    
-    <MudList>
+
+    <MudList Clickable Class="py-0" Dense>
         @foreach (var account in accounts)
         {
-            <MudListItem Class="px-2 py-1">
-                <MudText>
-                    @account.Name
+            <MudListItem Class="px-1 py-0 my-0">
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-dark-text);">
+                    @account.ParentAccountName
                 </MudText>
-                <MudText Align="Align.End" Typo="Typo.body2">
-                    @account.AccountBalance
-                </MudText>
+                <div class="d-flex row">
+                    <MudText Class="pl-3">
+                        @account.AccountName
+                    </MudText>
+                    <MudSpacer />
+                    <MudText Align="Align.End" Typo="Typo.body2" Style="@(GetColour(account.AccountBalance?.Quantity))"
+                             Class="align-self-end">
+                        @account.AccountBalance
+                    </MudText>
+                </div>
             </MudListItem>
         }
     </MudList>
-    
+
     @*
     <MudTreeView T="Account" Items="@_accountsHashSet">
 
@@ -65,24 +73,42 @@ else
 @code {
     List<AccountViewModel> accounts = [];
     // HashSet<AccountViewModel> _accountsHashSet = [];
+    AppService _app = default!;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
+        _app = new AppService();
+
         // todo: handle selection
 
-        await loadData();
+        try
+        {
+            await loadData();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Notification.Error(ex.Message);
+        }
 
         // create a tree view
         // CreateTreeView();
+    }
+
+    string GetColour(decimal? amount)
+    {
+        if (amount is null) return string.Empty;
+
+        return $"color: {_app.GetAmountColour(amount.Value)};";
     }
 
     async Task loadData()
     {
         var app = new AppService();
         var data = await app.LoadFavouriteAccounts(_db);
-        accounts = accounts.ConvertAll(acc => new AccountViewModel(acc));
+        accounts = data.ConvertAll(acc => new AccountViewModel(acc));
 
         var aug = new TransactionAugmenter();
         await aug.AdjustAccountBalances(_db, accounts);

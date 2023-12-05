@@ -16,6 +16,7 @@ namespace Cashier.Lib
 
                     Dark = ColourPalette.DarkJungleGreen,
                     DarkDarken = QuasarPaletteDark.DarkPage,
+                    // DarkLighten
 
                     Info = ColourPalette.Tan,
                     Success = ColourPalette.TropicalRainForest,
@@ -30,18 +31,25 @@ namespace Cashier.Lib
 
                     // Text
 
-                    PrimaryContrastText = ColourPalette.Tan,        // titles
                     TextPrimary = ColourPalette.Tan,
+                    PrimaryContrastText = "#b3af6d",        // titles
+
+                    //DarkContrastText = ColourPalette.Tan,   // --mud-theme-dark-contrast-text
+                    DarkContrastText = "#b3af6d",
+
+                    TextSecondary = ColourPalette.Gold,
+                    //SecondaryContrastText = ColourPalette.Gold,
+                    
                     // TextSecondary = "#ffff00",
+                    // TertiaryContrastText = ColourPalette.DarkJungleGreen
+                    
                     AppbarText = ColourPalette.Tan,
                     DrawerText = ColourPalette.Tan,
-                    DarkContrastText = ColourPalette.Tan,
                     ErrorContrastText = ColourPalette.Gold, // button text when Error is used
 
                     DrawerIcon = ColourPalette.Tan,
 
                     // ActionDefault = ColourPalette.Sangria,
-                    // TertiaryContrastText = ColourPalette.DarkJungleGreen
                     
                 },
                 Palette = new PaletteLight()

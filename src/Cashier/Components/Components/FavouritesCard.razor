@@ -54,9 +54,6 @@
 
     async Task loadData()
     {
-        // var defaultCurrency = await svc.GetDefaultCurrency();
-        // Console.WriteLine("default currency: {0}", defaultCurrency);
-
         var app = new AppService();
         accounts = await app.LoadFavouriteAccounts(_db, 5);
 

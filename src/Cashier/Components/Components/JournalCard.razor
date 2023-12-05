@@ -61,8 +61,8 @@
 </MudCard>
 
 @code {
-        [Parameter]
-        public string? Class { get; set; }
+    [Parameter]
+    public string? Class { get; set; }
 
     private List<Xact> Xacts { get; set; } = [];
     private List<Money> Balances { get; set; } = [];
@@ -79,22 +79,9 @@
         if (index > Balances.Count - 1) return string.Empty;
 
         var amount = Balances[index];
-        string colour = string.Empty;
+        if (amount.Quantity is null) return string.Empty;
 
-        switch (amount.Quantity)
-        {
-            case var n when n < 0:
-                colour = "#E53935"; // red Darken1
-                break;
-
-            case var n when n == 0:
-                colour = ""; // yellow
-                break;
-
-            case var n when n > 0:
-                colour = "#43A047"; // green Darken1
-                break;
-        }
+        string colour = new AppService().GetAmountColour(amount.Quantity.Value);
 
         // Transfers are yellow
         var tx = Xacts[index];
