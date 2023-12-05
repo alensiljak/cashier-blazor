@@ -7,6 +7,7 @@
 @inject NotificationService Notification
 @inject IDialogService DialogService
 @inject NavigationManager NavMan
+@inject IJSRuntime _js
 
 <ToolbarMud>
     Scheduled Transaction Actions
@@ -169,16 +170,55 @@ else
         }
     }
 
-    void OnSkipClick()
+    async Task OnSkipClick()
     {
-        // Do you want to skip the next iteration?
+        var app = new AppService();
+        var dialogResult = await app.ConfirmationDialog(DialogService, "Do you want to skip the next iteration?", "Confirm skip");
+        if (dialogResult.Canceled) return;
 
-        NotImplemented();
+        try
+        {
+            await Skip();
+            await app.NavigateBack(_js);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Notification.Error(ex.Message);
+        }
     }
 
     void NotImplemented()
     {
         Notification.Info("Not implemented");
+    }
+
+    void validateForSkip(ScheduledXact? stx)
+    {
+        if (stx is null)
+        {
+            throw new Exception("No Scheduled Transaction found in app state");
+        }
+
+        if (string.IsNullOrWhiteSpace(stx.Count))
+        {
+            throw new Exception("The count is invalid for recurrence");
+        }
+
+        if (string.IsNullOrWhiteSpace(stx.Period))
+        {
+            throw new Exception("The recurrence period is invalid");
+        }
+    }
+
+    /// <summary>
+    /// Saves the Scheduled Transaction record.
+    /// </summary>
+    /// <returns></returns>
+    async Task Save()
+    {
+        var app = new AppService();
+        await app.SaveScheduledXact(_db, _state.ScheduledXact!);
     }
 
     /// <summary>
@@ -188,14 +228,11 @@ else
     async Task Skip()
     {
         var stx = _state.ScheduledXact;
-        if (stx is null)
-        {
-            throw new Exception("No Scheduled Transaction found in app state");
-        }
+        validateForSkip(stx);
 
-        var startDate = stx.NextDate;
-        var count = stx.Count;
-        var period = stx.Period;
+        var startDate = stx!.NextDate;
+        var count = int.Parse(stx.Count!);
+        var period = PeriodNames.ToEnum(stx.Period!);
         var endDate = stx.EndDate;
 
         ValidateSchedule(stx);
@@ -203,9 +240,21 @@ else
         // todo: handle the one-off occurrence (no count and no period)
 
         // calculate the next iteration.
+        var calc = new IterationCalculator();
+        var nextDate = calc.calculateNextIteration(startDate, count, period, endDate);
+        if(nextDate is null)
+        {
+            // Passed the End Date.
+            nextDate = DateOnly.MinValue;
+        }
 
         // update the date on the transaction
+        stx.Transaction!.Date = nextDate.Value;
+        stx.NextDate = nextDate.Value;
 
+        await Save();
+
+        Notification.Success("Transaction skipped to next iteration");
     }
 
     bool ValidateSchedule(ScheduledXact stx)

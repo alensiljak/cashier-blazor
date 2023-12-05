@@ -224,6 +224,10 @@ namespace Cashier.Services
             return sx;
         }
 
+        public async Task NavigateBack(IJSRuntime js)
+        {
+            await new RouterService(js).Back();
+        }
         protected List<Account> ParseAccounts(string[] lines)
         {
             var accounts = new List<Account>();
@@ -301,6 +305,22 @@ namespace Cashier.Services
 
             await db.LastTransactions.Put(record);
             return true;
+        }
+
+        public async Task<long> SaveScheduledXact(IDexieDAL db, ScheduledXact stx)
+        {
+            if (stx == null)
+            {
+                throw new Exception("The record is null");
+            }
+
+            if (stx.Id is null)
+            {
+                stx.Id = GetNewId();
+            }
+
+            var result = await db.ScheduledXacts.Put(stx);
+            return result;
         }
 
         public async Task<long> SaveXact(IDexieDAL db, Xact xact)

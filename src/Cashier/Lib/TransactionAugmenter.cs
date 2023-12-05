@@ -134,8 +134,10 @@ namespace Cashier.Lib
 
                 // do we have multiple currencies? Exclude nulls.
                 var currencies = postings
-                    .Where(p => p.Currency != null)
-                    .Select((posting) => posting.Currency).Distinct();
+                    .Where(p => !string.IsNullOrWhiteSpace(p.Currency))
+                    .Select((posting) => posting.Currency)
+                    .Distinct();
+                
                 if (currencies.Count() > 1) {
                     Console.WriteLine("Multiple currencies fund in a transactions. Ignoring.");
                     DebugPrinter.PrintJson(currencies);

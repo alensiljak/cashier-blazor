@@ -173,6 +173,6 @@ else
 
         meta.SelectedId = payeeName;
 
-        await new RouterService(_js).Back();
+        await new AppService().NavigateBack(_js);
     }
 }
