@@ -23,6 +23,28 @@ namespace Cashier.Services
     {
         public AppService() { }
 
+        public async Task<DialogResult> ConfirmationDialog(IDialogService svc, string text, string title = "",
+            MaxWidth? maxWidth = null, Color? confirmationButtonColor = null)
+        {
+            var parameters = new DialogParameters<ConfirmationDialog>();
+            parameters.Add(x => x.ContentText, text);
+            if (confirmationButtonColor != null)
+            {
+                parameters.Add(x => x.ConfirmationButtonColor, confirmationButtonColor);
+            }
+
+            if (maxWidth is null) {
+                maxWidth = MaxWidth.Medium;
+            }
+
+            var options = new DialogOptions { MaxWidth = maxWidth };
+
+            var dialog = await svc.ShowAsync<ConfirmationDialog>(title, parameters, options);
+            
+            var result = await dialog.Result;
+            return result;
+        }
+
         public async Task CopyToClipboard(IJSRuntime jsRuntime, string text)
         {
             await jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);

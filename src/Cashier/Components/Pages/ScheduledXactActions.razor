@@ -152,11 +152,9 @@ else
     async Task OnEnterClick()
     {
         // confirm with a dialog
-        var parameters = new DialogParameters<ConfirmationDialog>();
-        parameters.Add(x => x.ContentText, "Do you want to enter this transaction into the journal?");
-        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Creation", parameters,
-            new DialogOptions { MaxWidth = MaxWidth.Large });
-        var result = await dialog.Result;
+        var app = new AppService();
+        var result = await app.ConfirmationDialog(DialogService,
+            "Do you want to enter this transaction into the journal?", "Confirm Creation");
         if (result.Canceled) return;
 
         // enter
@@ -173,6 +171,8 @@ else
 
     void OnSkipClick()
     {
+        // Do you want to skip the next iteration?
+
         NotImplemented();
     }
 
