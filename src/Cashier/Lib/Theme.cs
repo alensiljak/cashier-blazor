@@ -52,7 +52,7 @@ namespace Cashier.Lib
                     DrawerIcon = ColourPalette.Tan,
 
                     // ActionDefault = ColourPalette.Sangria,
-                    
+                    // ActionDefault // --mud-palette-action-default-hover
                 },
                 Palette = new PaletteLight()
                 {

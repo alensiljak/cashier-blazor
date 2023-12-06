@@ -89,7 +89,8 @@ else
             }
 
             // null check
-            if (y.Transaction is null || y.Transaction.Payee is null || x.Transaction.Payee is null) return 0;
+            if (y.Transaction is null || y.Transaction.Payee is null || 
+                x.Transaction is null || x.Transaction.Payee is null) return 0;
 
             return x.Transaction.Payee.CompareTo(y.Transaction.Payee);
         });
