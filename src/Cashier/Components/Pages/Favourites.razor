@@ -42,26 +42,30 @@ else
     </MudSimpleTable>
     *@
 
-    <MudList Clickable Class="py-0 mb-2" Dense>
-        @foreach (var account in accounts)
-        {
-            <MudListItem Class="px-1 py-0 my-0">
-                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-dark-text);">
-                    @account.ParentAccountName
-                </MudText>
-                <div class="d-flex row">
-                    <MudText Class="pl-3">
-                        @account.AccountName
+    <MudContainer MaxWidth="MaxWidth.Small">
+
+        <MudList Clickable Class="py-0 mb-2" Dense>
+            @foreach (var account in accounts)
+            {
+                <MudListItem Class="px-1 py-0 my-0">
+                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-dark-text);">
+                        @account.ParentAccountName
                     </MudText>
-                    <MudSpacer />
-                    <MudText Align="Align.End" Typo="Typo.body2" Style="@(GetColour(account.AccountBalance?.Quantity))"
-                             Class="align-self-end">
-                        @account.AccountBalance
-                    </MudText>
-                </div>
-            </MudListItem>
-        }
-    </MudList>
+                    <div class="d-flex row">
+                        <MudText Class="pl-3">
+                            @account.AccountName
+                        </MudText>
+                        <MudSpacer />
+                        <MudText Align="Align.End" Typo="Typo.body2" Style="@(GetColour(account.AccountBalance?.Quantity))"
+                                 Class="align-self-end">
+                            @account.AccountBalance
+                        </MudText>
+                    </div>
+                </MudListItem>
+            }
+        </MudList>
+
+    </MudContainer>
 
     @*
     <MudTreeView T="Account" Items="@_accountsHashSet">
