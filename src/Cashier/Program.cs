@@ -7,7 +7,7 @@ using KristofferStrube.Blazor.FileSystem;
 using Cashier.Lib;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 using Cashier.Services;
-using Microsoft.JSInterop;
+using MudBlazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -17,7 +17,11 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient());
 
 // MudBlazor
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(cfg =>
+{
+    // snackbar at the bottom.
+    cfg.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
+});
 
 // PWA updater
 builder.Services.AddPWAUpdater();
