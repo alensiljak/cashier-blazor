@@ -37,7 +37,7 @@ namespace Cashier.Lib
                     //DarkContrastText = ColourPalette.Tan,   // --mud-theme-dark-contrast-text
                     DarkContrastText = "#b3af6d",
 
-                    TextSecondary = ColourPalette.Gold,
+                    //TextSecondary = ColourPalette.Gold,       // also used for input field icons
                     //SecondaryContrastText = ColourPalette.Gold,
                     
                     // TextSecondary = "#ffff00",
@@ -46,6 +46,8 @@ namespace Cashier.Lib
                     AppbarText = ColourPalette.Tan,
                     DrawerText = ColourPalette.Tan,
                     ErrorContrastText = ColourPalette.Gold, // button text when Error is used
+
+                    // icons
 
                     DrawerIcon = ColourPalette.Tan,
 
