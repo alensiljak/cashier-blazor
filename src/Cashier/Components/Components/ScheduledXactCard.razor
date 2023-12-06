@@ -29,7 +29,7 @@
         {
             <MudSimpleTable Dense Style="background-color: transparent;">
                 <colgroup>
-                    <col style="width: 50px;" />
+                    <col style="width: 90px;" />
                     <col style="flex-grow: 1;" />
                 </colgroup>
                 <tbody>
@@ -37,9 +37,9 @@
                     {
                         <tr>
                             <td class="pl-2 pr-1" style="color: @GetDateColour(schXact.NextDate)">
-                                @schXact.NextDate
+                                @schXact.NextDate.ToString(Constants.ISODateFormat)
                             </td>
-                            <td>
+                            <td class="pl-2">
                                 @schXact.Transaction?.Payee
                             </td>
                         </tr>

@@ -25,14 +25,7 @@
 
 @if (_list.Count == 0)
 {
-    @if (!string.IsNullOrEmpty(searchTerm))
-    {
-        <MudText>No results found</MudText>
-    }
-    else
-    {
-        <MudText>Loading...</MudText>
-    }
+    <MudText>No scheduled transactions found</MudText>
 }
 else
 {
@@ -42,7 +35,7 @@ else
         {
             <MudListItem Class="px-1 py-1" @onclick="@(() => showTx(stx.Id))">
                 <MudStack Row>
-                    <MudText Class="mr-1" Style="@GetDateStyle(stx)">
+                    <MudText Typo="Typo.body2" Class="mr-1" Style="@GetDateStyle(stx)">
                         @stx.NextDate.ToString(Constants.ISODateFormat)
                     </MudText>
                     <MudItem>
@@ -84,10 +77,24 @@ else
             records = records.Filter(regex, new[] { searchTerm });
         }
 
-        // sort also by payee, case insensitive?
+        var result = await records.ToList();
 
-        _list = await records.ToList();
-        // _list.Sort()
+        // sort also by payee.
+        result.Sort((x, y) =>
+        {
+            int dateComparison = x.NextDate.CompareTo(y.NextDate);
+            if (dateComparison != 0)
+            {
+                return dateComparison;
+            }
+
+            // null check
+            if (y.Transaction is null || y.Transaction.Payee is null || x.Transaction.Payee is null) return 0;
+
+            return x.Transaction.Payee.CompareTo(y.Transaction.Payee);
+        });
+
+        _list = result;
     }
 
     string GetDateStyle(ScheduledXact stx)
