@@ -3,6 +3,9 @@
 @using MudBlazor
 
 @inject NotificationService Notification
+@inject AppState _state
+@inject IDexieDAL _db
+@inject IJSRuntime _js
 
 <ToolbarMud>
     Scheduled Transaction Edit
@@ -26,11 +29,46 @@
         await base.OnInitializedAsync();
 
         // if there is an Id, and no record, load the transaction.
-        // todo: load
+        await loadData();
     }
 
-    void OnFab()
+    async Task loadData()
     {
-        Notification.Info("Incomplete");
+        if (!long.TryParse(sxid, out var sxIdLong)) return;
+        if (_state.ScheduledXact != null) return;
+
+        // load stx
+        await new AppService().LoadScheduledXact(_db, sxIdLong, _state);
+    }
+
+    async Task OnFab()
+    {
+        await saveData();
+    }
+
+    async Task saveData()
+    {
+        //Notification.Info("Incomplete");
+        var stx = _state.ScheduledXact;
+        if (stx is null)
+        {
+            Notification.Warning("Scheduled Transaction does not exist!");
+            return;
+        }
+        if (_state.Xact is null)
+        {
+            throw new Exception("Transaction not found in app state!");
+        }
+
+        // Use the current Xact
+        stx.Transaction = _state.Xact;
+
+        // use transaction date.
+        stx.NextDate = stx.Transaction.Date;
+
+        var result = await new AppService().SaveScheduledXact(_db, stx);
+
+        Notification.Success("Scheduled transaction saved");
+        await AppService.NavigateBack(_js);
     }
 }

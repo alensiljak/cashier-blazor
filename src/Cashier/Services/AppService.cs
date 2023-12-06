@@ -354,6 +354,12 @@ namespace Cashier.Services
                 stx.Id = GetNewId();
             }
 
+            // clear any transaction ids!
+            if (stx.Transaction != null && !stx.Transaction.Id.HasValue)
+            {
+                stx.Transaction.Id = null;
+            }
+
             var result = await db.ScheduledXacts.Put(stx);
             return result;
         }

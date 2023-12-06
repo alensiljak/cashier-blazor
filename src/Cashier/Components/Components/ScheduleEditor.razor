@@ -10,19 +10,19 @@
 <div class="@Class">
     <MudText>Repeats</MudText>
 
-    <MudRadioGroup @bind-SelectedOption="@repeats">
-        <MudRadio Option="@("Never")">Never</MudRadio>
-        <MudRadio Option="@("Every")">Every ...</MudRadio>
+    <MudRadioGroup @bind-SelectedOption="@HasRecurrence">
+        <MudRadio Option="false">Never</MudRadio>
+        <MudRadio Option="true">Every ...</MudRadio>
     </MudRadioGroup>
-    @if (repeats != "Never")
+    @if (HasRecurrence)
     {
         <MudGrid>
             <MudItem xs="6">
-                <MudTextField T="int" Placeholder="Count" Class="text-right" />
+                <MudTextField T="int" Placeholder="Count" Class="text-right" @bind-Value="PeriodCount" />
             </MudItem>
             <MudItem xs="6">
                 <MudSelect T="string" @bind-Value="ScXact!.Period">
-                    @foreach(var period in _periods)
+                    @foreach (var period in _periods)
                     {
                         <MudSelectItem Value="@period">@period</MudSelectItem>
                     }
@@ -35,11 +35,11 @@
         Ends on
     </MudText>
 
-    <MudRadioGroup @bind-SelectedOption="@ends">
-        <MudRadio Option="@("Never")">Never</MudRadio>
-        <MudRadio Option="@("Every")">On ...</MudRadio>
+    <MudRadioGroup @bind-SelectedOption="@HasEndDate">
+        <MudRadio Option="false">Never</MudRadio>
+        <MudRadio Option="true">On ...</MudRadio>
     </MudRadioGroup>
-    @if (ends != "Never")
+    @if (HasEndDate)
     {
         <MudDatePicker Placeholder="Select Date" DateFormat="@FixedSettings.DateFormat" AutoClose
                        @bind-Date="EndDate" />
@@ -53,9 +53,6 @@
 @code {
     [Parameter]
     public string? Class { get; set; }
-
-    string repeats = "Never";
-    string ends = "Never";
 
     ScheduledXact? ScXact;
 
@@ -79,7 +76,7 @@
         {
             if (ScXact is null) return;
 
-            if (value == null)
+            if (value is null)
             {
                 ScXact.EndDate = null;
             }
@@ -87,6 +84,63 @@
             {
                 var doValue = DateOnly.FromDateTime(value.Value);
                 ScXact.EndDate = doValue;
+            }
+        }
+    }
+
+    int PeriodCount
+    {
+        get
+        {
+            if (ScXact is null || ScXact.Count is null) return 0;
+
+            return int.Parse(ScXact.Count);
+        }
+        set
+        {
+            ScXact!.Count = value.ToString();
+        }
+    }
+
+    bool HasRecurrence
+    {
+        get
+        {
+            if (ScXact is null) return false;
+
+            var value = !string.IsNullOrWhiteSpace(ScXact.Count) && !string.IsNullOrWhiteSpace(ScXact.Period);
+            return value;
+        }
+        set
+        {
+            if (value)
+            {
+                ScXact!.Period = PeriodNames.Days;
+            }
+            else
+            {
+                ScXact!.Count = null;
+                ScXact!.Period = null;
+            }
+        }
+    }
+
+    bool HasEndDate
+    {
+        get
+        {
+            if (ScXact is null) return false;
+
+            return ScXact.EndDate.HasValue;
+        }
+        set
+        {
+            if(value)
+            {
+                ScXact!.EndDate = DateOnly.FromDateTime(DateTime.Now);
+            } else
+            {
+                ScXact!.EndDate = null;
             }
         }
     }
@@ -107,7 +161,7 @@
 
     void PopulatePeriods()
     {
-        foreach(Periods period in Enum.GetValues(typeof(Periods)))
+        foreach (Periods period in Enum.GetValues(typeof(Periods)))
         {
             var name = PeriodNames.ToString(period);
             _periods.Add(name);

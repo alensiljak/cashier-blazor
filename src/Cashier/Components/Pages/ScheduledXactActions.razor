@@ -24,21 +24,26 @@ else
     <JournalTransactionRow Xact="_state.Xact" />
 
     @* Recurrence details *@
-    <div class="pt-4">
+    <MudPaper Class="mt-4 ma-1 pa-2">
+    <div >
         @if (Count > 0)
         {
             <span>Repeats every @_state?.ScheduledXact?.Count @_state?.ScheduledXact?.Period</span>
         }
         @if (EndDate.HasValue)
         {
-            <span>until @EndDate</span>
+            <p> until @(EndDate.Value.ToString(Constants.ISODateFormat)).</p>
         }
     </div>
+    </MudPaper>
 
     @* Remarks *@
-    <div class="pt-2">
-        @_state?.ScheduledXact?.Remarks
-    </div>
+    <MudPaper Class="mt-2 ma-1 pa-2">
+        <MudText Typo="Typo.caption">Remarks:</MudText>
+        <div class="pt-2">
+            @_state?.ScheduledXact?.Remarks
+        </div>
+    </MudPaper>
 
     @* Actions *@
     <MudContainer MaxWidth="MaxWidth.Small" Class="mt-10 align-center d-flex flex-column gap-8">
@@ -105,8 +110,7 @@ else
         if (_state.ScheduledXact != null) return;
 
         // load stx
-        var app = new AppService();
-        await app.LoadScheduledXact(_db, sxid, _state);
+        await new AppService().LoadScheduledXact(_db, sxid, _state);
     }
 
     /// <summary>
@@ -188,7 +192,7 @@ else
         try
         {
             await Skip();
-            
+
             await AppService.NavigateBack(_js);
         }
         catch (Exception ex)
@@ -247,7 +251,7 @@ else
         // calculate the next iteration.
         var calc = new IterationCalculator();
         var nextDate = calc.calculateNextIteration(startDate, count, period, endDate);
-        if(nextDate is null)
+        if (nextDate is null)
         {
             // Passed the End Date.
             nextDate = DateOnly.MinValue;
