@@ -72,26 +72,22 @@ else
 
     async Task loadData()
     {
-        BlazorDexie.Database.Collection<ScheduledXact, long> records;
+        // BlazorDexie.Database.Collection<ScheduledXact, long> records;
+        var records = _db.ScheduledXacts
+            .OrderBy(nameof(ScheduledXact.NextDate));
 
         // Search by using .filter() query directly on the storage.
         // order by date by default.
         if (searchTerm != null)
         {
-            var regex = new ListSearch().GetJsFilterFunction("transaction");
-            records = _db.ScheduledXacts
-                .OrderBy(nameof(ScheduledXact.NextDate))
-                .Filter(regex, new[] { searchTerm });
-        }
-        else
-        {
-            records = _db.ScheduledXacts
-                .OrderBy(nameof(ScheduledXact.NextDate));
+            var regex = new ListSearch().GetJsFilterFunction("transaction.payee");
+            records = records.Filter(regex, new[] { searchTerm });
         }
 
         // sort also by payee, case insensitive?
 
         _list = await records.ToList();
+        // _list.Sort()
     }
 
     string GetDateStyle(ScheduledXact stx)
