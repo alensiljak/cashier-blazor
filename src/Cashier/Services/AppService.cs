@@ -24,14 +24,16 @@ namespace Cashier.Services
     {
         public AppService() { }
 
-        public async Task<DialogResult> ConfirmationDialog(IDialogService svc, string text, string title = "",
-            MaxWidth? maxWidth = null, MudBlazor.Color? confirmationButtonColor = null)
+        // static methods
+
+        public static async Task<DialogResult> ConfirmationDialog(IDialogService svc, string text, string title = "",
+            MudBlazor.Color? confirmationButtonColor = null, MaxWidth? maxWidth = null)
         {
             var parameters = new DialogParameters<ConfirmationDialog>();
             parameters.Add(x => x.ContentText, text);
             if (confirmationButtonColor != null)
             {
-                parameters.Add(x => x.ConfirmationButtonColor, confirmationButtonColor);
+                parameters.Add(x => x.ConfirmationButtonColor, confirmationButtonColor.Value);
             }
 
             if (maxWidth is null) {
@@ -45,6 +47,13 @@ namespace Cashier.Services
             var result = await dialog.Result;
             return result;
         }
+
+        public static async Task NavigateBack(IJSRuntime js)
+        {
+            await new RouterService(js).Back();
+        }
+
+        // instance methods
 
         public async Task CopyToClipboard(IJSRuntime jsRuntime, string text)
         {
@@ -254,10 +263,6 @@ namespace Cashier.Services
             return sx;
         }
 
-        public async Task NavigateBack(IJSRuntime js)
-        {
-            await new RouterService(js).Back();
-        }
         protected List<Account> ParseAccounts(string[] lines)
         {
             var accounts = new List<Account>();

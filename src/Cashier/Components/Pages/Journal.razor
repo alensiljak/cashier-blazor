@@ -56,15 +56,8 @@ else
         State.CloseMenu();
 
         // confirm with a dialog
-        // var parameters = new DialogParameters<ConfirmationDialog>();
-        // parameters.Add(x => x.ContentText, "Do you want to delete all the Transactions?");
-        // parameters.Add(x => x.ConfirmationButtonColor, Color.Secondary);
-        // var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Delete", parameters,
-        //     new DialogOptions { MaxWidth = MaxWidth.Large });
-        // var result = await dialog.Result;
-        var result = await new AppService().ConfirmationDialog(DialogService, 
-            "Do you want to delete all the Transactions?", "Confirm Delete",
-            null, Color.Secondary);
+        var result = await AppService.ConfirmationDialog(DialogService, 
+            "Do you want to delete all the Transactions?", "Confirm Delete", Color.Secondary);
         if (result.Canceled) return;
 
         // delete all transactions

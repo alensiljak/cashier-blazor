@@ -128,9 +128,7 @@
         // confirm with a dialog
         var parameters = new DialogParameters<ConfirmationDialog>();
         parameters.Add(x => x.ContentText, "Do you want to import the selected Asset Allocation file?");
-
-        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Import", parameters,
-            new DialogOptions { MaxWidth = MaxWidth.Large });
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Import", parameters);
         var result = await dialog.Result;
         if (result.Canceled) return;
 

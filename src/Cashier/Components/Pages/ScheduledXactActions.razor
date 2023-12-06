@@ -140,9 +140,20 @@ else
         NavMan.NavigateTo("/tx");
     }
 
-    void OnDeleteClick()
+    async Task OnDeleteClick()
     {
-        NotImplemented();
+        var msg = $"Do you want to delete the scheduled transaction {_state.ScheduledXact?.Transaction?.Payee}?";
+        var choice = await AppService.ConfirmationDialog(DialogService, msg, "Confirm Deletion", Color.Secondary);
+        if (choice.Canceled) return;
+
+        var id = _state.ScheduledXact?.Id;
+        if (id is null) return;
+
+        await _db.ScheduledXacts.Delete(id.Value);
+
+        Notification.Info("Scheduled transaction deleted");
+
+        await AppService.NavigateBack(_js);
     }
 
     void OnEditClick()
@@ -153,8 +164,7 @@ else
     async Task OnEnterClick()
     {
         // confirm with a dialog
-        var app = new AppService();
-        var result = await app.ConfirmationDialog(DialogService,
+        var result = await AppService.ConfirmationDialog(DialogService,
             "Do you want to enter this transaction into the journal?", "Confirm Creation");
         if (result.Canceled) return;
 
@@ -172,25 +182,20 @@ else
 
     async Task OnSkipClick()
     {
-        var app = new AppService();
-        var dialogResult = await app.ConfirmationDialog(DialogService, "Do you want to skip the next iteration?", "Confirm skip");
+        var dialogResult = await AppService.ConfirmationDialog(DialogService, "Do you want to skip the next iteration?", "Confirm skip");
         if (dialogResult.Canceled) return;
 
         try
         {
             await Skip();
-            await app.NavigateBack(_js);
+            
+            await AppService.NavigateBack(_js);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
             Notification.Error(ex.Message);
         }
-    }
-
-    void NotImplemented()
-    {
-        Notification.Info("Not implemented");
     }
 
     void validateForSkip(ScheduledXact? stx)
