@@ -13,12 +13,30 @@
     </ContextMenuItems>
 </ToolbarMud>
 
+@* Search *@
+<MudPaper Class="px-2 py-1 d-flex justify-center">
+    <div style="width: 500px;">
+        <MudTextField AutoFocus="true" T="string" Adornment="Adornment.End" AdornmentIcon="@IconsMud.Search" Label="Search"
+                      Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" FullWidth="false"
+                      DebounceInterval="300" OnDebounceIntervalElapsed="OnSearch"
+                      @bind-Value="searchTerm" />
+    </div>
+</MudPaper>
+
 @if (_list.Count == 0)
 {
-    <MudText>Loading...</MudText>
+    @if (!string.IsNullOrEmpty(searchTerm))
+    {
+        <MudText>No results found</MudText>
+    }
+    else
+    {
+        <MudText>Loading...</MudText>
+    }
 }
 else
 {
+    @* Items *@
     <MudList Clickable>
         @foreach (var stx in _list)
         {
@@ -43,6 +61,7 @@ else
 @code {
     List<ScheduledXact> _list = [];
     AppService _appService = new AppService();
+    string? searchTerm;
 
     protected override async Task OnInitializedAsync()
     {
@@ -53,12 +72,26 @@ else
 
     async Task loadData()
     {
-        _list = await _db.ScheduledXacts
-            .OrderBy(nameof(ScheduledXact.NextDate))
-            .ToList();
+        BlazorDexie.Database.Collection<ScheduledXact, long> records;
 
-        // sort also by payee, case insensitive
+        // Search by using .filter() query directly on the storage.
+        // order by date by default.
+        if (searchTerm != null)
+        {
+            var regex = new ListSearch().GetJsFilterFunction("transaction");
+            records = _db.ScheduledXacts
+                .OrderBy(nameof(ScheduledXact.NextDate))
+                .Filter(regex, new[] { searchTerm });
+        }
+        else
+        {
+            records = _db.ScheduledXacts
+                .OrderBy(nameof(ScheduledXact.NextDate));
+        }
 
+        // sort also by payee, case insensitive?
+
+        _list = await records.ToList();
     }
 
     string GetDateStyle(ScheduledXact stx)
@@ -85,13 +118,21 @@ else
 
         _state.ScheduledXact = new ScheduledXact();
         _state.Xact = app.CreateNewXact();
-        
+
         NavMan.NavigateTo($"/scheduled-xact-editor");
     }
 
     void OnRestoreClick()
     {
         NavMan.NavigateTo("/restore/scheduled");
+    }
+
+    /// <summary>
+    /// Handle debounced search term.
+    /// </summary>
+    async Task OnSearch()
+    {
+        await loadData();
     }
 
     async Task showTx(long? sxId)
