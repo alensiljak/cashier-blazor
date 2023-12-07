@@ -388,7 +388,7 @@ namespace Cashier.Services
             output.Append(' ');
             output.AppendLine(xact.Payee);
 
-            if (xact.Note != null)
+            if (!string.IsNullOrWhiteSpace(xact.Note))
             {
                 output.Append("    ; ");
                 output.AppendLine(xact.Note);
