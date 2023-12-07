@@ -1,8 +1,12 @@
 ﻿@page "/cloud-backup"
 
+@using Microsoft.Extensions.FileSystemGlobbing
 @using MudBlazor
 @using System.Text
+@using System.Xml.Linq
+@using System.Text.RegularExpressions
 @using WebDav
+
 @inject ISettingsService Settings
 @inject NotificationService Notification
 @inject HttpClient httpClient
@@ -22,6 +26,7 @@
 <MudButton @onclick="OnSendClick" StartIcon="@IconsMud.FileUp">Send File</MudButton>
 <MudButton @onclick="OnDownloadClick" StartIcon="@IconsMud.FileDown">Download File</MudButton>
 <MudButton @onclick="OnDownloadRawClick" StartIcon="@IconsMud.FileDown">Download Raw File</MudButton>
+<MudButton @onclick="OnListClick" StartIcon="@IconsMud.Scroll">List Pattern</MudButton>
 
 <MudTextField Lines="20" @bind-Value="_output" />
 
@@ -29,20 +34,23 @@
     string? ServerUrl { get; set; }
     string? _output;
 
+    WebDavClient _client;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         await loadSettings();
+
+        _client = new WebDavClient(httpClient);
     }
 
     async Task DownloadFile()
     {
         _output = string.Empty;
 
-        var client = new WebDavClient(httpClient);
         var url = GetUrl("/file.txt");
-        var response = await client.GetProcessedFile(url);
+        var response = await _client.GetProcessedFile(url);
 
         var reader = new StreamReader(response.Stream);
         var content = await reader.ReadToEndAsync();
@@ -74,17 +82,54 @@
         {
             _output = string.Empty;
 
-            var client = new WebDavClient(httpClient);
             var uri = GetUrl("/file.txt");
-            var response = await client.GetRawFile(uri);
+            var response = await _client.GetRawFile(uri);
 
             var reader = new StreamReader(response.Stream);
             var content = await reader.ReadToEndAsync();
 
             _output = content;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _output = ex.Message;
+        }
+    }
+
+    /// <summary>
+    /// Filter a list of files by a pattern including * and ?
+    /// </summary>
+    /// <returns></returns>
+    async Task OnListClick()
+    {
+        try
+        {
+            _output = string.Empty;
+            var uri = GetUrl("/");
+            // var parameters = new PropfindParameters
+            //     {
+            //         ApplyTo = ApplyTo.Propfind.ResourceOnly,
+            //         // CustomProperties = new XName[] { "Name", "myprop2" }
+            //     };
+            var response = await _client.Propfind(uri);
+
+            var pattern = "f*.t?t";
+            var regex = new Regex(
+                "^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$",
+                RegexOptions.IgnoreCase | RegexOptions.Singleline
+            );
+            var subList = response.Resources.Where(r => regex.IsMatch(r.DisplayName));
+
+            var builder = new StringBuilder();
+            foreach (var resource in subList)
+            {
+                builder.AppendLine(resource.DisplayName);
+            }
+            _output = builder.ToString();
+        }
+        catch (Exception ex)
+        {
+            Notification.Error(ex.Message);
         }
     }
 
@@ -128,10 +173,9 @@
     {
         _output = string.Empty;
 
-        var client = new WebDavClient(httpClient);
         var uri = GetUrl("/file.txt");
         var fileContents = new MemoryStream(Encoding.UTF8.GetBytes("blah blah blah\nthe end"));
-        var response = await client.PutFile(uri, fileContents);
+        var response = await _client.PutFile(uri, fileContents);
 
         if (!response.IsSuccessful)
         {
@@ -148,8 +192,7 @@
     {
         var url = GetUrl("/");
 
-        var client = new WebDavClient(httpClient);
-        var response = await client.Propfind(url);
+        var response = await _client.Propfind(url);
 
         var builder = new StringBuilder();
         foreach (var resource in response.Resources)
