@@ -93,17 +93,13 @@ else
 
     async Task loadData()
     {
-        BlazorDexie.Database.Collection<Payee, string> records;
+        var records = db.Payees.OrderBy("name");
 
         // Search by using .filter() query directly on the storage.
         if (searchTerm != null)
         {
             var regex = new ListSearch().GetJsFilterFunction("name");
             records = db.Payees.Filter(regex, new[] { searchTerm });
-        }
-        else
-        {
-            records = db.Payees;
         }
 
         // Limit results
