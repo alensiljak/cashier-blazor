@@ -72,7 +72,7 @@
     {
         var enumType = Enum.Parse(typeof(ExportType), dataType, true);
 
-        switch(enumType)
+        switch (enumType)
         {
             case ExportType.Journal:
                 return ".ledger";
@@ -139,7 +139,7 @@
 
     async Task DownloadFile()
     {
-        if(output is null)
+        if (output is null)
         {
             output = "Hello, world!";
         }
