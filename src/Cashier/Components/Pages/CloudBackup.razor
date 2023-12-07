@@ -19,7 +19,9 @@
 <MudButton @onclick="TestServer">Test</MudButton>
 <MudButton @onclick="OnTestWebDavClick">Test PROPFIND</MudButton>
 <MudButton @onclick="TestPropfind">Test PROPFIND direct</MudButton>
+<MudButton @onclick="OnSendClick" StartIcon="@IconsMud.FileUp">Send File</MudButton>
 <MudButton @onclick="OnDownloadClick" StartIcon="@IconsMud.FileDown">Download File</MudButton>
+<MudButton @onclick="OnDownloadRawClick" StartIcon="@IconsMud.FileDown">Download Raw File</MudButton>
 
 <MudTextField Lines="20" @bind-Value="_output" />
 
@@ -36,6 +38,8 @@
 
     async Task DownloadFile()
     {
+        _output = string.Empty;
+
         var client = new WebDavClient(httpClient);
         var url = GetUrl("/file.txt");
         var response = await client.GetProcessedFile(url);
@@ -56,6 +60,39 @@
         try
         {
             await DownloadFile();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Notification.Error(ex.Message);
+        }
+    }
+
+    async Task OnDownloadRawClick()
+    {
+        try
+        {
+            _output = string.Empty;
+
+            var client = new WebDavClient(httpClient);
+            var uri = GetUrl("/file.txt");
+            var response = await client.GetRawFile(uri);
+
+            var reader = new StreamReader(response.Stream);
+            var content = await reader.ReadToEndAsync();
+
+            _output = content;
+        } catch (Exception ex)
+        {
+            _output = ex.Message;
+        }
+    }
+
+    async Task OnSendClick()
+    {
+        try
+        {
+            await SendFile();
         }
         catch (Exception ex)
         {
@@ -87,6 +124,26 @@
         Notification.Show("Saved Server URL");
     }
 
+    async Task SendFile()
+    {
+        _output = string.Empty;
+
+        var client = new WebDavClient(httpClient);
+        var uri = GetUrl("/file.txt");
+        var fileContents = new MemoryStream(Encoding.UTF8.GetBytes("blah blah blah\nthe end"));
+        var response = await client.PutFile(uri, fileContents);
+
+        if (!response.IsSuccessful)
+        {
+            _output = response.Description;
+            return;
+        }
+        else
+        {
+            _output = "file sent. Try downloading now.";
+        }
+    }
+
     async Task TestWebDavClient()
     {
         var url = GetUrl("/");
@@ -113,7 +170,7 @@
         var response = await httpClient.SendAsync(request);
         var result = await response.Content.ReadAsStringAsync();
 
-        _output = result;
+        _output = "Options method sent. Success: " + response.IsSuccessStatusCode;
     }
 
     async Task TestPropfind()
@@ -127,7 +184,8 @@
         var request = new HttpRequestMessage(method, url);
         var response = await httpClient.SendAsync(request);
         var result = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(result);
+
+        _output = result;
     }
 
     private string GetUrl(string path)
