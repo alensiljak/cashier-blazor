@@ -1,7 +1,8 @@
 ﻿@page "/cloud-backup"
 
 @using MudBlazor
-@* @using WebDav *@
+@using System.Text
+@using WebDav
 @inject ISettingsService Settings
 @inject NotificationService Notification
 @inject HttpClient httpClient
@@ -16,11 +17,14 @@
 </MudPaper>
 
 <MudButton @onclick="TestServer">Test</MudButton>
-@* <MudButton @onclick="TestServerUsingWebDav">Test WebDAV</MudButton> *@
+<MudButton @onclick="OnTestWebDavClick">Test WebDAV</MudButton>
 <MudButton @onclick="TestPropfind">Test PROPFIND</MudButton>
+
+<MudTextField Lines="20" @bind-Value="_output" />
 
 @code {
     string? ServerUrl { get; set; }
+    string? _output;
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,6 +38,21 @@
         ServerUrl = await Settings.GetSetting<string>(SettingsKeys.backupServerUrl);
     }
 
+    async Task OnTestWebDavClick()
+    {
+        _output = string.Empty;
+
+        try
+        {
+            await TestWebDavClient();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Notification.Error(ex.Message);
+        }
+    }
+
     async Task saveServerUrl(string value)
     {
         ServerUrl = value;
@@ -42,28 +61,39 @@
         Notification.Show("Saved Server URL");
     }
 
+    async Task TestWebDavClient()
+    {
+        var url = GetUrl("/");
+
+        var client = new WebDavClient(httpClient);
+        var response = await client.Propfind(url);
+
+        var builder = new StringBuilder();
+        foreach (var resource in response.Resources)
+        {
+            builder.AppendLine(resource.DisplayName);
+        }
+        _output = builder.ToString();
+    }
+
     async Task TestServer()
     {
+        _output = string.Empty;
+
         var url = GetUrl("/");
 
         // send a simple OPTIONS request.
         var request = new HttpRequestMessage(HttpMethod.Options, url);
         var response = await httpClient.SendAsync(request);
         var result = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(result);
+
+        _output = result;
     }
-
-    // async Task TestServerUsingWebDav()
-    // {
-    //     using var client = new WebDavClient(httpClient);
-    //     var url = GetUrl("/");
-
-    //     var result = await client.Propfind(url);
-    //     Console.WriteLine(result.Description);
-    // }
 
     async Task TestPropfind()
     {
+        _output = string.Empty;
+        
         var url = GetUrl("/");
 
         // send the PROPFIND request.
