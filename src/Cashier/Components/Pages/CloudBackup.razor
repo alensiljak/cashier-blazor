@@ -17,8 +17,9 @@
 </MudPaper>
 
 <MudButton @onclick="TestServer">Test</MudButton>
-<MudButton @onclick="OnTestWebDavClick">Test WebDAV</MudButton>
-<MudButton @onclick="TestPropfind">Test PROPFIND</MudButton>
+<MudButton @onclick="OnTestWebDavClick">Test PROPFIND</MudButton>
+<MudButton @onclick="TestPropfind">Test PROPFIND direct</MudButton>
+<MudButton @onclick="OnDownloadClick" StartIcon="@IconsMud.FileDown">Download File</MudButton>
 
 <MudTextField Lines="20" @bind-Value="_output" />
 
@@ -33,9 +34,34 @@
         await loadSettings();
     }
 
+    async Task DownloadFile()
+    {
+        var client = new WebDavClient(httpClient);
+        var url = GetUrl("/file.txt");
+        var response = await client.GetProcessedFile(url);
+
+        var reader = new StreamReader(response.Stream);
+        var content = await reader.ReadToEndAsync();
+
+        _output = content;
+    }
+
     async Task loadSettings()
     {
         ServerUrl = await Settings.GetSetting<string>(SettingsKeys.backupServerUrl);
+    }
+
+    async Task OnDownloadClick()
+    {
+        try
+        {
+            await DownloadFile();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Notification.Error(ex.Message);
+        }
     }
 
     async Task OnTestWebDavClick()
@@ -93,7 +119,7 @@
     async Task TestPropfind()
     {
         _output = string.Empty;
-        
+
         var url = GetUrl("/");
 
         // send the PROPFIND request.
