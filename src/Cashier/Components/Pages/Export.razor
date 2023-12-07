@@ -2,6 +2,7 @@
 @page "/export/{dataType?}"
 
 @using MudBlazor
+@using Newtonsoft.Json
 @inject IDexieDAL _db
 @inject IJSRuntime _js
 @inject NotificationService Notification
@@ -18,8 +19,9 @@
     </p>
 </div>
 
-<MudTextField T="string" Value="@output" Lines="15" AutoGrow="true"></MudTextField>
+<MudTextField T="string" Value="@output" Lines="25"></MudTextField>
 
+@* Action Buttons *@
 <MudContainer Class="pt-4 d-flex justify-space-around" MaxWidth="MaxWidth.Small">
     <MudIconButton Icon="@IconsMud.Copy" Color="Color.Primary" Variant="Variant.Filled" Class="rounded-xl"
                    OnClick="OnClipboardClick" />
@@ -103,9 +105,17 @@
                 output = await new AppService().GetExportTransactions(_db);
                 break;
             case ExportType.Scheduled:
-                // loadScheduledTransactions
+                output = await loadScheduledTransactions();
                 break;
         }
+    }
+
+    async Task<string> loadScheduledTransactions()
+    {
+        var records = await _db.ScheduledXacts.OrderBy(nameof(ScheduledXact.NextDate))
+            .ToList();
+        var output = JsonConvert.SerializeObject(records);
+        return output;
     }
 
     async Task OnClipboardClick()
