@@ -80,6 +80,7 @@
     {
         _scheduledXacts = await _db.ScheduledXacts
             .OrderBy(nameof(ScheduledXact.NextDate))
+            //.SortBy("transaction.payee")
             .Limit(5)
             .ToList();
     }

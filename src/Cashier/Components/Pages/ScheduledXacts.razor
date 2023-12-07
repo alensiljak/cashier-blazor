@@ -77,9 +77,11 @@ else
             records = records.Filter(regex, new[] { searchTerm });
         }
 
-        var result = await records.ToList();
+        var result = await records
+            // .SortByToList("transaction.payee");
+            .ToList();
 
-        // sort also by payee.
+        // sort by payee the records with the same date.
         result.Sort((x, y) =>
         {
             int dateComparison = x.NextDate.CompareTo(y.NextDate);
