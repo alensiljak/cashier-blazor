@@ -128,9 +128,6 @@ else
         // Create the journal transaction.
         var app = new AppService();
         var newXact = app.CreateNewXactFrom(_state.ScheduledXact.Transaction);
-        // todo: var id = await app.SaveXact(_db, newXact);
-
-        Log.debug(newXact);
 
         // update the iteration date
         await Skip();
@@ -140,8 +137,8 @@ else
         // load transaction into store
         _state.Xact = newXact;
 
-        // open the transaction. (Maintain page navigation history. <- there is no route overwrite in Blazor!)
-        NavMan.NavigateTo("/tx");
+        // open the transaction. Maintain page navigation history.
+        NavMan.NavigateTo("/tx", false, true);
     }
 
     async Task OnDeleteClick()
