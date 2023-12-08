@@ -36,8 +36,12 @@
 
     MudTextField<decimal?> amountField { get; set; } = default!;
 
-    bool positiveSign;
+    bool isPositiveSign = true;
 
+    /// <summary>
+    /// Editable Amount is the number displayed in the input field. This is an absolute value.
+    /// The sign is kept in the positiveSign variable.
+    /// </summary>
     decimal? EditableAmount
     {
         get
@@ -48,17 +52,25 @@
         }
         set
         {
-            if (value == 0)
+            // Sets the value of the Posting Amount.
+
+            if (!value.HasValue)
             {
                 Posting.Amount = null;
             }
             else
             {
-                Posting.Amount = GetActualAmount();
+                value = Math.Abs(value.Value);
+                Posting.Amount = isPositiveSign ? value : value * (-1);
             }
         }
     }
 
+    /// <summary>
+    /// Generates the actual numeric value, taking the absolute value of the Posting amount and the sign
+    /// in the variable. Used for colour codes.
+    /// </summary>
+    /// <returns></returns>
     decimal GetActualAmount()
     {
         if (!Posting.Amount.HasValue)
@@ -68,7 +80,7 @@
 
         // posting has value
         var amount = Math.Abs(Posting.Amount.Value);
-        amount = positiveSign ? amount : amount * -1;
+        amount = isPositiveSign ? amount : amount * -1;
         return amount;
     }
 
@@ -79,7 +91,7 @@
         // Initialize the sign when a Posting is loaded.
         if (Posting.Amount.HasValue)
         {
-            positiveSign = Posting.Amount.Value >= 0;
+            isPositiveSign = Posting.Amount.Value >= 0;
         }
     }
 
@@ -108,7 +120,7 @@
 
     string GetSignIcon()
     {
-        return positiveSign ? IconsMud.PlusSquare : IconsMud.MinusSquare;
+        return isPositiveSign ? IconsMud.PlusSquare : IconsMud.MinusSquare;
     }
 
     private async Task OnAccountClicked()
@@ -118,7 +130,7 @@
 
     void ToggleSign()
     {
-        positiveSign = !positiveSign;
+        isPositiveSign = !isPositiveSign;
 
         updatePostingSign();
 
@@ -127,6 +139,8 @@
 
     void updatePostingSign()
     {
+        if (!Posting.Amount.HasValue) return;
+
         Posting.Amount = GetActualAmount();
     }
 }
