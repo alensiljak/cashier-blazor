@@ -1,0 +1,99 @@
+﻿@*
+    The card for Scheduled Transactions backup
+*@
+@using MudBlazor
+@inject NotificationService Notification
+@inject ISettingsService _settings
+@inject NavigationManager NavMan
+@inject IDexieDAL _db
+
+<MudCard Outlined="true" Style="background-color: transparent;">
+    <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="px-2 pt-2 pb-1">
+        <CardHeaderAvatar>
+            <MudIcon Icon="@IconsMud.CalendarClock" Size="Size.Medium" />
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText>Scheduled Transactions</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent Class="pa-3">
+        <div>
+            <MudText>
+                Total backups: @totalBackups
+            </MudText>
+            <MudText>
+                Last backup: @lastBackup
+            </MudText>
+        </div>
+        <MudText>
+            Local transactions: @localTransactions
+        </MudText>
+
+    </MudCardContent>
+    <MudCardActions Class="justify-center gap-10">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="OnBackupClick">Backup</MudButton>
+        <MudButton Disabled Color="Color.Tertiary" Variant="Variant.Filled" @onclick="OnRestoreClick">Restore</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    string? totalBackups;
+    string? lastBackup;
+    string? localTransactions;
+
+    [Parameter, EditorRequired]
+    public CloudBackupService CloudBackupService { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await loadData();
+    }
+
+    public async Task loadData()
+    {
+        var serverUrl = await _settings.GetSetting<string>(SettingsKeys.backupServerUrl);
+        if (string.IsNullOrWhiteSpace(serverUrl))
+        {
+            Notification.Warning("Backup server URL not set.");
+            NavMan.NavigateTo("/cloud-backup-settings");
+            return;
+        }
+
+        var result = await CloudBackupService.GetRemoteBackupCountScheduled();
+        totalBackups = result.ToString();
+
+        lastBackup = await CloudBackupService.GetLatestFilenameScheduled();
+        lastBackup = string.IsNullOrEmpty(lastBackup) ? "n/a" : lastBackup;
+
+        var localCount = await _db.ScheduledXacts.Count();
+        localTransactions = localCount.ToString();
+    }
+
+    async Task OnBackupClick()
+    {
+        try
+        {
+            await CloudBackupService.BackupScheduled(_db);
+
+            CloudBackupService.ClearCache();
+            await loadData();
+
+            Notification.Success("Scheduled Transactions backup complete");
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Notification.Error(ex.Message);
+        }
+    }
+
+    async Task OnRestoreClick()
+    {
+        Notification.Info("Not implemented");
+    }
+}

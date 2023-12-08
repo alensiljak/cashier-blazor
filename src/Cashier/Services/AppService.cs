@@ -10,6 +10,7 @@ using Microsoft.JSInterop;
 using MudBlazor;
 using MudBlazor.Charts;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System.Drawing;
 using System.Dynamic;
 using System.Runtime;
@@ -36,14 +37,15 @@ namespace Cashier.Services
                 parameters.Add(x => x.ConfirmationButtonColor, confirmationButtonColor.Value);
             }
 
-            if (maxWidth is null) {
+            if (maxWidth is null)
+            {
                 maxWidth = MaxWidth.Medium;
             }
 
             var options = new DialogOptions { MaxWidth = maxWidth };
 
             var dialog = await svc.ShowAsync<ConfirmationDialog>(title, parameters, options);
-            
+
             var result = await dialog.Result;
             return result;
         }
@@ -132,7 +134,7 @@ namespace Cashier.Services
 
                 case var n when n > 0:
                     return "#43A047"; // green Darken1
-            
+
                 default:
                     return string.Empty;
             }
@@ -165,6 +167,19 @@ namespace Cashier.Services
         public long GetNewId()
         {
             return DateTime.UtcNow.Ticks;
+        }
+
+        public static async Task<string?> GetScheduledXactsForExport(IDexieDAL db)
+        {
+            var records = await db.ScheduledXacts
+                .ToList();
+
+            // use lower-case property names
+            var serializerSettings = new JsonSerializerSettings();
+            serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+            var output = JsonConvert.SerializeObject(records, serializerSettings);
+            return output;
         }
 
         public async Task<string?> ImportBalanceSheet(IDexieDAL db, string[] lines)

@@ -2,6 +2,6 @@
 
 pushd src\Cashier
 
-dotnet watch
+dotnet watch --no-launch-profile
 
 popd

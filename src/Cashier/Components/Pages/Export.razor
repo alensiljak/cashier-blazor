@@ -112,11 +112,8 @@
 
     async Task<string> loadScheduledTransactions()
     {
-        var records = await _db.ScheduledXacts
-            // .OrderBy(nameof(ScheduledXact.NextDate))     // backup does not order
-            .ToList();
-        var output = JsonConvert.SerializeObject(records);
-        return output;
+        var output = await AppService.GetScheduledXactsForExport(_db);
+        return output ?? string.Empty;
     }
 
     async Task OnClipboardClick()
