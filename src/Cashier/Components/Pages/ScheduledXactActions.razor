@@ -190,6 +190,8 @@ else
         {
             await Skip();
 
+            Notification.Success("Transaction skipped to next iteration");
+
             await AppService.NavigateBack(_js);
         }
         catch (Exception ex)
@@ -259,8 +261,6 @@ else
         stx.NextDate = nextDate.Value;
 
         await Save();
-
-        Notification.Success("Transaction skipped to next iteration");
     }
 
     bool ValidateSchedule(ScheduledXact stx)
