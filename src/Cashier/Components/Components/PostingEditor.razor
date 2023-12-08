@@ -6,14 +6,14 @@
 <MudGrid>
     @* Sign *@
     <MudItem xs="2">
-        @if (DisplayAmount.HasValue)
+        @if (EditableAmount.HasValue)
         {
             <MudIconButton Icon="@GetSignIcon()" @onclick="ToggleSign" Style="@(GetColourStyle())" />
         }
     </MudItem>
     @* Amount *@
     <MudItem xs="6">
-        <MudTextField T="decimal?" @ref="amountField" @bind-Value="DisplayAmount" InputType="InputType.Number"
+        <MudTextField T="decimal?" @ref="amountField" @bind-Value="EditableAmount" InputType="InputType.Number"
                       Placeholder="Amount" Class="text-right" Immediate="true"
                       @onfocus="async () => await amountField!.SelectAsync()"
                       Style="@GetBackgroundColourStyle()" />
@@ -36,9 +36,9 @@
 
     MudTextField<decimal?> amountField { get; set; } = default!;
 
-    bool positiveSign = true;
+    bool positiveSign;
 
-    decimal? DisplayAmount
+    decimal? EditableAmount
     {
         get
         {
@@ -54,7 +54,7 @@
             }
             else
             {
-                Posting.Amount = value;
+                Posting.Amount = GetActualAmount();
             }
         }
     }
@@ -67,8 +67,20 @@
         }
 
         // posting has value
-        var amount = positiveSign ? Posting.Amount.Value : Posting.Amount.Value * -1;
+        var amount = Math.Abs(Posting.Amount.Value);
+        amount = positiveSign ? amount : amount * -1;
         return amount;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        // Initialize the sign when a Posting is loaded.
+        if (Posting.Amount.HasValue)
+        {
+            positiveSign = Posting.Amount.Value >= 0;
+        }
     }
 
     string GetAmountColour()
@@ -104,18 +116,17 @@
         await OnAccountClick.InvokeAsync();
     }
 
-    void OnAmountChanged()
-    {
-        Log.log("amount changed");
-    }
-
     void ToggleSign()
     {
         positiveSign = !positiveSign;
+
+        updatePostingSign();
+
+        StateHasChanged();
     }
 
-    void updateAmountSign()
+    void updatePostingSign()
     {
-        // Posting.Amount =
+        Posting.Amount = GetActualAmount();
     }
 }
