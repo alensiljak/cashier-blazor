@@ -78,7 +78,14 @@
     {
         State.CloseMenu();
 
-        await SaveXact();
+        try
+        {
+            await SaveXact();
+        }
+        catch (Exception ex)
+        {
+            Notification.Error(ex.Message);
+        }
     }
 
     async Task SaveXact()

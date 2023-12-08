@@ -122,7 +122,7 @@ namespace Cashier.Services
         /// </summary>
         /// <param name="amount"></param>
         /// <returns></returns>
-        public string GetAmountColour(decimal amount)
+        public static string GetAmountColour(decimal amount)
         {
             switch (amount)
             {
@@ -138,7 +138,6 @@ namespace Cashier.Services
                 default:
                     return string.Empty;
             }
-
         }
 
         /// <summary>

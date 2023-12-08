@@ -77,13 +77,10 @@ else
 @code {
     List<AccountViewModel> accounts = [];
     // HashSet<AccountViewModel> _accountsHashSet = [];
-    AppService _app = default!;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
-        _app = new AppService();
 
         // todo: handle selection
 
@@ -105,7 +102,7 @@ else
     {
         if (amount is null) return string.Empty;
 
-        return $"color: {_app.GetAmountColour(amount.Value)};";
+        return $"color: {AppService.GetAmountColour(amount.Value)};";
     }
 
     async Task loadData()

@@ -1,16 +1,24 @@
 ﻿@using MudBlazor
+@using System.Drawing
 
 <MudTextField T="string" @bind-Value="Posting!.Account" Placeholder="Account" ReadOnly="true" @onclick="OnAccountClicked" />
 
 <MudGrid>
+    @* Sign *@
     <MudItem xs="2">
-        <MudIconButton Icon="@IconsMud.Star" />
+        @if (DisplayAmount.HasValue)
+        {
+            <MudIconButton Icon="@GetSignIcon()" @onclick="ToggleSign" Style="@(GetColourStyle())" />
+        }
     </MudItem>
+    @* Amount *@
     <MudItem xs="6">
-        <MudTextField T="decimal?" @ref="amountField" @bind-Value="Posting.Amount" InputType="InputType.Number"
-                      Placeholder="Amount" Class="text-right"
-                      @onfocus="async () => await amountField!.SelectAsync()" />
+        <MudTextField T="decimal?" @ref="amountField" @bind-Value="DisplayAmount" InputType="InputType.Number"
+                      Placeholder="Amount" Class="text-right" Immediate="true"
+                      @onfocus="async () => await amountField!.SelectAsync()"
+                      Style="@GetBackgroundColourStyle()" />
     </MudItem>
+    @* Currency *@
     <MudItem lg="4" xs="4" Class="pl-0">
         <MudTextField T="string" @bind-Value="Posting.Currency" Placeholder="Currency" />
     </MudItem>
@@ -28,8 +36,86 @@
 
     MudTextField<decimal?> amountField { get; set; } = default!;
 
+    bool positiveSign = true;
+
+    decimal? DisplayAmount
+    {
+        get
+        {
+            decimal? value = Posting.Amount.HasValue ? Math.Abs(Posting.Amount.Value) : null;
+
+            return value;
+        }
+        set
+        {
+            if (value == 0)
+            {
+                Posting.Amount = null;
+            }
+            else
+            {
+                Posting.Amount = value;
+            }
+        }
+    }
+
+    decimal GetActualAmount()
+    {
+        if (!Posting.Amount.HasValue)
+        {
+            return 0;
+        }
+
+        // posting has value
+        var amount = positiveSign ? Posting.Amount.Value : Posting.Amount.Value * -1;
+        return amount;
+    }
+
+    string GetAmountColour()
+    {
+        var amount = GetActualAmount();
+
+        return AppService.GetAmountColour(amount);
+    }
+
+    string GetBackgroundColourStyle()
+    {
+        var colour = GetAmountColour();
+        if (string.IsNullOrEmpty(colour)) return string.Empty;
+
+        var c = ColorTranslator.FromHtml(colour);
+        var rgba = $"rgb({c.R} {c.G} {c.B} / 20%)";
+        return $"background-color: {rgba};";
+    }
+
+    string GetColourStyle()
+    {
+        var colour = GetAmountColour();
+        return $"color: {colour};";
+    }
+
+    string GetSignIcon()
+    {
+        return positiveSign ? IconsMud.PlusSquare : IconsMud.MinusSquare;
+    }
+
     private async Task OnAccountClicked()
     {
         await OnAccountClick.InvokeAsync();
+    }
+
+    void OnAmountChanged()
+    {
+        Log.log("amount changed");
+    }
+
+    void ToggleSign()
+    {
+        positiveSign = !positiveSign;
+    }
+
+    void updateAmountSign()
+    {
+        // Posting.Amount =
     }
 }
