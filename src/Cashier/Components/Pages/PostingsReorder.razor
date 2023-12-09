@@ -1,8 +1,115 @@
 ﻿@page "/postings-reorder"
+@using MudBlazor
+@using System.Collections.ObjectModel
+@inject NavigationManager NavMan
+@inject AppState _state
+@inject NotificationService Notification
+@inject IJSRuntime _js
 
+<ToolbarMud>
+    <Title>
+        Postings Reorder
+    </Title>
+</ToolbarMud>
 
-<h3>Postings Reorder</h3>
+@*
+<MudDropContainer T="string">
+    <ChildContent>
+        <div>yo 1</div>
+        <div>yo 2</div>
+        <div>yo 3</div>
+    </ChildContent>
+    <ItemRenderer>
+        <MudListItem>yo -list item</MudListItem>
+    </ItemRenderer>
+</MudDropContainer>
+*@
+
+<MudList>
+    @foreach (var post in _postings)
+    {
+        <MudListItem Class="">
+            <MudStack Row Class="d-flex flex-grow-1">
+                <div class="flex-grow-1 mr-2">
+                    <div>
+                        @post.Account
+                    </div>
+                    <div class="text-right">
+                        @post.Amount @post.Currency
+                    </div>
+                </div>
+                <div>
+                    <MudIconButton Icon="@IconsMud.ArrowBigUp" @onclick="@(() => OnUpClick(post))" />
+                    <MudIconButton Icon="@IconsMud.ArrowBigDown" @onclick="@(() => OnDownClick(post))" />
+                </div>
+            </MudStack>
+        </MudListItem>
+    }
+</MudList>
+
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check" Class="z-100"
+        Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 
 @code {
+    ObservableCollection<Posting> _postings = [];
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await LoadData();
+    }
+
+    async Task LoadData()
+    {
+        if (_state.Xact is null)
+        {
+            Notification.Warning("No transaction found in app state");
+            await AppService.NavigateBack(_js);
+            return;
+        }
+        if (_state.Xact.Postings == null)
+        {
+            _state.Xact.Postings = [];
+        }
+
+        _postings = new ObservableCollection<Posting>(_state.Xact.Postings);
+    }
+
+    async Task OnFab()
+    {
+        if(_state.Xact == null || _state.Xact.Postings == null)
+        {
+            throw new Exception("No transaction in the app state");
+        }
+
+        // save order
+        _state.Xact.Postings = _postings.ToList();
+
+        await AppService.NavigateBack(_js);
+    }
+
+    void OnDownClick(Posting posting)
+    {
+        var currentIndex = _postings.IndexOf(posting);
+        if (currentIndex == _postings.Count - 1)
+        {
+            Notification.Info("The item is already at the bottom");
+            return;
+        }
+
+        _postings.Move(currentIndex, currentIndex + 1);
+    }
+
+    void OnUpClick(Posting posting)
+    {
+        var currentIndex = _postings.IndexOf(posting);
+        if(currentIndex == 0)
+        {
+            Notification.Info("The item is already at the top");
+            return;
+        }
+
+        _postings.Move(currentIndex, currentIndex - 1);
+    }
 }
