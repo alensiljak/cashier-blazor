@@ -168,16 +168,19 @@ namespace Cashier.Services
             return DateTime.UtcNow.Ticks;
         }
 
+        public static async Task<string?> GetXactsForExport(IDexieDAL db)
+        {
+            var records = await db.Xacts.OrderBy(nameof(Xact.Date)).ToList();
+
+            var output = Serialize(records);
+            return output;
+        }
+
         public static async Task<string?> GetScheduledXactsForExport(IDexieDAL db)
         {
-            var records = await db.ScheduledXacts
-                .ToList();
+            var records = await db.ScheduledXacts.ToList();
 
-            // use lower-case property names
-            var serializerSettings = new JsonSerializerSettings();
-            serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-
-            var output = JsonConvert.SerializeObject(records, serializerSettings);
+            var output = Serialize(records);
             return output;
         }
 
@@ -428,6 +431,18 @@ namespace Cashier.Services
             }
 
             return output.ToString();
+        }
+
+        // Private area
+
+        private static string Serialize(object obj)
+        {
+            // use lower-case property names
+            var serializerSettings = new JsonSerializerSettings();
+            serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+            var output = JsonConvert.SerializeObject(obj, serializerSettings);
+            return output;
         }
     }
 }

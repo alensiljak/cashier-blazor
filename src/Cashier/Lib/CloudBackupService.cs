@@ -26,6 +26,30 @@ namespace Cashier.Lib
         /// </summary>
         private List<WebDavResource>? _resourceCache;
 
+        public async Task BackupJournal(IDexieDAL db)
+        {
+            // get the JSON data for export
+            var output = await AppService.GetXactsForExport(db);
+            if (output == null)
+            {
+                throw new Exception("Could not serialize Transactions");
+            }
+
+            // get filename
+            var filename = GetFilenameForNewBackup(BackupType.Journal);
+
+            // upload
+            var url = GetUrl($"/{filename}");
+            var fileContents = new MemoryStream(Encoding.UTF8.GetBytes(output));
+            var result = await _client.PutFile(url, fileContents);
+
+            if (!result.IsSuccessful)
+            {
+                throw new Exception($"Failed to backup Transactions");
+            }
+
+        }
+
         public async Task BackupScheduled(IDexieDAL db)
         {
             // get the JSON data for export
@@ -55,28 +79,27 @@ namespace Cashier.Lib
         }
 
         /// <summary>
-        /// Retrieves the number of backups for Scheduled Transactions.
+        /// Retrieves the number of backups for the given backup type.
         /// </summary>
         /// <returns></returns>
-        public async Task<int> GetRemoteBackupCountScheduled()
+        public async Task<int> GetRemoteBackupCount(BackupType backupType)
         {
             // Get all the files
             var files = await GetFileListing();
 
             // filter only the backups for Scheduled Xacts
-            var result = files.Count(f => f.StartsWith(BackupType.Scheduled
-                .ToString().ToLowerInvariant()));
+            var result = files.Count(f => f.StartsWith(backupType.ToString().ToLowerInvariant()));
 
             return result;
         }
 
-        public async Task<string> GetLatestFilenameScheduled()
+        public async Task<string> GetLatestFilename(BackupType backupType)
         {
             var files = await GetFileListing();
 
             // get only the scheduled xact backups
             var result = files
-                .Where(f => f.StartsWith(BackupType.Scheduled.ToString().ToLowerInvariant()))
+                .Where(f => f.StartsWith(backupType.ToString().ToLowerInvariant()))
                 .OrderByDescending(f => f)
                 .FirstOrDefault();
 

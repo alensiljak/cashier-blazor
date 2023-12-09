@@ -10,10 +10,10 @@
 <MudCard Outlined="true" Style="background-color: transparent;" Class="@Class">
     <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="px-2 pt-2 pb-1">
         <CardHeaderAvatar>
-            <MudIcon Icon="@IconsMud.CalendarClock" Size="Size.Medium" />
+            <MudIcon Icon="@IconsMud.Scroll" Size="Size.Medium" />
         </CardHeaderAvatar>
         <CardHeaderContent>
-            <MudText>Scheduled Transactions</MudText>
+            <MudText>Journal Transactions</MudText>
         </CardHeaderContent>
         <CardHeaderActions>
         </CardHeaderActions>
@@ -45,7 +45,7 @@
 
     [Parameter]
     public string? Class { get; set; }
-    
+
     [Parameter, EditorRequired]
     public CloudBackupService CloudBackupService { get; set; } = default!;
 
@@ -66,13 +66,13 @@
             return;
         }
 
-        var result = await CloudBackupService.GetRemoteBackupCount(BackupType.Scheduled);
+        var result = await CloudBackupService.GetRemoteBackupCount(BackupType.Journal);
         totalBackups = result.ToString();
 
-        lastBackup = await CloudBackupService.GetLatestFilename(BackupType.Scheduled);
+        lastBackup = await CloudBackupService.GetLatestFilename(BackupType.Journal);
         lastBackup = string.IsNullOrEmpty(lastBackup) ? "n/a" : lastBackup;
 
-        var localCount = await _db.ScheduledXacts.Count();
+        var localCount = await _db.Xacts.Count();
         localTransactions = localCount.ToString();
     }
 
@@ -80,12 +80,12 @@
     {
         try
         {
-            await CloudBackupService.BackupScheduled(_db);
+            await CloudBackupService.BackupJournal(_db);
 
             CloudBackupService.ClearCache();
             await loadData();
 
-            Notification.Success("Scheduled Transactions backup complete");
+            Notification.Success("Transactions backup complete");
 
             StateHasChanged();
         }
@@ -99,4 +99,5 @@
     {
         Notification.Info("Not implemented");
     }
+
 }

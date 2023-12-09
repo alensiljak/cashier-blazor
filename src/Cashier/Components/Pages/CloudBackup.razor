@@ -16,6 +16,8 @@
 
 <BackupScheduledXactsCard CloudBackupService="_service" @ref="backupCard" />
 
+<BackupJournalCard CloudBackupService="_service" Class="mt-2" />
+
 @code {
     string? _serverUrl;
     CloudBackupService _service = default!;
