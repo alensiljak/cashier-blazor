@@ -372,7 +372,7 @@ namespace Cashier.Services
             }
 
             // clear any transaction ids!
-            if (stx.Transaction != null && !stx.Transaction.Id.HasValue)
+            if (stx.Transaction != null && stx.Transaction.Id.HasValue)
             {
                 stx.Transaction.Id = null;
             }
