@@ -16,8 +16,6 @@ namespace Cashier.Lib
             _client = new WebDavClient(httpClient);
         }
 
-        const string FILENAME_TEMPLATE = "{prefix}_{date}_{time}.json";
-
         WebDavClient _client;
         private string _serverUrl;
 
@@ -28,7 +26,7 @@ namespace Cashier.Lib
 
         public async Task BackupJournal(IDexieDAL db)
         {
-            // get the JSON data for export
+            // get the text data for export
             var output = await AppService.GetXactsForExport(db);
             if (output == null)
             {
@@ -54,7 +52,7 @@ namespace Cashier.Lib
         {
             // get the JSON data for export
             var output = await AppService.GetScheduledXactsForExport(db);
-            if(output == null)
+            if (output == null)
             {
                 throw new Exception("Could not serialize Scheduled Transactions");
             }
@@ -125,18 +123,21 @@ namespace Cashier.Lib
         private string GetFilenameForNewBackup(BackupType backupType)
         {
             var now = DateTime.Now;
-            var template = FILENAME_TEMPLATE;
+
+            // file extension
+            string extension = backupType switch
+            {
+                BackupType.Journal => "ledger",
+                _ => "json",
+            };
+
             var prefix = backupType.ToString().ToLowerInvariant();
+            var date = now.Date.ToString(Constants.ISODateFormat);
+            var time = now.ToString(Constants.LongTimeFormat);
 
-            template = template.Replace("{prefix}", prefix);
+            var filename = string.Format($"{prefix}_{date}_{time}.{extension}");
 
-            // replace time and date
-            template = template.Replace("{date}", now.Date.ToString(Constants.ISODateFormat));
-
-            var time = TimeOnly.FromDateTime(now);
-            template = template.Replace("{time}", time.ToString(Constants.LongTimeFormat));
-
-            return template;
+            return filename;
         }
 
         private string GetUrl(string path)

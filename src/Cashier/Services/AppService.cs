@@ -168,12 +168,25 @@ namespace Cashier.Services
             return DateTime.UtcNow.Ticks;
         }
 
+        /// <summary>
+        /// Xacts are exported in Ledger format.
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
         public static async Task<string?> GetXactsForExport(IDexieDAL db)
         {
             var records = await db.Xacts.OrderBy(nameof(Xact.Date)).ToList();
 
-            var output = Serialize(records);
-            return output;
+            //var output = Serialize(records);
+            var sb = new StringBuilder();
+
+            foreach(var record in records)
+            {
+                sb.AppendLine(AppService.TranslateToLedger(record));
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
 
         public static async Task<string?> GetScheduledXactsForExport(IDexieDAL db)
@@ -397,16 +410,18 @@ namespace Cashier.Services
         /// </summary>
         /// <param name="xact"></param>
         /// <returns></returns>
-        public string TranslateToLedger(Xact xact)
+        public static string TranslateToLedger(Xact xact)
         {
             var output = new StringBuilder();
 
+            // Xact Header
             output.Append(xact.Date.ToString(Constants.ISODateFormat));
             output.Append(' ');
             output.AppendLine(xact.Payee);
 
             if (!string.IsNullOrWhiteSpace(xact.Note))
             {
+                // Comment
                 output.Append("    ; ");
                 output.AppendLine(xact.Note);
             }

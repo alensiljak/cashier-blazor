@@ -79,7 +79,7 @@
         }
 
         // get a journal version
-        var text = new AppService().TranslateToLedger(xact);
+        var text = AppService.TranslateToLedger(xact);
 
         // copy to clipboard
         await new AppService().CopyToClipboard(_js, text);
