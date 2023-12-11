@@ -1,0 +1,27 @@
+{
+  "name": "cashier",
+  "version": "1.0.0",
+  "description": "",
+  "source": "",
+  "main": "wwwroot/js/bundle.js",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alen Šiljak",
+  "license": "AGPL-3.0-or-later",
+  "dependencies": {
+    "dexie": "3.2.4"
+  },
+  "devDependencies": {
+    "@stylistic/eslint-plugin-js": "^1.5.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "eslint": "^8.55.0",
+    "eslint-config-standard-with-typescript": "^42.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-n": "^16.4.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "typescript": "^5.3.3"
+  }
+}

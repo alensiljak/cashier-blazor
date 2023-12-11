@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
 	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <TypeScriptTarget>ES2021</TypeScriptTarget>
+		<TypeScriptTarget>ES2021</TypeScriptTarget>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <TypeScriptTarget>ES2021</TypeScriptTarget>
+		<TypeScriptTarget>ES2021</TypeScriptTarget>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -34,5 +34,15 @@
 	<ItemGroup>
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
 	</ItemGroup>
+
+	<!-- Copy Dexie to wwwroot -->
+	<Target Name="CopyDexie" AfterTargets="PreBuildEvent">
+		<ItemGroup>
+			<ExtraFiles Include="$(ProjectDir)\\node_modules\\dexie\\dist\\dexie.min.js">
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			</ExtraFiles>
+		</ItemGroup>
+		<Copy SourceFiles="@(ExtraFiles)" DestinationFolder="$(ProjectDir)\\wwwroot\\js" />
+	</Target>
 
 </Project>

@@ -13,3 +13,9 @@
 
 # Local Netlify folder
 .netlify
+
+
+# .js files
+node_modules/
+/src/Cashier/package-lock.json
+/src/Cashier/wwwroot/js/dexie.min.js
