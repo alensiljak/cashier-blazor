@@ -10,12 +10,13 @@ namespace Cashier.Lib
     {
         public CloudBackupService(HttpClient httpClient, string serverUrl)
         {
-            //_httpClient = httpClient;
+            _httpClient = httpClient;
             _serverUrl = serverUrl;
 
             _client = new WebDavClient(httpClient);
         }
 
+        HttpClient _httpClient;
         WebDavClient _client;
         private string _serverUrl;
 
@@ -71,6 +72,29 @@ namespace Cashier.Lib
             }
         }
 
+        public async Task BackupSettings(IDexieDAL db)
+        {
+            // get the JSON data for export
+            var output = await AppService.GetSettingsForExport(db);
+            if (output == null)
+            {
+                throw new Exception("Could not serialize Settings");
+            }
+
+            // get filename
+            var filename = GetFilenameForNewBackup(BackupType.Settings);
+
+            // upload
+            var url = GetUrl($"/{filename}");
+            var fileContents = new MemoryStream(Encoding.UTF8.GetBytes(output));
+            var result = await _client.PutFile(url, fileContents);
+
+            if (!result.IsSuccessful)
+            {
+                throw new Exception($"Failed to backup Settings");
+            }
+        }
+
         public void ClearCache()
         {
             _resourceCache = null;
@@ -119,6 +143,16 @@ namespace Cashier.Lib
             var result = _resourceCache.Select(r => r.DisplayName).ToList();
             return result;
         }
+
+        public async Task<bool> HealthCheck()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Options, _serverUrl);
+            var response = await _httpClient.SendAsync(request);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        // private 
 
         private string GetFilenameForNewBackup(BackupType backupType)
         {

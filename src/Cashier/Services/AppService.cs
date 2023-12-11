@@ -196,6 +196,14 @@ namespace Cashier.Services
             return output;
         }
 
+        public static async Task<string?> GetSettingsForExport(IDexieDAL db)
+        {
+            var records = await db.Settings.ToList();
+
+            var output = Serialize(records);
+            return output;
+        }
+
         public async Task<string?> ImportBalanceSheet(IDexieDAL db, string[] lines)
         {
             if (lines.Length == 0)

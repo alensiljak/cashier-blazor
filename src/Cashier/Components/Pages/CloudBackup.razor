@@ -14,13 +14,19 @@
     </ContextMenuItems>
 </ToolbarMud>
 
-<BackupScheduledXactsCard CloudBackupService="_service" @ref="backupCard" />
+@if (_isOnline)
+{
+    <BackupScheduledXactsCard CloudBackupService="_service" @ref="backupCard" />
 
-<BackupJournalCard CloudBackupService="_service" Class="mt-2" />
+    <BackupJournalCard CloudBackupService="_service" Class="mt-2" />
+
+    <BackupSettingsCard CloudBackupService="_service" Class="mt-2"/>
+}
 
 @code {
     string? _serverUrl;
     CloudBackupService _service = default!;
+    bool _isOnline = false;
 
     BackupScheduledXactsCard backupCard = default!;
 
@@ -33,9 +39,9 @@
 
         _service = new CloudBackupService(_httpClient, _serverUrl);
 
-        // todo: test if server is alive.
-        // var svr = new CloudBackupService()
-        // send an OPTIONS request?
+        // test if server is alive.
+        _isOnline = await _service.HealthCheck();
+
     }
 
     async Task OnClearCacheClick()

@@ -34,8 +34,6 @@ namespace Cashier.Services
             var url = _serverUrl + "/ping";
             
             // OPTIONS request unfortunately not supported.
-            //var request = new HttpRequestMessage(HttpMethod.Options, url);
-            //var response = await _httpClient.SendAsync(request);
             
             var response = await _httpClient.GetAsync(url);
 
