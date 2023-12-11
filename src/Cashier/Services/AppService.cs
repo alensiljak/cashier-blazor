@@ -183,7 +183,6 @@ namespace Cashier.Services
             foreach(var record in records)
             {
                 sb.AppendLine(AppService.TranslateToLedger(record));
-                sb.AppendLine();
             }
 
             return sb.ToString();
