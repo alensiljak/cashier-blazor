@@ -1,11 +1,6 @@
-﻿using BlazorDexie.JsInterop;
-using Cashier.Components.Pages;
-using Cashier.Data;
+﻿using Cashier.Data;
 using Cashier.Services;
 using NodaTime;
-using System.IO;
-using static MudBlazor.CategoryTypes;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cashier.Lib
 {
