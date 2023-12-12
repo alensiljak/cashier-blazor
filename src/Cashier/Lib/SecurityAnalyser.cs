@@ -29,13 +29,13 @@ namespace Cashier.Lib
             var command = $"b ^Assets and :{symbol}$ -G -n -X {Currency}";
             var report = await LedgerApi.ledger(command);
             if(report.Count == 0) {
-                return "n/a";
+                return "0";
             }
 
             var line = report[0];
             if (line == null)
             {
-                return "n/a";
+                return "0";
             }
 
             var number = getNumberFromCollapseResult(line);
