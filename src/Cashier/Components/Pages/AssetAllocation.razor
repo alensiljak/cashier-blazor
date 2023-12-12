@@ -12,6 +12,9 @@
 
 <ToolbarMud>
     <Title>Asset Allocation</Title>
+    <ContextMenuItems>
+        <MudListItem Icon="@IconsMud.DatabaseZap" @onclick="OnClearCacheClick">Clear cache</MudListItem>
+    </ContextMenuItems>
 </ToolbarMud>
 
 <MudContainer Style="max-width: 660px;" Class="pa-0 mb-2">
@@ -90,27 +93,35 @@
 @code {
     const string NUMBER = "#,##0.00";
     // string? content;
-    List<AssetClass> allocation = [];
+    List<AssetClass> _allocation = [];
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        // Use cached AA, if available
-        if (_state.AssetAllocation != null)
-        {
-            allocation = _state.AssetAllocation;
-        }
-        else
-        {
-            await loadData();
-
-            // Cache the asset allocation for Asset Class details, etc.
-            _state.AssetAllocation = allocation;
-        }
+        await loadData();
     }
 
     async Task loadData()
+    {
+        // Use cached AA, if available
+        if (_state.AssetAllocation != null)
+        {
+            _allocation = _state.AssetAllocation;
+        }
+        else
+        {
+            _allocation = await LoadAaFromFile();
+
+            // Cache the asset allocation for Asset Class details, etc.
+            _state.AssetAllocation = _allocation;
+        }
+
+        // text output
+        // TODO: content = aa.GetTextReport();
+    }
+
+    async Task<List<AssetClass>> LoadAaFromFile()
     {
         // load aa
         var opfs = new OpfsService(StorageManagerService);
@@ -127,10 +138,8 @@
             Console.WriteLine(ex.ToString());
             Notification.Error(ex.Message);
         }
-        allocation = aa.classes;
 
-        // text output
-        // TODO: content = aa.GetTextReport();
+        return aa.classes;
     }
 
     /// <summary>
@@ -156,6 +165,13 @@
         }
 
         return string.Empty;
+    }
+
+    async Task OnClearCacheClick()
+    {
+        _state.AssetAllocation = null;
+
+        await loadData();
     }
 
     void ShowDetails(string fullName)

@@ -8,6 +8,7 @@
 @inject IStorageManagerService StorageManagerService
 @inject HttpClient _httpClient
 @inject NotificationService Notification
+@inject AppState _state
 
 <ToolbarMud>
     Asset Class Detail
@@ -88,6 +89,13 @@
 
     async Task LoadAssetAllocation()
     {
+        // Load from cache
+        if(_state.AssetAllocation != null)
+        {
+            _assetAllocation = _state.AssetAllocation;
+            return;
+        }
+
         var opfs = new OpfsService(StorageManagerService);
         var definition = await opfs.ReadFromFile(Constants.AssetAllocationFilename);
 
