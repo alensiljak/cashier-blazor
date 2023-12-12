@@ -37,5 +37,7 @@ namespace Cashier.Data
 
         public ScheduledXact? ScheduledXact { get; set; }
         public Xact? Xact { get; set; }
+
+        public List<AssetClass>? AssetAllocation { get; set; }
     }
 }
