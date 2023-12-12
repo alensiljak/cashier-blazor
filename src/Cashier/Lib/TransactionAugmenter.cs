@@ -77,7 +77,7 @@ namespace Cashier.Lib
                         var posting = postings.First();
                         if (posting.Amount is null)
                         {
-                            Console.WriteLine("Invalid amount encountered!");
+                            Console.WriteLine($"Invalid amount encountered! {posting.Account} on {xact.Date} {xact.Payee}");
                             continue;
                         }
 

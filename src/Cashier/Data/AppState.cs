@@ -39,5 +39,6 @@ namespace Cashier.Data
         public Xact? Xact { get; set; }
 
         public List<AssetClass>? AssetAllocation { get; set; }
+        public Dictionary<string, StockSymbol>? AaStocks { get; set; }
     }
 }
