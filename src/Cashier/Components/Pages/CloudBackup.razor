@@ -16,10 +16,8 @@
 
 @if (_isOnline)
 {
-    <BackupScheduledXactsCard CloudBackupService="_service" @ref="backupCard" />
-
     <BackupJournalCard CloudBackupService="_service" Class="mt-2" />
-
+    <BackupScheduledXactsCard CloudBackupService="_service" @ref="backupCard" />
     <BackupSettingsCard CloudBackupService="_service" Class="mt-2"/>
 }
 
