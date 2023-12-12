@@ -37,7 +37,8 @@ else
                 @if (stock.Analysis != null)
                 {
                     <div class="ms-3">
-                        @stock.Analysis
+                        Yield: <span style="@(GetColourStyleForYield(stock.Analysis.Yield))">@stock.Analysis.Yield</span>
+                        Gain/Loss: <span style="@(GetColourStyle(stock.Analysis.GainLoss))">@stock.Analysis.GainLoss</span>
                     </div>
                 }
 
@@ -109,6 +110,26 @@ else
         }
     }
 
+    string GetColourStyleForYield(string? amount)
+    {
+        if (string.IsNullOrEmpty(amount)) return string.Empty;
+
+        amount = amount.Remove(amount.Length - 1);
+        var amt = decimal.Parse(amount);
+        var colour = AppService.GetAmountColour(amt);
+        return $"color: {colour};";
+    }
+
+    string GetColourStyle(string? amount)
+    {
+        if (string.IsNullOrEmpty(amount)) return string.Empty;
+
+        var parts = amount.Split(' ');
+        var amt = decimal.Parse(parts[0]);
+        var colour = AppService.GetAmountColour(amt);
+        return $"color: {colour};";
+    }
+
     async Task loadData()
     {
         var acctSvc = new AccountService();
@@ -135,7 +156,6 @@ else
 
     async Task LoadAssetClass()
     {
-        // LoadAssetClass
         await LoadAssetAllocation();
         _assetClass = _assetAllocation.Find(ac => ac.FullName == fullname) ?? new AssetClass();
 
