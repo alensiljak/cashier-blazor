@@ -3,39 +3,26 @@
 *@
 
 @page "/appstate-viewer"
-
-@implements IDisposable
-
 @inject AppState State
 @using System.Text.Json
-
-<h3>App State Viewer</h3>
+@using MudBlazor
+@using Newtonsoft.Json
 
 <ToolbarMud>
     App State Viewer
 </ToolbarMud>
 
-<div>
-Xact: @XactString()
-</div>
-@* <div>
-Sidebar visible: @State.SidebarVisible
-</div>*@
+<pre>
+    @_appStateJson
+</pre>
 
 @code {
+    string? _appStateJson;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        State.OnSidebarToggled += StateHasChanged;
+        _appStateJson = JsonConvert.SerializeObject(State, Formatting.Indented);
     }
-
-    string? XactString() => JsonSerializer.Serialize(State.Xact);
-
-    public void Dispose()
-    {
-        // unsubscribe
-        State.OnSidebarToggled -= StateHasChanged;
-    }
-
 }
