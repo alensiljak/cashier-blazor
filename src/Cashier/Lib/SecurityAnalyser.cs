@@ -28,8 +28,11 @@ namespace Cashier.Lib
 
             var command = $"b ^Assets and :{symbol}$ -G -n -X {Currency}";
             var report = await LedgerApi.ledger(command);
-            var line = report[0];
+            if(report.Count == 0) {
+                return "n/a";
+            }
 
+            var line = report[0];
             if (line == null)
             {
                 return "n/a";
