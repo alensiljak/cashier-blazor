@@ -26,23 +26,27 @@ namespace Cashier.Lib
                 if (lines[0] == string.Empty)
                 {
                     totalLine = "0";
-                } else
+                }
+                else
                 {
                     // One-line results don't have totals
                     totalLine = lines[0];
                 }
 
                 result.Add(totalLine);
-            } else
+            }
+            else
             {
                 foreach (var line in lines)
                 {
-                    if(nextLineIsTotal)
+                    if (nextLineIsTotal)
                     {
+                        totalLine = line;
                         result.Add(line);
-                    } else
+                    }
+                    else
                     {
-                        if(line.IndexOf("------") >= 0)
+                        if (line.IndexOf("------") >= 0)
                         {
                             nextLineIsTotal = true;
                         }
@@ -50,8 +54,9 @@ namespace Cashier.Lib
                 }
             }
 
-            if(string.IsNullOrEmpty( totalLine))
+            if (string.IsNullOrEmpty(totalLine))
             {
+                Log.debug(lines);
                 throw new Exception("No total received!");
             }
 
