@@ -109,7 +109,7 @@
 
     async Task loadSettings()
     {
-        ServerUrl = await settings.GetSyncServerUrl() ?? string.Empty;
+        ServerUrl = await settings.GetSetting<string>(SettingsKeys.syncServerUrl) ?? string.Empty;
         rootInvestmentAccount = await settings.GetRootInvestmentAccount();
         currency = await settings.GetDefaultCurrency();
 
@@ -173,7 +173,7 @@
         // Console.WriteLine("sync server changed: {0}", value);
         ServerUrl = value;
 
-        await settings.SetSyncServerUrl(value);
+        await settings.SetSetting(SettingsKeys.syncServerUrl, value);
 
         Notification.Show("Sync URL saved");
     }
@@ -197,7 +197,7 @@
     async Task synchronizeAccounts()
     {
         var svc = new SyncService(HttpClient, ServerUrl);
-        string[]? accounts = null;
+        List<string>? accounts = null;
         try
         {
             accounts = await svc.ReadAccounts();
@@ -206,7 +206,7 @@
         {
             Notification.Warning("Error: " + ex.Message);
         }
-        if (accounts == null || accounts.Length == 0)
+        if (accounts == null || accounts.Count == 0)
         {
             Notification.Warning("No accounts received");
             return;
@@ -236,7 +236,7 @@
         var svc = new SyncService(HttpClient, ServerUrl);
         var payeeNames = await svc.ReadPayees();
 
-        if (payeeNames == null || payeeNames.Length == 0)
+        if (payeeNames == null || payeeNames.Count == 0)
         {
             Notification.Warning("No Payees retrieved!");
             return;

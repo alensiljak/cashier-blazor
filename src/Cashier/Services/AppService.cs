@@ -204,9 +204,9 @@ namespace Cashier.Services
             return output;
         }
 
-        public async Task<string?> ImportBalanceSheet(IDexieDAL db, string[] lines)
+        public async Task<string?> ImportBalanceSheet(IDexieDAL db, List<string> lines)
         {
-            if (lines.Length == 0)
+            if (lines.Count == 0)
             {
                 throw new ArgumentException("No accounts sent for import!");
             }
@@ -221,7 +221,7 @@ namespace Cashier.Services
         /// Imports the payees into storage.
         /// </summary>
         /// <returns></returns>
-        public async Task<string> ImportPayees(IDexieDAL db, string[] payeeNames)
+        public async Task<string> ImportPayees(IDexieDAL db, List<string> payeeNames)
         {
             var payees = payeeNames.Select(payee => new Payee { Name = payee });
             var result = await db.Payees.BulkAdd(payees);
@@ -300,7 +300,7 @@ namespace Cashier.Services
             return sx;
         }
 
-        protected List<Account> ParseAccounts(string[] lines)
+        protected List<Account> ParseAccounts(List<string> lines)
         {
             var accounts = new List<Account>();
             var accountBalances = new List<Money>();

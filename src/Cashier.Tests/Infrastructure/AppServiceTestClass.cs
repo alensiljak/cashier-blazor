@@ -15,7 +15,7 @@ namespace Cashier.Tests.Infrastructure
         {
         }
 
-        public List<Account> PublicParseAccounts(string[] lines)
+        public List<Account> PublicParseAccounts(List<string> lines)
         {
             return ParseAccounts(lines);
         }

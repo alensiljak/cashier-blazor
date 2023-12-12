@@ -9,5 +9,11 @@
 
         public string? Yield { get; set; }
         public string? GainLoss { get; set; }
+
+        public override string ToString()
+        {
+            // return base.ToString();
+            return $"Yield: {Yield}, Gain/Loss: {GainLoss}";
+        }
     }
 }

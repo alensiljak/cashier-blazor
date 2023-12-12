@@ -25,19 +25,26 @@
 else
 {
     <ul class="mt-4 ms-4">
-        @foreach (var symbol in _stocks)
+        @foreach (var stock in _stocks)
         {
             <li class="mt-3">
                 <MudText Typo="Typo.h6">
-                    • @symbol.Name
+                    • @stock.Name
                 </MudText>
 
-                @*
-                Analysis
-                Lots
-        *@
 
-                @foreach (var account in symbol.Accounts)
+                @* Analysis *@
+                @if (stock.Analysis != null)
+                {
+                    <div class="ms-3">
+                        @stock.Analysis
+                    </div>
+                }
+
+                @* Lots *@
+
+                @* accounts *@
+                @foreach (var account in stock.Accounts)
                 {
                     <div class="ms-3">
                         @account.Name,
@@ -72,24 +79,23 @@ else
     string? _currency;
     string? _serverUrl;
 
-    bool _isOnline = false;
+    // bool _isOnline = false;
+    SyncService _syncService { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        _serverUrl = await _settings.GetSyncServerUrl();
+        _serverUrl = await _settings.GetSetting<string>(SettingsKeys.syncServerUrl);
+        if (string.IsNullOrWhiteSpace(_serverUrl))
+        {
+            throw new Exception("Sync Server URL not set!");
+        }
+        _syncService = new SyncService(_httpClient, _serverUrl ?? string.Empty);
 
         await loadData();
 
-        await Task.Run(async () =>
-        {
-            await RunServerCheck();
-            if (_isOnline)
-            {
-                await securityAnalysis();
-            }
-        }).ConfigureAwait(false);
+        await securityAnalysis();
     }
 
     async Task AccAccountBalances()
@@ -193,14 +199,41 @@ else
         {
             throw new Exception("Sync Server URL not set");
         }
-
-        foreach (var symbol in _stocks)
+        if (!await RunServerCheck())
         {
-            if (symbol.Analysis != null)
+            Log.log("Server not online, aborting security analysis");
+            return;
+        };
+
+        foreach (var stock in _stocks)
+        {
+            var symbol = stock.Name;
+            if (string.IsNullOrEmpty(symbol))
             {
-                Console.WriteLine(symbol.Analysis);
+                throw new Exception("symbol is empty!");
             }
+
+            // Update the values
+            stock.Analysis = await fetchAnalysisFor(symbol);
+
+            StateHasChanged();
         }
+    }
+
+    /// <summary>
+    /// Retrieve the security analysis from CashierSync.
+    /// </summary>
+    /// <param name="symbol"></param>
+    /// <returns></returns>
+    async Task<StockAnalysis> fetchAnalysisFor(string symbol)
+    {
+        var sec = new SecurityAnalyser(_syncService, _settings);
+
+        var result = new StockAnalysis();
+        result.Yield = await sec.GetYield(symbol);
+        result.GainLoss = await sec.GetGainLoss(symbol);
+
+        return result;
     }
 
     /// <summary>
@@ -214,8 +247,7 @@ else
         try
         {
             var online = await sync.healthCheck();
-            Console.WriteLine("Server is online? {0}", online);
-            return true;
+            return online;
         }
         catch (HttpRequestException rex)
         {

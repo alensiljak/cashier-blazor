@@ -2,6 +2,7 @@
 using Cashier.Data;
 using Cashier.Lib;
 using Microsoft.JSInterop;
+using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -66,19 +67,16 @@ namespace Cashier.Services
             Console.WriteLine("Content: {0}", content);
         }
 
-        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-        public async Task<string[]?> ReadAccounts()
+        public async Task<List<string>> ReadAccounts()
         {
             var response = await this.ledger(AccountsCommand);
-            var lines = JsonSerializer.Deserialize<string[]>(response);
-            return lines;
+            return response;
         }
 
         /// <summary>
         /// Read investment accounts' current values in the default currency, for Asset Allocation calculation.
         /// </summary>
         /// <returns></returns>
-        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         public async Task<string> ReadCurrentValues(IJSRuntime js)
         {
             var dal = new DexieDAL(js);
@@ -95,9 +93,7 @@ namespace Cashier.Services
             }
 
             var command = $"b ^{rootAccount} -X {currency} --flat --no-total";
-            var response = await this.ledger(command);
-
-            var result = JsonSerializer.Deserialize<string[]>(response);
+            var result = await this.ledger(command);
             if (result == null)
             {
                 throw new Exception("No response received from the sync server.");
@@ -113,8 +109,7 @@ namespace Cashier.Services
         /// Retrieve the list of Payees
         /// </summary>
         /// <returns></returns>
-        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-        public async Task<string[]?> ReadPayees()
+        public async Task<List<string>?> ReadPayees()
         {
             // Limit the payees to the last 5 years, otherwise there's a high risk of crashing.
             // This command is somehow very memory hungry on Android.
@@ -122,8 +117,7 @@ namespace Cashier.Services
             year = year - 5;
 
             var command = PayeesCommand + " -b " + year;
-            var result = await ledger(command);
-            var payees = JsonSerializer.Deserialize<string[]>(result);
+            var payees = await ledger(command);
             return payees;
         }
 
@@ -141,13 +135,6 @@ namespace Cashier.Services
         }
 
         // Private
-
-        private string createUrl(string command)
-        {
-            var path = $"?command={command}";
-            var url = $"{this._serverUrl}{path}";
-            return url;
-        }
 
         /// <summary>
         /// Update the current balances in the asset allocation.
@@ -183,9 +170,9 @@ namespace Cashier.Services
             }
         }
 
-        private async Task<string> ledger(string command)
+        public async Task<List<string>> ledger(string command)
         {
-            var url = createUrl(command);
+            var url = $"{this._serverUrl}?command={command}";
 
             var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
@@ -195,10 +182,13 @@ namespace Cashier.Services
 
             var content = await response.Content.ReadAsStringAsync();
 
-            return content;
+            // deserialize?
+            var lines = JsonConvert.DeserializeObject<List<string>>(content);
+
+            return lines;
         }
 
-        private Dictionary<string, string> ParseCurrentValues(string[] lines, string rootAccount)
+        private Dictionary<string, string> ParseCurrentValues(List<string> lines, string rootAccount)
         {
             var result = new Dictionary<string, string>();
             foreach (var line in lines)

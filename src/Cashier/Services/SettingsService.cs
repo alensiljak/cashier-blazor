@@ -38,11 +38,6 @@ namespace Cashier.Services
             return setting;
         }
 
-        public async Task<string?> GetSyncServerUrl()
-        {
-            return await GetSetting<string?>(SettingsKeys.syncServerUrl);
-        }
-
         public async Task<string?> GetRootInvestmentAccount()
         {
             return await GetSetting<string?>(SettingsKeys.rootInvestmentAccount);
@@ -112,11 +107,6 @@ namespace Cashier.Services
         public async Task<string> SetSyncPayees(bool value)
         {
             return await SetSetting(SettingsKeys.syncPayees, value);
-        }
-
-        public async Task<string> SetSyncServerUrl(string value)
-        {
-            return await SetSetting(SettingsKeys.syncServerUrl, value);
         }
 
         public async Task<T?> GetSetting<T>(string key)
