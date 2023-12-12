@@ -37,7 +37,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in allocation)
+            @foreach (var item in _allocation)
             {
                 <tr>
                     <td>
@@ -92,7 +92,6 @@
 
 @code {
     const string NUMBER = "#,##0.00";
-    // string? content;
     List<AssetClass> _allocation = [];
 
     protected override async Task OnInitializedAsync()
@@ -169,9 +168,13 @@
 
     async Task OnClearCacheClick()
     {
+        _state.CloseMenu();
+
         _state.AssetAllocation = null;
 
         await loadData();
+
+        StateHasChanged();
     }
 
     void ShowDetails(string fullName)

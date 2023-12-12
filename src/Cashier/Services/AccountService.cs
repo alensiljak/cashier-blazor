@@ -55,14 +55,6 @@ namespace Cashier.Services
             accounts = accounts.Where(x => !string.IsNullOrEmpty(x.CurrentValue))
                 .ToList();
 
-            // add the balance
-            //var defaultCurrency = await _settings.GetDefaultCurrency();
-            //var acctSvc = new AccountService();
-            //foreach (var account in accounts)
-            //{
-            //    account.AccountBalance = acctSvc.GetAccountBalance(account, defaultCurrency);
-            //}
-
             return accounts;
         }
 
