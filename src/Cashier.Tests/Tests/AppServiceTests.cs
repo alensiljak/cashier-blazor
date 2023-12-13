@@ -29,7 +29,7 @@ namespace Cashier.Tests.Tests
                    0  Assets: Bank Accounts:Checking Account
         3,574.38 EUR  Assets:Bank Accounts:gratis account
 3675.162105 FSS_IntFix  Assets:Retirement:Superannuation:IntFix";
-            var lines = input.Split(new[] { '\n' });
+            var lines = input.Split(new[] { '\n' }).ToList();
 
             //var result = await _appService.importBalanceSheet(lines);
             var result = _appService.PublicParseAccounts(lines);
@@ -44,7 +44,7 @@ namespace Cashier.Tests.Tests
             var input = @"
         27204.53 BAM
         3,408.36 EUR  Assets:Fixed Assets:Life Insurance";
-            var lines = input.Split(new[] { '\n' });
+            var lines = input.Split(new[] { '\n' }).ToList();
 
             //var result = await _appService.importBalanceSheet(lines);
             var result = _appService.PublicParseAccounts(lines);
