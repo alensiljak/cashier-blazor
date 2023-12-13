@@ -5,7 +5,7 @@
 @inject ISettingsService settings
 @inject NotificationService Notification
 @inject HttpClient HttpClient
-@inject AppState State
+@inject AppState _state
 
 @using Cashier.Services
 @using MudBlazor
@@ -134,7 +134,7 @@
             Notification.Warning(ex.Message);
         }
 
-        State.CloseMenu();
+        _state.CloseMenu();
     }
 
     ///  <summary>
@@ -153,6 +153,10 @@
         {
             showAssetProgress = true;
             await synchronizeAaValues();
+
+            // Reset cached AA
+            _state.ResetAaCache();
+
             showAssetProgress = false;
         }
         if (syncPayees)

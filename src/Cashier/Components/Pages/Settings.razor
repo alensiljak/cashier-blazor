@@ -13,6 +13,7 @@
 @inject NavigationManager NavMan
 @inject IStorageManagerService StorageManagerService
 @inject NotificationService Notification
+@inject AppState _state
 
 <ToolbarMud>
     <Title>Settings</Title>
@@ -62,7 +63,7 @@
 
     @* Asset Allocation *@
     <MudText Typo="Typo.h5" Class="mt-4">Asset Allocation</MudText>
-    <MudFileUpload T="IBrowserFile" Accept=".toml" FilesChanged="RestoreAssetAllocation">
+    <MudFileUpload T="IBrowserFile" Accept=".toml" FilesChanged="OnAaFileSelected">
         <ButtonTemplate>
             <div style="text-align: center;">
                 <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" for="@context" />
@@ -113,6 +114,19 @@
         rememberLastTransaction = await settings.GetRememberLastTransaction();
     }
 
+    async Task OnAaFileSelected(IBrowserFile aaFile)
+    {
+        // confirm with a dialog
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you want to import the selected Asset Allocation file?");
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Import", parameters);
+        var result = await dialog.Result;
+        if (result.Canceled) return;
+
+        // restore settings
+        await RestoreAssetAllocation(aaFile);
+    }
+
     void onAppStateMenu()
     {
         NavMan.NavigateTo("/appstate-viewer");
@@ -123,17 +137,13 @@
         await _js.InvokeVoidAsync("window.location.reload", true);
     }
 
+    /// <summary>
+    /// Load Asset Allocation from a file.
+    /// </summary>
+    /// <param name="aaFile"></param>
+    /// <returns></returns>
     async Task RestoreAssetAllocation(IBrowserFile aaFile)
     {
-        // confirm with a dialog
-        var parameters = new DialogParameters<ConfirmationDialog>();
-        parameters.Add(x => x.ContentText, "Do you want to import the selected Asset Allocation file?");
-        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Import", parameters);
-        var result = await dialog.Result;
-        if (result.Canceled) return;
-
-        // restore settings
-
         var stream = aaFile.OpenReadStream();
         using var reader = new StreamReader(stream);
         var content = await reader.ReadToEndAsync();
@@ -142,6 +152,9 @@
         // Save to OPFS.
         var opfs = new OpfsService(StorageManagerService);
         await opfs.SaveToFile(Constants.AssetAllocationFilename, content);
+
+        // Reset cached AA
+        _state.ResetAaCache();
 
         Snackbar.Add("Asset Allocation imported.");
     }

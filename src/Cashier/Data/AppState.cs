@@ -40,5 +40,11 @@ namespace Cashier.Data
 
         public List<AssetClass>? AssetAllocation { get; set; }
         public Dictionary<string, StockSymbol>? AaStocks { get; set; }
+
+        public void ResetAaCache()
+        {
+            AssetAllocation = null;
+            AaStocks = null;
+        }
     }
 }
