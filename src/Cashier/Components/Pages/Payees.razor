@@ -31,13 +31,6 @@ else
         </div>
     </MudPaper>
 
-    @*
-    <MudDataGrid T="Payee" Items="@payees" Height="85vh" Virtualize="true" RowClick="@OnRowClick">
-        <Columns>
-            <PropertyColumn Property="@(p => p.Name)" HeaderStyle="display: none;" CellClass="px-1" />
-        </Columns>
-    </MudDataGrid>
-*@
     <MudSimpleTable Style="height: 85vh; overflow-y: scroll; background-color: transparent;">
         <tbody>
             @foreach (var payee in payees)

@@ -32,7 +32,7 @@
     }
 
     <MudText Class="mt-4">
-        Ends on
+        Ends
     </MudText>
 
     <MudRadioGroup @bind-SelectedOption="@HasEndDate">
@@ -116,6 +116,7 @@
             if (value)
             {
                 ScXact!.Period = PeriodNames.Days;
+                ScXact.Count = "1";
             }
             else
             {
