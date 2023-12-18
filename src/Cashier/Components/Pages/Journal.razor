@@ -48,7 +48,9 @@ else
 
     private async Task loadData()
     {
-        _xacts = await _db.Xacts.ToList();
+        _xacts = await _db.Xacts
+            .OrderBy(nameof(Xact.Date))
+            .ToList();
     }
 
     async Task onDeleteAllClicked()
