@@ -15,8 +15,14 @@ namespace Cashier.Lib
         /// <returns>
         /// The next date as string.
         /// </returns>
-        public DateOnly? calculateNextIteration(DateOnly startDate, int count, Periods period, DateOnly? endDate)
+        public DateOnly? calculateNextIteration(DateOnly startDate, int? count, Periods? period, DateOnly? endDate)
         {
+            if (count == null || period == null)
+            {
+                // There is no next occurrence.
+                return null;
+            }
+
             // Get the start point.
             var start = LocalDate.FromDateOnly(startDate);
             LocalDate next;
@@ -25,27 +31,27 @@ namespace Cashier.Lib
             switch (period)
             {
                 case Periods.StartOfMonth:
-                    next = start.PlusMonths(count)
+                    next = start.PlusMonths(count.Value)
                         .With(DateAdjusters.StartOfMonth);
                     break;
                 case Periods.EndOfMonth:
-                    next = start.PlusMonths(count)
+                    next = start.PlusMonths(count.Value)
                         .With(DateAdjusters.EndOfMonth);
                     break;
                 case Periods.Days:
-                    next = start.PlusDays(count);
+                    next = start.PlusDays(count.Value);
                     break;
 
                 case Periods.Weeks:
-                    next = start.PlusWeeks(count);
+                    next = start.PlusWeeks(count.Value);
                     break;
 
                 case Periods.Months:
-                    next = start.PlusMonths(count);
+                    next = start.PlusMonths(count.Value);
                     break;
 
                 case Periods.Years:
-                    next = start.PlusYears(count);
+                    next = start.PlusYears(count.Value);
                     break;
 
                 default:
@@ -53,7 +59,7 @@ namespace Cashier.Lib
             }
 
             // handle end date, if any.
-            if(endDate != null)
+            if (endDate != null)
             {
                 var end = LocalDate.FromDateOnly(endDate.Value);
                 if (next > end)

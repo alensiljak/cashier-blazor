@@ -208,14 +208,9 @@ else
             throw new Exception("No Scheduled Transaction found in app state");
         }
 
-        if (string.IsNullOrWhiteSpace(stx.Count))
+        if(stx.Transaction is null)
         {
-            throw new Exception("The count is invalid for recurrence");
-        }
-
-        if (string.IsNullOrWhiteSpace(stx.Period))
-        {
-            throw new Exception("The recurrence period is invalid");
+            throw new Exception("No Transaction found attached to the schedule.");
         }
     }
 
@@ -238,18 +233,20 @@ else
         var stx = _state.ScheduledXact;
         validateForSkip(stx);
 
+        // Handle the one-off occurrence (no count and no period).
+
+        // Calculate next occurrence date.
         var startDate = stx!.NextDate;
-        var count = int.Parse(stx.Count!);
-        var period = PeriodNames.ToEnum(stx.Period!);
+        int? count = string.IsNullOrEmpty(stx.Count) ? null : int.Parse(stx.Count);
+        Periods? period = (stx.Period == null) ? null : PeriodNames.ToEnum(stx.Period);
         var endDate = stx.EndDate;
 
         ValidateSchedule(stx);
 
-        // todo: handle the one-off occurrence (no count and no period)
-
         // calculate the next iteration.
         var calc = new IterationCalculator();
         var nextDate = calc.calculateNextIteration(startDate, count, period, endDate);
+
         if (nextDate is null)
         {
             // Passed the End Date.
