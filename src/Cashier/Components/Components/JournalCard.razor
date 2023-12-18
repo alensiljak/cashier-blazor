@@ -103,7 +103,7 @@
                 .Limit(5)
                 .ToList();
 
-            Balances = new TransactionAugmenter().calculateTxAmounts(Xacts);
+            Balances = new TransactionAugmenter().calculateXactAmounts(Xacts);
         }
         catch (Exception ex)
         {

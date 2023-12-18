@@ -50,7 +50,7 @@ namespace Cashier.Lib
         /// It is normally useful to run calculateEmptyPostingAmounts() to populate the blank Postings.
         /// </summary>
         /// <returns>An array of balance records that matches the transactions.</returns>
-        public List<Money> calculateTxAmounts(List<Xact> xacts)
+        public List<Money> calculateXactAmounts(List<Xact> xacts)
         {
             calculateEmptyPostingAmounts(xacts);
 
@@ -131,7 +131,6 @@ namespace Cashier.Lib
 
                 var postings = xact.Postings;
 
-
                 // do we have multiple currencies? Exclude nulls.
                 var currencies = postings
                     .Where(p => !string.IsNullOrWhiteSpace(p.Currency))
@@ -170,7 +169,7 @@ namespace Cashier.Lib
                 // add the values to the (only) empty posting.
                 var emptyPosting = emptyPostings.First();
                 emptyPosting.Amount = total * (-1);
-                if (emptyPosting.Currency == null)
+                if (string.IsNullOrWhiteSpace(emptyPosting.Currency))
                 {
                     emptyPosting.Currency = currency;
                 }

@@ -45,7 +45,7 @@ namespace Cashier.Tests.Tests
             var xacts = CreateDummyXactList();
 
             // Act
-            var actual = _out.calculateTxAmounts(xacts);
+            var actual = _out.calculateXactAmounts(xacts);
 
             // Assert
             // Assert.NotNull(xacts);
@@ -73,7 +73,7 @@ namespace Cashier.Tests.Tests
             };
 
             // Act
-            var actual = _out.calculateTxAmounts(xacts);
+            var actual = _out.calculateXactAmounts(xacts);
 
             // Assert
             Assert.NotNull(actual);
