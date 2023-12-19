@@ -6,6 +6,7 @@
 @inject AppState State
 @inject IJSRuntime _js
 @inject NotificationService Notification
+@inject IDialogService DialogService
 
 <ToolbarMud>
     <Title>Accounts</Title>
@@ -50,6 +51,10 @@ else
     </MudSimpleTable>
 }
 
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus" Class="z-100"
+        Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
+
+
 @code {
     string? searchTerm;
     List<Account> accounts = [];
@@ -60,6 +65,30 @@ else
         await base.OnInitializedAsync();
 
         await loadData();
+    }
+
+    async Task CreateNewAccount()
+    {
+        // prompt for an account name
+        var result = await AppService.TextInputDialog(DialogService, "Please enter new account name:", "Create Account", null, MaxWidth.Large);
+        if (result.Canceled) return;
+
+        var accountName = (string?) result.Data;
+        if (string.IsNullOrEmpty(accountName)) return;
+
+        var key = await AppService.CreateAccount(db, accountName);
+
+        if(string.IsNullOrEmpty(key))
+        {
+            Notification.Error("Could not create account");
+        } else
+        {
+            Notification.Success($"Created account {key}");
+        }
+
+        // re-load data
+        await loadData();
+        StateHasChanged();
     }
 
     async Task loadData()
@@ -82,6 +111,11 @@ else
         }
 
         accounts = await records.ToList();
+    }
+
+    async Task OnFab()
+    {
+        await CreateNewAccount();
     }
 
     async Task OnRowClick(DataGridRowClickEventArgs<Account> args)

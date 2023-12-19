@@ -1,13 +1,13 @@
 ﻿@*
-    Simple confirmation dialog.
-    Receives the text via a parameter and returns a Boolean.
+    A dialog component for entering simple text. 
+    Used to enter an account name when creating a new account record.
 *@
-
 @using MudBlazor
 
 <MudDialog Class="bg-primary">
     <DialogContent>
         @ContentText
+        <MudTextField T="string" AutoFocus @bind-Value="InputText" />
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -15,8 +15,9 @@
     </DialogActions>
 </MudDialog>
 
+
 @code {
-    [CascadingParameter] 
+    [CascadingParameter]
     MudDialogInstance? MudDialog { get; set; }
 
     [Parameter]
@@ -25,7 +26,9 @@
     [Parameter]
     public Color ConfirmationButtonColor { get; set; } = Color.Primary;
 
-    void Submit() => MudDialog!.Close(DialogResult.Ok(true));
-    void Cancel() => MudDialog!.Cancel();
-}
+    private string? InputText {get;set;}
 
+    void Submit() => MudDialog!.Close(DialogResult.Ok<string?>(InputText));
+    void Cancel() => MudDialog!.Cancel();
+
+}

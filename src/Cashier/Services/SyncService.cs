@@ -185,6 +185,11 @@ namespace Cashier.Services
             // deserialize?
             var lines = JsonConvert.DeserializeObject<List<string>>(content);
 
+            if(lines == null)
+            {
+                throw new Exception("Could not deserialize Ledger response");
+            }
+
             return lines;
         }
 

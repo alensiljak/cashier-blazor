@@ -30,8 +30,10 @@ namespace Cashier.Services
         public static async Task<DialogResult> ConfirmationDialog(IDialogService svc, string text, string title = "",
             MudBlazor.Color? confirmationButtonColor = null, MaxWidth? maxWidth = null)
         {
-            var parameters = new DialogParameters<ConfirmationDialog>();
-            parameters.Add(x => x.ContentText, text);
+            var parameters = new DialogParameters<ConfirmationDialog>
+            {
+                { x => x.ContentText, text }
+            };
             if (confirmationButtonColor != null)
             {
                 parameters.Add(x => x.ConfirmationButtonColor, confirmationButtonColor.Value);
@@ -50,6 +52,31 @@ namespace Cashier.Services
             return result;
         }
 
+        public static async Task<DialogResult> TextInputDialog(IDialogService svc, string text, string title = "",
+            MudBlazor.Color? confirmationButtonColor = null, MaxWidth? maxWidth = null)
+        {
+            var parameters = new DialogParameters<TextInputDialog>
+            {
+                { x => x.ContentText, text }
+            };
+            if (confirmationButtonColor != null)
+            {
+                parameters.Add(x => x.ConfirmationButtonColor, confirmationButtonColor.Value);
+            }
+
+            if (maxWidth is null)
+            {
+                maxWidth = MaxWidth.Medium;
+            }
+
+            var options = new DialogOptions { MaxWidth = maxWidth };
+
+            var dialog = await svc.ShowAsync<TextInputDialog>(title, parameters, options);
+
+            var result = await dialog.Result;
+            return result;
+        }
+
         public static async Task NavigateBack(IJSRuntime js)
         {
             await new RouterService(js).Back();
@@ -60,6 +87,13 @@ namespace Cashier.Services
         public async Task CopyToClipboard(IJSRuntime jsRuntime, string text)
         {
             await jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+        }
+
+        public static async Task<string> CreateAccount(IDexieDAL db, string name)
+        {
+            var acct = new Account(name);
+            var key = await db.Accounts.Add(acct);
+            return key;
         }
 
         public Xact CreateNewXact()
