@@ -1,4 +1,6 @@
-﻿@* Transaction Editor component used in the Transaction Edit page *@
+﻿@* 
+    Transaction Editor component used in the Transaction Edit page 
+*@
 
 @using MudBlazor
 
@@ -52,7 +54,8 @@
     @foreach (var posting in Postings)
     {
         var index = Postings.IndexOf(posting);
-        <PostingEditor Posting="posting" OnAccountClick="@(() => OnAccountClicked(index))" />
+        <PostingEditor Posting="posting" OnAccountClick="@(() => OnAccountClicked(index))" 
+            OnAmountChanged="OnAmountChanged"/>
     }
 }
 
@@ -127,6 +130,7 @@
     }
 
     private decimal Sum { get; set; }
+    private int _emptyPostingCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -136,6 +140,8 @@
         {
             await handleSelection();
         }
+
+        RecalculateSum();
     }
 
     public void Refresh()
@@ -239,6 +245,11 @@
         Xact?.Postings?.Add(new Posting());
     }
 
+    void OnAmountChanged()
+    {
+        RecalculateSum();
+    }
+
     void OnDeletePostingsClicked()
     {
         NavMan.NavigateTo("/postings-delete");
@@ -259,6 +270,28 @@
     void OnReorderPostingsClick()
     {
         NavMan.NavigateTo("/postings-reorder");
+    }
+
+    void RecalculateSum()
+    {
+        Sum = 0;
+        _emptyPostingCount = 0;
+
+        if (Xact == null || Xact.Postings == null || Xact.Postings.Count == 0) return;
+
+        foreach(var posting in Xact.Postings)
+        {
+            if(posting.Amount.HasValue)
+            {
+                Sum += posting.Amount.Value;
+            } else
+            {
+                // empty amount
+                _emptyPostingCount += 1;
+            }
+        }
+
+        StateHasChanged();
     }
 
     private async Task Today()

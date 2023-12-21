@@ -34,6 +34,9 @@
     [Parameter]
     public EventCallback OnAccountClick { get; set; }
 
+    [Parameter]
+    public EventCallback OnAmountChanged { get; set; }
+
     MudTextField<decimal?> amountField { get; set; } = default!;
 
     bool isPositiveSign = true;
@@ -63,6 +66,8 @@
                 value = Math.Abs(value.Value);
                 Posting.Amount = isPositiveSign ? value : value * (-1);
             }
+
+            RaiseAmountChanged();
         }
     }
 
@@ -125,7 +130,18 @@
 
     private async Task OnAccountClicked()
     {
-        await OnAccountClick.InvokeAsync();
+        if (OnAccountClick.HasDelegate)
+        {
+            await OnAccountClick.InvokeAsync();
+        }
+    }
+
+    void RaiseAmountChanged()
+    {
+        if(OnAmountChanged.HasDelegate)
+        {
+            Task.Run(() => OnAmountChanged.InvokeAsync());
+        }
     }
 
     void ToggleSign()
@@ -133,6 +149,8 @@
         isPositiveSign = !isPositiveSign;
 
         updatePostingSign();
+
+        RaiseAmountChanged();
 
         StateHasChanged();
     }
