@@ -9,6 +9,7 @@
     <Title>About</Title>
     <ContextMenuItems>
         <MudListItem Icon="@IconsMud.UploadCloud" @onclick="OnWebDavClick">WebDAV Demo</MudListItem>
+        <MudListItem Icon="@IconsMud.LineChart" @onclick="OnForecastClicked">Forecast</MudListItem>
     </ContextMenuItems>
 </ToolbarMud>
 
@@ -18,6 +19,11 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+    }
+
+    void OnForecastClicked()
+    {
+        NavMan.NavigateTo("/forecast");
     }
 
     void OnWebDavClick()
