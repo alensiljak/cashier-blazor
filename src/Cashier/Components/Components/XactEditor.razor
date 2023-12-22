@@ -32,7 +32,11 @@
         <div class="flex-grow-1">
             <MudText Align="Align.Center">Postings</MudText>
         </div>
-        <MudIcon Icon="@IconsMud.Sigma" />
+        @* Sum *@
+        <MudStack Row>
+            <MudIcon Icon="@IconsMud.Sigma" />
+            <MudText>@Sum</MudText>
+        </MudStack>
     </MudStack>
 
     <MudStack Row="true">
@@ -42,10 +46,6 @@
             <MudIconButton Icon="@IconsMud.ArrowUpDown" @onclick="OnReorderPostingsClick" />
             <MudIconButton Icon="@IconsMud.Trash" @onclick="OnDeletePostingsClicked" />
         </MudStack>
-        @* Sum *@
-        <div class="justify-center my-auto">
-            <MudText>@Sum</MudText>
-        </div>
     </MudStack>
 </MudPaper>
 
