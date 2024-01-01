@@ -111,6 +111,13 @@ else
     {
         var favourites = await _settings.GetFavouriteAccountNames();
 
+        // Add only if not already present.
+        if (favourites.Contains(accountName))
+        {
+            Notification.Warning("The account is already present");
+            return;
+        }
+
         favourites.Add(accountName);
 
         await _settings.SetSetting(SettingsKeys.favouriteAccounts, favourites);

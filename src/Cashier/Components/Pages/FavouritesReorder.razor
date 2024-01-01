@@ -1,7 +1,9 @@
 ﻿@page "/favourites-reorder"
 @using MudBlazor
+@using System.Collections.ObjectModel
 
 @inject ISettingsService _settings
+@inject IJSRuntime _js
 
 <ToolbarMud>
     Reorder Favourites
@@ -14,18 +16,10 @@
 else
 {
 
-    <MudDropContainer T="string" Items="@_accounts" @ref="_container"
-                      ItemsSelector="@((item,dropzone) => true)" Class="d-flex flex-wrap flex-grow-1">
+    <MudDropContainer T="string" Items="@_accounts" @ref="_container" Class="d-flex flex-wrap flex-grow-1"
+                      ItemsSelector="@((item,dropzone) => true)"
+                      ItemDropped="ItemUpdated" >
         <ChildContent>
-            @*         <MudSimpleTable Style="overflow-x: auto;">
-        <thead>
-        <tr><th>Account Name</th></tr>
-        </thead>
-        <tbody>
-        <MudDropZone T="string" Identifier="dropzone" Class="flex-grow-1" AllowReorder="true" />
-        </tbody>
-        </MudSimpleTable>
-        *@
             <MudList draggable="true">
                 <MudDropZone T="string" Identifier="dropzone" Class="flex-grow-1" AllowReorder="true" />
             </MudList>
@@ -35,10 +29,12 @@ else
         </ItemRenderer>
     </MudDropContainer>
 }
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check" Class="z-100"
+        Style="@Constants.DefaultFabPosition" @onclick="OnFabClicked" />
 
 @code {
-    List<string>? _accounts;
-    private MudDropContainer<string> _container;
+    ObservableCollection<string>? _accounts;
+    private MudDropContainer<string> _container = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,15 +45,33 @@ else
 
     private void ItemUpdated(MudItemDropInfo<string> dropItem)
     {
-        // dropItem.Item.Selector = dropItem.DropzoneIdentifier;
-        Console.WriteLine("item updated: {0}", dropItem);
+        if (_accounts == null) return;
+
+        var account = dropItem.Item;
+        if (account == null) return;
+
+        var index = _accounts.IndexOf(account);
+        var newIndex = dropItem.IndexInZone;
+
+        // Console.WriteLine($"item {account}, index {index}, updated: {dropItem}");
+
+        _accounts.Move(index, newIndex);
     }
 
     async Task LoadData()
     {
-        _accounts = await _settings.GetFavouriteAccountNames();
+        var list = await _settings.GetFavouriteAccountNames();
+        _accounts = new ObservableCollection<string>(list);
 
         StateHasChanged();
         _container.Refresh();
+    }
+
+    async Task OnFabClicked()
+    {
+        // save the order
+        await _settings.SetSetting(SettingsKeys.favouriteAccounts, _accounts);
+
+        await AppService.NavigateBack(_js);
     }
 }
