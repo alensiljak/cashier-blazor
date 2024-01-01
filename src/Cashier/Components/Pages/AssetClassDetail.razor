@@ -31,7 +31,6 @@ else
                     • @stock.Name
                 </MudText>
 
-
                 @* Analysis *@
                 @if (stock.Analysis != null)
                 {
@@ -150,6 +149,8 @@ else
         {
             _message = "No securities exist";
         }
+
+        StateHasChanged();
     }
 
     async Task LoadAssetClass()
