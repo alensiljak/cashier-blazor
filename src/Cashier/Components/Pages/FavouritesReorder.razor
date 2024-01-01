@@ -1,0 +1,63 @@
+﻿@page "/favourites-reorder"
+@using MudBlazor
+
+@inject ISettingsService _settings
+
+<ToolbarMud>
+    Reorder Favourites
+</ToolbarMud>
+
+@if (_accounts == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+
+    <MudDropContainer T="string" Items="@_accounts" @ref="_container"
+                      ItemsSelector="@((item,dropzone) => true)" Class="d-flex flex-wrap flex-grow-1">
+        <ChildContent>
+            @*         <MudSimpleTable Style="overflow-x: auto;">
+        <thead>
+        <tr><th>Account Name</th></tr>
+        </thead>
+        <tbody>
+        <MudDropZone T="string" Identifier="dropzone" Class="flex-grow-1" AllowReorder="true" />
+        </tbody>
+        </MudSimpleTable>
+        *@
+            <MudList draggable="true">
+                <MudDropZone T="string" Identifier="dropzone" Class="flex-grow-1" AllowReorder="true" />
+            </MudList>
+        </ChildContent>
+        <ItemRenderer>
+            <MudListItem Icon="@IconsMud.Menu" Text="@context" />
+        </ItemRenderer>
+    </MudDropContainer>
+}
+
+@code {
+    List<string>? _accounts;
+    private MudDropContainer<string> _container;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await LoadData();
+    }
+
+    private void ItemUpdated(MudItemDropInfo<string> dropItem)
+    {
+        // dropItem.Item.Selector = dropItem.DropzoneIdentifier;
+        Console.WriteLine("item updated: {0}", dropItem);
+    }
+
+    async Task LoadData()
+    {
+        _accounts = await _settings.GetFavouriteAccountNames();
+
+        StateHasChanged();
+        _container.Refresh();
+    }
+}

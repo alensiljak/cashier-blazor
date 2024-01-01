@@ -27,7 +27,7 @@ namespace Cashier.Services
 
         // static methods
 
-        public static async Task<DialogResult> ConfirmationDialog(IDialogService svc, string text, string title = "",
+        public static async Task<DialogResult> ShowConfirmationDialog(IDialogService svc, string text, string title = "",
             MudBlazor.Color? confirmationButtonColor = null, MaxWidth? maxWidth = null)
         {
             var parameters = new DialogParameters<ConfirmationDialog>
@@ -52,7 +52,7 @@ namespace Cashier.Services
             return result;
         }
 
-        public static async Task<DialogResult> TextInputDialog(IDialogService svc, string text, string title = "",
+        public static async Task<DialogResult> ShowTextInputDialog(IDialogService svc, string text, string title = "",
             MudBlazor.Color? confirmationButtonColor = null, MaxWidth? maxWidth = null)
         {
             var parameters = new DialogParameters<TextInputDialog>

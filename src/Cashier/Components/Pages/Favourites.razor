@@ -11,9 +11,10 @@
 <ToolbarMud>
     <Title>Favourites</Title>
     <ContextMenuItems>
-        <MudListItem Icon="@IconsMud.PlusCircle">Add</MudListItem>
+        <MudListItem Icon="@IconsMud.PlusCircle" OnClick="PromptForAccount">Add</MudListItem>
+        <MudListItem Icon="@IconsMud.Trash" OnClick="OnDeleteClick">Delete</MudListItem>
         <MudListItem Icon="@IconsMud.Trash">Delete All</MudListItem>
-        <MudListItem Icon="@IconsMud.ArrowUpDown">Reorder</MudListItem>
+        <MudListItem Icon="@IconsMud.ArrowUpDown" OnClick="OnReorderClick">Reorder</MudListItem>
     </ContextMenuItems>
 </ToolbarMud>
 
@@ -137,9 +138,19 @@ else
     //     _accountsHashSet = accounts.ToHashSet();
     // }
 
+    void OnDeleteClick()
+    {
+        NavMan.NavigateTo("/favourites-delete");
+    }
+
     void OnFab()
     {
         PromptForAccount();
+    }
+
+    void OnReorderClick()
+    {
+        NavMan.NavigateTo("/favourites-reorder");
     }
 
     void PromptForAccount()

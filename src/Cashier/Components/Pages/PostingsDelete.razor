@@ -48,7 +48,8 @@
     async Task OnDeleteClick(Posting posting)
     {
         // confirm with a dialog
-        var result = await AppService.ConfirmationDialog(DialogService, "Do you want to delete the selected Posting?", "Confirm Delete");
+        var result = await AppService.ShowConfirmationDialog(DialogService, 
+            "Do you want to delete the selected Posting?", "Confirm Delete");
         if (result.Canceled) return;
 
         _postings!.Remove(posting);

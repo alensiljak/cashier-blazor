@@ -96,8 +96,8 @@
         }
 
         // confirm with a dialog
-        var result = await AppService.ConfirmationDialog(DialogService, "Do you want to delete the Transaction?",
-            "Confirm Delete", Color.Secondary);
+        var result = await AppService.ShowConfirmationDialog(DialogService, 
+            "Do you want to delete the Transaction?", "Confirm Delete", Color.Secondary);
         if (result.Canceled) return;
 
         // delete Xact

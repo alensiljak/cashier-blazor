@@ -1,0 +1,74 @@
+﻿@page "/favourites-delete"
+@using MudBlazor
+
+@inject ISettingsService _settings
+@inject IDialogService DialogService
+@inject NotificationService Notification
+
+<ToolbarMud>
+    Delete Favourites
+</ToolbarMud>
+
+@if (_accounts == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <MudList Clickable>
+        @foreach (var accountName in _accounts)
+        {
+            var index = _accounts.IndexOf(accountName);
+
+            <MudListItem Class="py-1">
+                <MudStack Row Class="align-center">
+                    <MudText Class="flex-grow-1">
+                        @accountName
+                    </MudText>
+                    <MudIconButton Icon="@IconsMud.Trash" Class="red" Size="Size.Medium"
+                                   OnClick="() => OnDeleteClicked(index)" />
+                </MudStack>
+            </MudListItem>
+        }
+    </MudList>
+}
+
+@code {
+    List<string>? _accounts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await LoadData();
+    }
+
+    async Task LoadData()
+    {
+        _accounts = await _settings.GetFavouriteAccountNames();
+    }
+
+    async Task OnDeleteClicked(int index)
+    {
+        if (_accounts == null)
+        {
+            Notification.Error("The list of accounts is empty!");
+            return;
+        }
+
+        var item = _accounts[index];
+
+        // confirmation
+        var msg = string.Format("Do you want to remove {0} from favourites?", item);
+        var result = await AppService.ShowConfirmationDialog(DialogService, msg, "Confirm Removal",
+            Color.Secondary);
+        if (result.Canceled) return;
+
+        // delete item
+        _accounts.RemoveAt(index);
+
+        // save
+        await _settings.SetSetting(SettingsKeys.favouriteAccounts, _accounts);
+        StateHasChanged();
+    }
+}

@@ -58,7 +58,7 @@ else
         State.CloseMenu();
 
         // confirm with a dialog
-        var result = await AppService.ConfirmationDialog(DialogService, 
+        var result = await AppService.ShowConfirmationDialog(DialogService,
             "Do you want to delete all the Transactions?", "Confirm Delete", Color.Secondary);
         if (result.Canceled) return;
 

@@ -144,7 +144,7 @@ else
     async Task OnDeleteClick()
     {
         var msg = $"Do you want to delete the scheduled transaction {_state.ScheduledXact?.Transaction?.Payee}?";
-        var choice = await AppService.ConfirmationDialog(DialogService, msg, "Confirm Deletion", Color.Secondary);
+        var choice = await AppService.ShowConfirmationDialog(DialogService, msg, "Confirm Deletion", Color.Secondary);
         if (choice.Canceled) return;
 
         var id = _state.ScheduledXact?.Id;
@@ -165,7 +165,7 @@ else
     async Task OnEnterClick()
     {
         // confirm with a dialog
-        var result = await AppService.ConfirmationDialog(DialogService,
+        var result = await AppService.ShowConfirmationDialog(DialogService,
             "Do you want to enter this transaction into the journal?", "Confirm Creation");
         if (result.Canceled) return;
 
@@ -183,7 +183,8 @@ else
 
     async Task OnSkipClick()
     {
-        var dialogResult = await AppService.ConfirmationDialog(DialogService, "Do you want to skip the next iteration?", "Confirm skip");
+        var dialogResult = await AppService.ShowConfirmationDialog(DialogService, 
+            "Do you want to skip the next iteration?", "Confirm skip");
         if (dialogResult.Canceled) return;
 
         try
