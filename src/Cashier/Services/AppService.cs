@@ -298,7 +298,7 @@ namespace Cashier.Services
             // Take only top n.
             if (take != null)
             {
-                keys = keys.Take(5).ToArray();
+                keys = keys.Take(5).ToList();
             }
 
             var accounts = await db.Accounts.BulkGet(keys);

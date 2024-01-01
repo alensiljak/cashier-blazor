@@ -65,7 +65,7 @@ namespace Cashier.Services
 
         // Save methods
 
-        public async Task<string[]> GetFavouriteAccountNames()
+        public async Task<List<string>> GetFavouriteAccountNames()
         {
             var setting = await _db.Settings.Get(SettingsKeys.favouriteAccounts);
             if (setting == null)
@@ -81,7 +81,7 @@ namespace Cashier.Services
                 return [];
             }
 
-            return keys;
+            return keys.ToList();
         }
 
         public async Task<string> SetDefaultCurrency(string value)

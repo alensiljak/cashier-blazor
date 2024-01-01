@@ -4,6 +4,9 @@
 
 @inject IDexieDAL _db
 @inject NotificationService Notification
+@inject AppState State
+@inject NavigationManager NavMan
+@inject ISettingsService _settings
 
 <ToolbarMud>
     <Title>Favourites</Title>
@@ -74,6 +77,10 @@ else
     *@
 }
 
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus" Class="z-100"
+        Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
+
+
 @code {
     List<AccountViewModel> accounts = [];
     // HashSet<AccountViewModel> _accountsHashSet = [];
@@ -82,7 +89,8 @@ else
     {
         await base.OnInitializedAsync();
 
-        // todo: handle selection
+        // handle account selection after Add new account.
+        await HandleAccountSelection();
 
         try
         {
@@ -96,6 +104,15 @@ else
 
         // create a tree view
         // CreateTreeView();
+    }
+
+    async Task AddAccount(string accountName)
+    {
+        var favourites = await _settings.GetFavouriteAccountNames();
+
+        favourites.Add(accountName);
+
+        await _settings.SetSetting(SettingsKeys.favouriteAccounts, favourites);
     }
 
     string GetColour(decimal? amount)
@@ -119,4 +136,47 @@ else
     // {
     //     _accountsHashSet = accounts.ToHashSet();
     // }
+
+    void OnFab()
+    {
+        PromptForAccount();
+    }
+
+    void PromptForAccount()
+    {
+        // show the account picker
+        var selectionMode = new SelectionModeMetadata()
+            {
+                SelectionType = SelectionType.Account
+            };
+
+        State.SelectionModeMetadata = selectionMode;
+
+        NavMan.NavigateTo("/accounts");
+    }
+
+    /// <summary>
+    /// Handle selecting accounts. We return to this page after the account is selected.
+    /// </summary>
+    /// <returns></returns>
+    async Task HandleAccountSelection()
+    {
+        var meta = State.SelectionModeMetadata;
+
+        // validations
+        if (meta == null) return;
+        if (meta.SelectedId == null) return;
+        if (meta.SelectionType != SelectionType.Account) return;
+
+        var account = await _db.Accounts.Get(meta.SelectedId);
+        if(account == null)
+        {
+            throw new Exception("Account not found!");
+        }
+
+        await AddAccount(account.Name!);
+
+        // cleanup
+        State.SelectionModeMetadata = null;
+    }
 }
