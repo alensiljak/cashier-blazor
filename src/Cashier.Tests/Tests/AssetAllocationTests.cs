@@ -35,7 +35,7 @@ namespace Cashier.Tests.Tests
             var aa = CreateAssetAllocation();
             await aa.loadFullAssetAllocation(definition);
 
-            Assert.Equal(3, aa.classes.Count);
+            Assert.Equal(3, aa.Classes.Count);
         }
 
         [Fact]
@@ -44,10 +44,10 @@ namespace Cashier.Tests.Tests
             var aa = CreateAssetAllocation();
             await aa.loadFullAssetAllocation(definition);
 
-            var root = aa.classes.First();
+            var root = aa.Classes.First();
             Assert.NotNull(root);
 
-            var firstChild = aa.classes.Skip(1).First();
+            var firstChild = aa.Classes.Skip(1).First();
             Assert.NotNull(firstChild);
         }
 
@@ -57,7 +57,7 @@ namespace Cashier.Tests.Tests
             var aa = CreateAssetAllocation();
             await aa.loadFullAssetAllocation(definition);
             
-            var equity = aa.classes.Skip(1).First();
+            var equity = aa.Classes.Skip(1).First();
             Assert.NotNull(equity);
 
             Assert.NotEmpty(equity.Symbols);
@@ -72,7 +72,7 @@ namespace Cashier.Tests.Tests
             var aa = CreateAssetAllocation();
             await aa.loadFullAssetAllocation(definition);
 
-            var actual = aa.GetTextReport();
+            var actual = aa.GetTextReport(aa.Classes);
             Assert.NotNull(actual);
         }
 
@@ -83,11 +83,11 @@ namespace Cashier.Tests.Tests
             var aa = CreateAssetAllocation();
             await aa.loadFullAssetAllocation(definition);
 
-            var actualEquity = aa.classes.First(x => x.FullName == "Allocation:Equity").CurrentValue;
+            var actualEquity = aa.Classes.First(x => x.FullName == "Allocation:Equity").CurrentValue;
             Assert.Equal(600, actualEquity.Quantity);
             Assert.Equal("EUR", actualEquity.Currency);
 
-            var actualFixed = aa.classes.First(x => x.FullName == "Allocation:Fixed").CurrentValue;
+            var actualFixed = aa.Classes.First(x => x.FullName == "Allocation:Fixed").CurrentValue;
             Assert.Equal(400, actualFixed.Quantity);
             Assert.Equal("EUR", actualFixed.Currency);
         }
@@ -99,7 +99,7 @@ namespace Cashier.Tests.Tests
             var aa = CreateAssetAllocation();
             await aa.loadFullAssetAllocation(definition);
 
-            var actual = aa.classes.First(ac => ac.FullName == "Allocation").CurrentValue;
+            var actual = aa.Classes.First(ac => ac.FullName == "Allocation").CurrentValue;
             Assert.Equal(1000, actual.Quantity);
         }
 

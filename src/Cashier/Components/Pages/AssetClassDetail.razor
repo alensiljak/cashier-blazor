@@ -177,7 +177,7 @@ else
         var aa = new AssetAllocationService(_settings, _db, accountService);
 
         await aa.loadFullAssetAllocation(definition);
-        _assetAllocation = aa.classes;
+        _assetAllocation = aa.Classes;
     }
 
     void PopulateStocksWithCaching()

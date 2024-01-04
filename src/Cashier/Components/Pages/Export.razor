@@ -142,9 +142,6 @@
         }
         var fileName = GetFileName();
 
-        // var bytes = System.Text.Encoding.UTF8.GetBytes(output);
-        // await _js.InvokeVoidAsync("saveFile", fileName, bytes);
-
         var fileStream = new MemoryStream(new System.Text.UTF8Encoding(true).GetBytes(output));
         using var streamRef = new DotNetStreamReference(stream: fileStream);
         await _js.InvokeVoidAsync("saveFile", fileName, streamRef);

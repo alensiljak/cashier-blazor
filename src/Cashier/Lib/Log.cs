@@ -7,6 +7,11 @@
             Console.WriteLine(message, args);
         }
         
+        public static void log(int value)
+        {
+            Console.WriteLine(value);
+        }
+
         public static void debug(object obj)
         {
             DebugPrinter.PrintJson(obj);

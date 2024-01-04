@@ -4,16 +4,18 @@
 @using MudBlazor
 
 @inject IDexieDAL _db
-@inject ISettingsService settings
+@inject ISettingsService Settings
 @inject IStorageManagerService StorageManagerService
 @inject NotificationService Notification
 @inject NavigationManager NavMan
 @inject AppState _state
+@inject IJSRuntime _js
 
 <ToolbarMud>
     <Title>Asset Allocation</Title>
     <ContextMenuItems>
-        <MudListItem Icon="@IconsMud.DatabaseZap" @onclick="OnClearCacheClick">Clear cache</MudListItem>
+        <MudMenuItem Icon="@IconsMud.DatabaseZap" @onclick="OnClearCacheClick">Clear cache</MudMenuItem>
+        <MudMenuItem Icon="@IconsMud.FileDown" @onclick="OnExportClick">Export</MudMenuItem>
     </ContextMenuItems>
 </ToolbarMud>
 
@@ -90,6 +92,23 @@
     }
 </style>
 
+<script>
+    var saveFile = async (fileName, content) => {
+        const arrayBuffer = await content.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(blob);
+
+        var link = document.createElement('a');
+        link.download = fileName;
+        // link.href = "data:text/plain;charset=utf-8," + encodeURIComponent(content);
+        link.href = url;
+
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    }
+</script>
+
 @code {
     const string NUMBER = "#,##0.00";
     List<AssetClass> _allocation = [];
@@ -115,9 +134,6 @@
             // Cache the asset allocation for Asset Class details, etc.
             _state.AssetAllocation = _allocation;
         }
-
-        // text output
-        // TODO: content = aa.GetTextReport();
     }
 
     async Task<List<AssetClass>> LoadAaFromFile()
@@ -125,9 +141,8 @@
         // load aa
         var opfs = new OpfsService(StorageManagerService);
         var definition = await opfs.ReadFromFile(Constants.AssetAllocationFilename);
-        var accountService = new AccountService();
 
-        var aa = new AssetAllocationService(settings, _db, accountService);
+        var aa = new AssetAllocationService(Settings, _db, new AccountService());
         try
         {
             await aa.loadFullAssetAllocation(definition);
@@ -138,7 +153,7 @@
             Notification.Error(ex.Message);
         }
 
-        return aa.classes;
+        return aa.Classes;
     }
 
     /// <summary>
@@ -176,6 +191,31 @@
         await loadData();
 
         StateHasChanged();
+    }
+
+    /// <summary>
+    /// Export Asset Allocation report as plain text.
+    /// </summary>
+    async Task OnExportClick() {
+        var aa = new AssetAllocationService(Settings, _db, new AccountService());
+        var output = aa.GetTextReport(_allocation);
+
+        // download as file
+        var fileName = GetAaFileName();
+        var fileStream = new MemoryStream(new System.Text.UTF8Encoding(true).GetBytes(output));
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+        await _js.InvokeVoidAsync("saveFile", fileName, streamRef);
+    }
+
+    string GetAaFileName()
+    {
+        var now = DateTime.Now;
+        var date = now.Date.ToString(Constants.ISODateFormat);
+        var hour = now.Hour.ToString().PadLeft(2, '0');
+        var minute = now.Minute.ToString().PadLeft(2, '0');
+        var fileName = $"asset-allocation_{date}_{hour}-{minute}.txt";
+
+        return fileName;
     }
 
     void ShowDetails(string fullName)

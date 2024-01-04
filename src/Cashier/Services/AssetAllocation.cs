@@ -1,4 +1,5 @@
 ﻿using Cashier.Data;
+using Cashier.Lib;
 using Cashier.Model;
 using System.Text;
 using Tomlyn;
@@ -11,7 +12,9 @@ namespace Cashier.Services
     /// </summary>
     public class AssetAllocationService
     {
-        public List<AssetClass> classes = [];
+        public List<AssetClass> Classes = [];
+
+        private const string NUMBER_FORMAT = "#,##0.00";
 
         private Dictionary<string, AssetClass> _assetClassIndex = [];
         private Dictionary<string, string> _stockIndex = []; // symbol / asset class
@@ -26,20 +29,72 @@ namespace Cashier.Services
             _accountService = accountService;
         }
 
-        public string GetTextReport()
+        /// <summary>
+        /// Formats the array of Asset Classes (the end result) for txt output.
+        /// The output can be stored for historical purposes, comparison, etc.
+        /// </summary>
+        /// <returns></returns>
+        public string GetTextReport(List<AssetClass> assetClasses)
         {
             var output = new StringBuilder();
 
-            foreach (var asset in classes)
+            // header
+            output.AppendLine("Asset Class       Allocation Current  Diff.  Diff.%  Alloc.Val.  Curr. Val.  Difference");
+
+            foreach (var ac in assetClasses)
             {
+                /*
+                    {"name": "Asset Class", "width": 22},
+                    {"name": "alloc.", "width": 5},
+                    {"name": "cur.al.", "width": 6},
+                    {"name": "diff.", "width": 6},
+                    {"name": "al.val.", "width": 8},
+                    {"name": "value", "width": 8},
+                    {"name": "loc.cur.", "width": 13},
+                    {"name": "diff", "width": 8}
+                */
+
                 // Indentation
-                var indent = new string(' ', asset.Depth * 2);
-                var nameWithIndent = indent + asset.Name;
+                var indent = new string(' ', (ac.Depth - 1) * 2);
+                var nameWithIndent = indent + ac.Name;
 
+                // name
                 output.Append(nameWithIndent.PadRight(20, ' '));
-                output.Append(' ');
+                output.Append("  ");
 
-                output.Append(asset.Allocation);
+                // allocation
+                var allocation = ac.Allocation.ToString(NUMBER_FORMAT).PadLeft(6);
+                output.Append(allocation);
+                output.Append("  ");
+
+                // currentAllocation
+                var currentAllocation = ac.CurrentAllocation.ToString(NUMBER_FORMAT).PadLeft(6);
+                output.Append(currentAllocation);
+                output.Append("  ");
+
+                // diff
+                var diff = ac.Diff.ToString(NUMBER_FORMAT).PadLeft(5);
+                output.Append(diff);
+                output.Append("  ");
+
+                var diffPerc = ac.DiffPerc.ToString(NUMBER_FORMAT).PadLeft(6);
+                output.Append(diffPerc);
+                output.Append("  ");
+
+                // allocatedValue
+                var allocatedValue = ac.AllocatedValue.ToString(NUMBER_FORMAT).PadLeft(10);
+                output.Append(allocatedValue);
+                output.Append("  ");
+
+                // currentValue
+                var currentValue = ac.CurrentValue.Quantity?.ToString(NUMBER_FORMAT).PadLeft(10);
+                output.Append(currentValue);
+                output.Append("  ");
+
+                // diffAmount
+                var diffAmount = ac.DiffAmount.ToString(NUMBER_FORMAT).PadLeft(10);
+                output.Append(diffAmount);
+
                 output.AppendLine();
             }
             return output.ToString();
@@ -54,7 +109,7 @@ namespace Cashier.Services
         {
             // load definition
             //await LoadAssetAllocation();
-            classes = ParseDefinition(toml);
+            Classes = ParseDefinition(toml);
 
             // build asset class index
             _assetClassIndex = BuildAssetClassIndex();
@@ -70,13 +125,12 @@ namespace Cashier.Services
 
             // calculate offsets
             CalculateOffsets();
-
         }
 
         private Dictionary<string, AssetClass> BuildAssetClassIndex()
         {
             var index = new Dictionary<string, AssetClass>();
-            foreach (var item in classes)
+            foreach (var item in Classes)
             {
                 index.Add(item.FullName, item);
             }
@@ -85,7 +139,7 @@ namespace Cashier.Services
 
         private void BuildStockIndex()
         {
-            foreach (var assetClass in classes)
+            foreach (var assetClass in Classes)
             {
                 if (assetClass.Symbols.Count == 0) continue;
 
@@ -101,7 +155,7 @@ namespace Cashier.Services
             var root = _assetClassIndex.First();
             var total = root.Value.CurrentValue.Quantity!.Value;
 
-            foreach (var ac in classes)
+            foreach (var ac in Classes)
             {
                 // calculate current allocation %.
                 ac.CurrentAllocation = (total == 0)
@@ -130,10 +184,7 @@ namespace Cashier.Services
         {
             // parse TOML
             var model = Toml.ToModel(toml);
-            //var root = model.First();
 
-            //RecursivelyDisplay(root, 0);
-            //RecursivelyParse(root);
             var aa = LinearizeTable(model);
             return aa;
         }
