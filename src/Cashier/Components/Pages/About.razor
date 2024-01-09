@@ -13,7 +13,36 @@
     </ContextMenuItems>
 </ToolbarMud>
 
-<h3>About</h3>
+<h1>Cashier II</h1>
+
+<MudText>
+    Repository:
+    <MudLink Color="Color.Primary" Href="https://github.com/alensiljak/cashier-blazor">https://github.com/alensiljak/cashier-blazor</MudLink>
+</MudText>
+<br />
+<MudText>
+    Cashier II is a continuation of <a href="https://cashier.alensiljak.eu.org/">Cashier</a>. It is implemented using Blazor.
+</MudText>
+<br />
+<MudText>
+    Cashier is a pocket helper for Plain-Text Accounting (PTA) systems, like Ledger CLI, Hledger, or Beancount.
+    More on PTA at https://plaintextaccounting.org/
+</MudText>
+<br />
+<MudText>
+    It is used to write transaction records and transfer them to the full-blown personal finance system. It can also
+    display the account and other useful information. For more detailed overview of the functionality, see the
+    <MudLink Href="/help">Help</MudLink> section.
+</MudText>
+<br />
+<MudText>
+    To achieve its full purpose, Cashier is synchronized with Ledger data. It allows exporting the created
+    transactions. For a proper start, it should be populated with the data from Ledger, using Cashier Server,
+    repo:
+    <MudLink Color="Color.Primary" href="https://github.com/alensiljak/cashier-server-rust">
+        https://github.com/alensiljak/cashier-server-rust
+    </MudLink>.
+</MudText>
 
 @code {
     protected override async Task OnInitializedAsync()
