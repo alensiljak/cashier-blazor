@@ -31,7 +31,9 @@
     <MudListItem>
         <MudStack Row="true">
             <div class="flex-grow-1">
-                <MudCheckBox T="bool" @bind-Checked="syncAccounts">Sync accounts list with balances</MudCheckBox>
+                <MudCheckBox T="bool" Value="syncAccounts" ValueChanged="syncAccounts_Changed">
+                    Sync accounts list with balances
+                </MudCheckBox>
             </div>
             @*
             <div class="@(showAccountProgress ? "d-flex" : "d-none") align-center">
@@ -43,7 +45,7 @@
     <MudListItem>
         <MudStack Row="true">
             <div class="flex-grow-1">
-                <MudCheckBox T="bool" @bind-Checked="syncAaValues">
+                <MudCheckBox T="bool" Value="syncAaValues" ValueChanged="syncAaValues_Changed">
                     Sync account values in base currency
                     (ledger b ^&lt;root&gt; -X &lt;CUR&gt; --flat --no-total). Used for asset allocation.
                 </MudCheckBox>
@@ -58,7 +60,7 @@
     <MudListItem>
         <MudStack Row="true">
             <div class="flex-grow-1">
-                <MudCheckBox T="bool" @bind-Checked="syncPayees">Sync Payees</MudCheckBox>
+                <MudCheckBox T="bool" Value="syncPayees" ValueChanged="syncPayees_Changed">Sync Payees</MudCheckBox>
             </div>
             @*
             <div class="@(showPayeesProgress ? "d-flex" : "d-none") align-center">
@@ -167,6 +169,13 @@
         }
 
         // Save the current sync choices
+        await saveSettings();
+    }
+
+    async Task saveSettings()
+    {
+        Log.log("saving settings");
+
         await settings.SetSyncAccounts(syncAccounts);
         await settings.SetSyncAaValues(syncAaValues);
         await settings.SetSyncPayees(syncPayees);
@@ -253,5 +262,28 @@
         var result = await app.ImportPayees(db, payeeNames);
 
         Notification.Success("Imported Payees");
+    }
+
+    async Task syncAaValues_Changed()
+    {
+        // updated the value
+        syncAaValues = !syncAaValues;
+
+        // save settings
+        await saveSettings();
+    }
+
+    async Task syncAccounts_Changed()
+    {
+        syncAccounts = !syncAccounts;
+
+        await saveSettings();
+    }
+
+    async Task syncPayees_Changed()
+    {
+        syncPayees = !syncPayees;
+
+        await saveSettings();
     }
 }

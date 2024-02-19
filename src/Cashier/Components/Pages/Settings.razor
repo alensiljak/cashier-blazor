@@ -30,10 +30,10 @@
                   Label="Root investment account" />
 
     <MudText Typo="Typo.h5" Class="mt-4">Last Transaction</MudText>
-    <MudCheckBox T="bool?" @bind-Checked="rememberLastTransaction"
+    <MudCheckBox T="bool?" @bind-Value="rememberLastTransaction"
                  Label="Remember last transaction for payees. Reuses the information for new transactions." />
 
-    <MudCheckBox T="bool" Label="Use Dark Mode" />
+    <MudCheckBox T="bool" Label="Use Dark Mode (not implemented)" />
 
     <MudContainer Style="text-align: center;" Class="mt-4">
         <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="saveSettings">Save</MudButton>
