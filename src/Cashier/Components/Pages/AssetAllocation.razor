@@ -48,36 +48,36 @@
                     </td>
                     <td style="text-align: end;">
                         <MudText>
-                            @item.Allocation.ToString(NUMBER)
+                            @item.Allocation.ToString(Constants.NUMBER_FORMAT)
                         </MudText>
                     </td>
                     <td style="text-align: end;">
                         <MudText>
-                            @item.CurrentAllocation.ToString(NUMBER)
+                            @item.CurrentAllocation.ToString(Constants.NUMBER_FORMAT)
                         </MudText>
                     </td>
                     @* <td style="text-align: end;">
-                @item.Diff.ToString(NUMBER)
+                @item.Diff.ToString(Constants.NUMBER_FORMAT)
                 </td>*@
                     @* Diff % *@
                     <td style="text-align: end; color: @GetColor(item.DiffPerc);">
                         <MudText>
-                            @item.DiffPerc.ToString(NUMBER)
+                            @item.DiffPerc.ToString(Constants.NUMBER_FORMAT)
                         </MudText>
                     </td>
                     <td style="text-align: end;">
                         <MudText>
-                            @item.AllocatedValue.ToString(NUMBER)
+                            @item.AllocatedValue.ToString(Constants.NUMBER_FORMAT)
                         </MudText>
                     </td>
                     <td style="text-align: end;">
                         <MudText>
-                            @item.CurrentValue.Quantity?.ToString(NUMBER)
+                            @item.CurrentValue.Quantity?.ToString(Constants.NUMBER_FORMAT)
                         </MudText>
                     </td>
                     <td style="text-align: end; color: @GetColor(item.DiffPerc);">
                         <MudText>
-                            @item.DiffAmount.ToString(NUMBER)
+                            @item.DiffAmount.ToString(Constants.NUMBER_FORMAT)
                         </MudText>
                     </td>
                 </tr>
@@ -110,7 +110,6 @@
 </script>
 
 @code {
-    const string NUMBER = "#,##0.00";
     List<AssetClass> _allocation = [];
 
     protected override async Task OnInitializedAsync()

@@ -1,4 +1,6 @@
-﻿namespace Cashier.Model
+﻿using Cashier.Data;
+
+namespace Cashier.Model
 {
     public class Money
     {
@@ -37,7 +39,7 @@
 
         public override string ToString()
         {
-            return $"{Quantity} {Currency}";
+            return $"{Quantity?.ToString(Constants.NUMBER_FORMAT)} {Currency}";
         }
 
         public static Money operator +(Money a, Decimal b)

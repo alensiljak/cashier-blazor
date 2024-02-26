@@ -14,8 +14,6 @@ namespace Cashier.Services
     {
         public List<AssetClass> Classes = [];
 
-        private const string NUMBER_FORMAT = "#,##0.00";
-
         private Dictionary<string, AssetClass> _assetClassIndex = [];
         private Dictionary<string, string> _stockIndex = []; // symbol / asset class
         private ISettingsService _settings;
@@ -63,36 +61,36 @@ namespace Cashier.Services
                 output.Append("  ");
 
                 // allocation
-                var allocation = ac.Allocation.ToString(NUMBER_FORMAT).PadLeft(6);
+                var allocation = ac.Allocation.ToString(Constants.NUMBER_FORMAT).PadLeft(6);
                 output.Append(allocation);
                 output.Append("  ");
 
                 // currentAllocation
-                var currentAllocation = ac.CurrentAllocation.ToString(NUMBER_FORMAT).PadLeft(6);
+                var currentAllocation = ac.CurrentAllocation.ToString(Constants.NUMBER_FORMAT).PadLeft(6);
                 output.Append(currentAllocation);
                 output.Append("  ");
 
                 // diff
-                var diff = ac.Diff.ToString(NUMBER_FORMAT).PadLeft(5);
+                var diff = ac.Diff.ToString(Constants.NUMBER_FORMAT).PadLeft(5);
                 output.Append(diff);
                 output.Append("  ");
 
-                var diffPerc = ac.DiffPerc.ToString(NUMBER_FORMAT).PadLeft(6);
+                var diffPerc = ac.DiffPerc.ToString(Constants.NUMBER_FORMAT).PadLeft(6);
                 output.Append(diffPerc);
                 output.Append("  ");
 
                 // allocatedValue
-                var allocatedValue = ac.AllocatedValue.ToString(NUMBER_FORMAT).PadLeft(10);
+                var allocatedValue = ac.AllocatedValue.ToString(Constants.NUMBER_FORMAT).PadLeft(10);
                 output.Append(allocatedValue);
                 output.Append("  ");
 
                 // currentValue
-                var currentValue = ac.CurrentValue.Quantity?.ToString(NUMBER_FORMAT).PadLeft(10);
+                var currentValue = ac.CurrentValue.Quantity?.ToString(Constants.NUMBER_FORMAT).PadLeft(10);
                 output.Append(currentValue);
                 output.Append("  ");
 
                 // diffAmount
-                var diffAmount = ac.DiffAmount.ToString(NUMBER_FORMAT).PadLeft(10);
+                var diffAmount = ac.DiffAmount.ToString(Constants.NUMBER_FORMAT).PadLeft(10);
                 output.Append(diffAmount);
 
                 output.AppendLine();

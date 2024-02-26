@@ -45,7 +45,13 @@
                             <td class="pl-2 pr-1">@xact.Date.ToString(Constants.ISODateFormat)</td>
                             <td class="flex-grow-1">@xact?.Payee</td>
                             <td style="text-align: end; @($"color: {GetXactColour(index)};")" class="pl-1 pr-2">
-                                @balance?.Quantity @balance?.Currency
+                                @if (balance?.Quantity != 0)
+                                {
+                                    @balance
+                                } else
+                                {
+                                    <span>-</span>
+                                }
                             </td>
                         </tr>
                     }
@@ -85,7 +91,7 @@
 
         // Transfers are yellow
         var tx = Xacts[index];
-        if (tx.Postings?.Count(p => (p.Account != null) && (p.Account.StartsWith("Assets:")) ) == 2)
+        if (tx.Postings?.Count(p => (p.Account != null) && (p.Account.StartsWith("Assets:"))) == 2)
         {
             colour = ""; // yellow
         }
