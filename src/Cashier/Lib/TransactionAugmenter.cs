@@ -69,7 +69,8 @@ namespace Cashier.Lib
                 switch(postings.Count())
                 {
                     case 0:
-                        Console.WriteLine("No postings found in Assets or Liabilities!");
+                        // No postings found in Assets or Liabilities!
+                        balance.Quantity = 0;
                         break;
 
                     case 1:
@@ -78,11 +79,13 @@ namespace Cashier.Lib
                         if (posting.Amount is null)
                         {
                             Console.WriteLine($"Invalid amount encountered! {posting.Account} on {xact.Date} {xact.Payee}");
-                            continue;
+                            balance.Quantity = 0;
                         }
-
-                        balance.Quantity = posting.Amount;
-                        balance.Currency = posting.Currency;
+                        else
+                        {
+                            balance.Quantity = posting.Amount;
+                            balance.Currency = posting.Currency;
+                        }
                         break;
                     
                     case 2:
