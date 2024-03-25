@@ -98,7 +98,7 @@ else
         // Limit results
         if (_limitList)
         {
-            records = records.Limit(25);
+            records = records.Limit(100);
         }
 
         payees = await records.ToList();
