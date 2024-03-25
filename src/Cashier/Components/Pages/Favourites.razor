@@ -25,8 +25,10 @@
 }
 else
 {
-    @*
-    <MudSimpleTable Dense>
+    <MudContainer MaxWidth="MaxWidth.Small" Class="px-0">
+
+        @*
+    <MudSimpleTable Dense Style="background-color: transparent;">
         <tbody>
             @foreach (var account in accounts)
             {
@@ -46,17 +48,16 @@ else
     </MudSimpleTable>
     *@
 
-    <MudContainer MaxWidth="MaxWidth.Small" Class="px-0">
-
         <MudList Clickable Class="py-0 mb-2" Dense>
             @foreach (var account in accounts)
             {
-                <MudListItem Class="px-1 py-0 my-0">
+                <MudListItem Class="px-1 py-0 my-0" Style="border-bottom: solid 1px;">
                     <MudText Typo="Typo.caption" Style="color: var(--mud-palette-dark-text);">
                         @account.ParentAccountName
                     </MudText>
                     <div class="d-flex row">
-                        <MudText Class="pl-3">
+                        <MudText>
+                            @* Class="pl-3" *@
                             @account.AccountName
                         </MudText>
                         <MudSpacer />
