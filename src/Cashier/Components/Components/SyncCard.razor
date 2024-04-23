@@ -3,6 +3,7 @@
 *@
 @inject ISnackbar Snackbar
 @inject NavigationManager NavMan
+@inject NotificationService Notification
 
 @using MudBlazor
 
@@ -15,6 +16,7 @@
             <MudText>CashierSync</MudText>
         </CardHeaderContent>
         <CardHeaderActions>
+            <MudIconButton Icon="@IconsMud.Settings" @onclick="OnSettingsClick" />
             <MudIconButton Icon="@IconsMud.HelpCircle" @onclick="OnHelpClick" />
         </CardHeaderActions>
     </MudCardHeader>
@@ -22,9 +24,12 @@
         Status:
     </MudCardContent>
     <MudCardActions Class="justify-center">
-        <MudButton StartIcon="@IconsMud.RefreshCW" Variant="Variant.Outlined" Color="Color.Tertiary"
-                   @onclick="OnSettingsClick">Sync Settings</MudButton>
-    </MudCardActions>
+        <MudButton StartIcon="@IconsMud.Settings" Variant="Variant.Outlined" Color="Color.Tertiary"
+                   @onclick="OnSettingsClick" Class="mr-3">
+                   Sync Settings</MudButton>
+@*         <MudButton StartIcon="@IconsMud.RefreshCW" Variant="Variant.Outlined" Color="Color.Tertiary"
+                   @onclick="OnSyncClick">Sync</MudButton>
+ *@    </MudCardActions>
 
 </MudCard>
 
@@ -42,4 +47,8 @@
         NavMan.NavigateTo("/sync");
     }
 
+    void OnSyncClick() {
+        // todo: implement synchronization
+        Notification.Info("Not implemented");
+    }
 }
