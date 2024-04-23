@@ -20,7 +20,7 @@ builder.Services.AddScoped(sp => new HttpClient());
 builder.Services.AddMudServices(cfg =>
 {
     // snackbar at the bottom.
-    cfg.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
+    cfg.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
 });
 
 // PWA updater
