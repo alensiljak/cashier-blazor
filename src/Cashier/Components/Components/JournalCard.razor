@@ -101,11 +101,12 @@
 
     async Task loadData()
     {
+        // load transactions
         try
         {
             Xacts = await _db.Xacts
                 .OrderBy("date")
-                .Reverse()
+                // .Reverse()
                 .Limit(5)
                 .ToList();
 
