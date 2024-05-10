@@ -104,11 +104,14 @@
         // load transactions
         try
         {
+            // get the latest five transactions.
             Xacts = await _db.Xacts
                 .OrderBy("date")
-                // .Reverse()
+                .Reverse()
                 .Limit(5)
                 .ToList();
+            // order ascending.
+            Xacts.Reverse();
 
             Balances = new TransactionAugmenter().calculateXactAmounts(Xacts);
         }
