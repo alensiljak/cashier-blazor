@@ -48,7 +48,8 @@
                                 @if (balance?.Quantity != 0)
                                 {
                                     @balance
-                                } else
+                                }
+                                else
                                 {
                                     <span>-</span>
                                 }
@@ -110,8 +111,9 @@
                 .Reverse()
                 .Limit(5)
                 .ToList();
+
             // order ascending.
-            Xacts.Reverse();
+            // Xacts.Reverse();
 
             Balances = new TransactionAugmenter().calculateXactAmounts(Xacts);
         }
