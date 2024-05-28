@@ -8,6 +8,7 @@
 @inject AppState _state
 
 @using Cashier.Services
+@using Cashier.Components.Components
 @using MudBlazor
 
 <ToolbarMud>
@@ -78,13 +79,16 @@
                @onclick="onSyncClicked">Sync</MudButton>
 </MudContainer>
 
+<SyncComponent></SyncComponent>
+
+
 @code {
     private string _serverUrl = default!;
     string ServerUrl
     {
         get
         {
-            return _serverUrl ?? "http://localhost:3000";
+            return _serverUrl ?? string.Empty;
         }
         set
         {
@@ -111,7 +115,7 @@
 
     async Task loadSettings()
     {
-        ServerUrl = await settings.GetSetting<string>(SettingsKeys.syncServerUrl) ?? string.Empty;
+        ServerUrl = await settings.GetSetting<string>(SettingsKeys.syncServerUrl) ?? "http://localhost:3000";
         rootInvestmentAccount = await settings.GetRootInvestmentAccount();
         currency = await settings.GetDefaultCurrency();
 

@@ -1,0 +1,23 @@
+﻿@* 
+    Sync Component 
+    encapsulates the synchronization logic.
+    Provides events for updating the UI.
+*@
+
+@using Cashier
+@using MudBlazor
+
+@inject ISettingsService Settings
+@inject NotificationService Notification
+
+<MudIcon Icon="@IconsMud.RefreshCW" Size="Size.Medium" />
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // await loadSettings();
+    }
+
+}
