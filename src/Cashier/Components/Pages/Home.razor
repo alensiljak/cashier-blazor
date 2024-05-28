@@ -17,20 +17,42 @@
     </ContextMenuItems>
 </ToolbarMud>
 
-@* <PageTitle>Home</PageTitle> *@
-
-<FavouritesCard />
-
-<JournalCard Class="mt-3" />
-
-<ScheduledXactCard Class="mt-3" />
-
-<SyncCard Class="mt-3" />
+@* todo: sort cards based on user preferences *@
+    <MudStack Spacing="3">
+    @foreach(var card in _cards.OrderBy(c => c.Item2))
+    {
+        <DynamicComponent Type="@card.Item1"></DynamicComponent>
+    }
+    </MudStack>
 
 <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus" Class="z-100"
         Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 
 @code {
+    private List<(Type, int)> _cards = new List<(Type, int)>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _cards = CreateCardList();
+
+    }
+
+    private List<(Type, int)> CreateCardList()
+    {
+        var list = new List<(Type, int)>
+        {
+            (typeof(FavouritesCard), 1),
+            (typeof(ForecastCard), 2),
+            (typeof(JournalCard), 3),
+            (typeof(ScheduledXactCard), 4),
+            (typeof(SyncCard), 5)
+        };
+
+        return list;
+    }
+
     void OnFab()
     {
         // create new transaction in the app store

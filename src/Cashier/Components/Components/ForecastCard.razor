@@ -1,28 +1,21 @@
 ﻿@*
     Favourites card
 *@
-@using BlazorDexie.JsModule
-@using Cashier.Services
 @using MudBlazor
 
-@inject IDexieDAL _db
-@inject ISettingsService settings
-@inject ISnackbar Snackbar
-@inject NavigationManager NavMan
-
-<MudCard Class="@Class" @onclick="OnCardClick" Outlined="true" Style="background-color: transparent;">
+<MudCard Class="@Class" Outlined="true" Style="background-color: transparent;">
     <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="px-2 pt-2 pb-1">
         <CardHeaderAvatar>
             <MudIcon Icon="@IconsMud.Star" Size="Size.Medium" />
         </CardHeaderAvatar>
         <CardHeaderContent>
-            <MudText>Favourites</MudText>
+            <MudText>Financial Forecast</MudText>
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent Class="pa-0">
         @if (accounts == null || accounts.Count == 0)
         {
-            <MudText>There are no favourite accounts defined</MudText>
+            <MudText>There are no accounts selected for forecasting</MudText>
         }
         else
         {
@@ -46,26 +39,12 @@
     public string? Class { get; set; }
 
     List<Account> accounts = [];
-
+    
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        // load data
-        await loadData();
     }
 
-    async Task loadData()
-    {
-        var app = new AppService();
-        accounts = await app.LoadFavouriteAccounts(_db, 5);
 
-        StateHasChanged();
-    }
-
-    void OnCardClick()
-    {
-        // Open Favourites
-        NavMan.NavigateTo("/favourites");
-    }
 }
