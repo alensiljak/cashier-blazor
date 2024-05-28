@@ -20,5 +20,6 @@
         public static string syncAccounts = "syncAccounts";
         public static string syncAaValues = "syncAaValues";
         public static string syncPayees = "syncPayees";
+        public static string visibleCards = "home.visibleCards";
     }
 }

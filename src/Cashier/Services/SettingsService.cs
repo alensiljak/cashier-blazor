@@ -84,6 +84,17 @@ namespace Cashier.Services
             return keys.ToList();
         }
 
+        public async Task<List<string>> GetVisibleCards()
+        {
+            var cardList = await GetSetting<List<string>>(SettingsKeys.visibleCards);
+            if (cardList == null)
+            {
+                return [];
+            }
+
+            return cardList;
+        }
+
         public async Task<string> SetDefaultCurrency(string value)
         {
             return await SetSetting(SettingsKeys.currency, value);

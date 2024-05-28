@@ -1,0 +1,54 @@
+﻿@page "/forecast-settings"
+
+@using MudBlazor
+
+@inject NavigationManager NavMan
+@inject AppState State
+
+<ToolbarMud>
+    <Title>Financial Forecast Settings</Title>
+    <ContextMenuItems>
+        <MudMenuItem @onclick="OnAddAccountClick">Add Account</MudMenuItem>
+    </ContextMenuItems>
+</ToolbarMud>
+
+<h3>ForecastSettings</h3>
+<h4>Incomplete!</h4>
+
+<p>Select accounts</p>
+
+<MudList>
+    <MudListItem>account 1</MudListItem>
+    <MudListItem>account 2</MudListItem>
+</MudList>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await LoadData();
+
+        await HandleAccountSelection();
+    }
+
+    void OnAddAccountClick() {
+        var selectionMode = new SelectionModeMetadata()
+            {
+
+                SelectionType = SelectionType.Account
+            };
+
+        State.SelectionModeMetadata = selectionMode;
+
+        NavMan.NavigateTo("/accounts");
+    }
+
+    private async Task LoadData() {
+        // load accounts
+    }
+
+    private async Task HandleAccountSelection() {
+
+    }
+}

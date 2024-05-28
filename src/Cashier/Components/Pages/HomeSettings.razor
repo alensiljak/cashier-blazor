@@ -1,0 +1,29 @@
+﻿@page "/home-settings"
+
+@using MudBlazor
+
+@inject ISettingsService Settings
+
+<ToolbarMud>
+    Home Settings
+</ToolbarMud>
+
+<h3>Show Cards:</h3>
+
+<MudListItem>
+    <MudCheckBox Value="_showForecast">Financial Forecast</MudCheckBox>
+    <MudCheckBox Value="_showSync">Synchronization</MudCheckBox>
+</MudListItem>
+
+@code {
+    private bool _showForecast = false;
+    private bool _showSync = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // load data
+        // Settings.
+    }
+}
