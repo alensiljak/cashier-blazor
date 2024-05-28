@@ -1,0 +1,94 @@
+﻿@page "/home-reorder"
+
+@using MudBlazor
+@using System.Collections.ObjectModel
+
+@inject ISettingsService Settings
+@inject IJSRuntime _js
+
+<ToolbarMud>
+    Reorder Cards
+</ToolbarMud>
+
+@if (_cards.Count == 0)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <MudDropContainer T="string" Items="@_cards" @ref="_container" Class="d-flex flex-wrap flex-grow-1"
+                      ItemsSelector="@((item,dropzone) => true)"
+                      ItemDropped="ItemUpdated">
+        <ChildContent>
+            <MudList draggable="true">
+                <MudDropZone T="string" Identifier="dropzone" Class="flex-grow-1" AllowReorder="true" />
+            </MudList>
+        </ChildContent>
+        <ItemRenderer>
+            <MudListItem Icon="@IconsMud.Menu" Text="@context" />
+        </ItemRenderer>
+    </MudDropContainer>
+
+    <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check" Class="z-100"
+            Style="@Constants.DefaultFabPosition" @onclick="OnFabClicked" />
+}
+
+@code {
+    ObservableCollection<string> _cards = [];
+    // private List<string> _cards = [];
+    private MudDropContainer<string> _container = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // load cards
+        await LoadData();
+    }
+
+    private void ItemUpdated(MudItemDropInfo<string> dropItem)
+    {
+        if (_cards.Count == 0) return;
+
+        var cardName = dropItem.Item;
+        if (cardName == null) return;
+
+        var index = _cards.IndexOf(cardName);
+        var newIndex = dropItem.IndexInZone;
+
+        _cards.Move(index, newIndex);
+    }
+
+    private async Task LoadData()
+    {
+        var cards = await Settings.GetVisibleCards();
+
+        // strip the namespace
+        for (var i = 0; i < cards.Count(); i++)
+        {
+            var cardName = cards[i];
+            cardName = cardName.Split('.').Last();
+
+            cards[i] = cardName;
+        }
+
+        _cards = new ObservableCollection<string>(cards);
+    }
+
+    private async Task OnFabClicked()
+    {
+        // add back the namespace
+        for (var i = 0; i < _cards.Count(); i++)
+        {
+            var cardName = _cards[i];
+            cardName = Constants.CardNamespace + cardName;
+
+            _cards[i] = cardName;
+        }
+
+        // save the order
+        await Settings.SetSetting(SettingsKeys.visibleCards, _cards);
+
+        await AppService.NavigateBack(_js);
+    }
+}

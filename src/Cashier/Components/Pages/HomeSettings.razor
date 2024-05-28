@@ -7,7 +7,10 @@
 @inject NotificationService Notification
 
 <ToolbarMud>
-    Home Settings
+    <Title>Home Settings</Title>
+    <ContextMenuItems>
+        <MudListItem Icon="@IconsMud.Menu" OnClick="OnReorderClicked">Reorder Cards</MudListItem>
+    </ContextMenuItems>
 </ToolbarMud>
 
 <h3>Show Cards:</h3>
@@ -69,6 +72,11 @@
     private async Task OnFab()
     {
         await SaveSettings();
+    }
+
+    void OnReorderClicked()
+    {
+        NavMan.NavigateTo("/home-reorder");
     }
 
     private async Task SaveSettings()
