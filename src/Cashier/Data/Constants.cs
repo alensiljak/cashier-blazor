@@ -8,5 +8,6 @@
         public const string LongTimeFormat = "HHmmss";
         public const string NUMBER_FORMAT = "#,##0.00";
 
+        public static string CardNamespace = "Cashier.Components.Components.";
     }
 }

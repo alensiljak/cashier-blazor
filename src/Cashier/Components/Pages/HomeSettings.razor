@@ -2,7 +2,9 @@
 
 @using MudBlazor
 
+@inject NavigationManager NavMan
 @inject ISettingsService Settings
+@inject NotificationService Notification
 
 <ToolbarMud>
     Home Settings
@@ -11,19 +13,91 @@
 <h3>Show Cards:</h3>
 
 <MudListItem>
+    <MudCheckBox Value="_showFavourites">Favourites</MudCheckBox>
     <MudCheckBox Value="_showForecast">Financial Forecast</MudCheckBox>
+    <MudCheckBox Value="_showJournal">Journal</MudCheckBox>
+    <MudCheckBox Value="_showScheduled">Scheduled Transactions</MudCheckBox>
     <MudCheckBox Value="_showSync">Synchronization</MudCheckBox>
 </MudListItem>
 
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check" Class="z-100"
+        Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
+
 @code {
+    private bool _showFavourites = false;
     private bool _showForecast = false;
+    private bool _showJournal = false;
+    private bool _showScheduled = false;
     private bool _showSync = false;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        // load data
-        // Settings.
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        var visibleCardNames = await Settings.GetVisibleCards();
+
+        // mark checked the ones that are visible
+        if(visibleCardNames.Contains(Constants.CardNamespace + "FavouritesCard"))
+        {
+            _showFavourites = true;
+        }
+        if (visibleCardNames.Contains(Constants.CardNamespace + "ForecastCard"))
+        {
+            _showForecast = true;
+        }
+        if (visibleCardNames.Contains(Constants.CardNamespace + "JournalCard"))
+        {
+            _showJournal = true;
+        }
+        if (visibleCardNames.Contains(Constants.CardNamespace + "ScheduledXactCard"))
+        {
+            _showScheduled = true;
+        }
+        if (visibleCardNames.Contains(Constants.CardNamespace + "SyncCard"))
+        {
+            _showSync = true;
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task OnFab()
+    {
+        await SaveSettings();
+    }
+
+    private async Task SaveSettings()
+    {
+        var visibleCards = new List<string>();
+
+        if(_showFavourites)
+        {
+            visibleCards.Add(Constants.CardNamespace + "FavouritesCard");
+        }
+        if (_showForecast)
+        {
+            visibleCards.Add(Constants.CardNamespace + "ForecastCard");
+        }
+        if (_showJournal)
+        {
+            visibleCards.Add(Constants.CardNamespace + "JournalCard");
+        }
+        if (_showScheduled)
+        {
+            visibleCards.Add(Constants.CardNamespace + "ScheduledXactCard");
+        }
+        if (_showSync)
+        {
+            visibleCards.Add(Constants.CardNamespace + "SyncCard");
+        }
+
+        await Settings.SetSetting(SettingsKeys.visibleCards, visibleCards);
+
+        NavMan.NavigateTo("/");
     }
 }

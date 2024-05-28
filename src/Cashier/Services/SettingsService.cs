@@ -89,7 +89,13 @@ namespace Cashier.Services
             var cardList = await GetSetting<List<string>>(SettingsKeys.visibleCards);
             if (cardList == null)
             {
-                return [];
+                return new List<string>
+                {
+                    Constants.CardNamespace + "FavouritesCard",
+                    Constants.CardNamespace + "JournalCard",
+                    Constants.CardNamespace + "ScheduledXactCard",
+                    Constants.CardNamespace + "SyncCard"
+                };
             }
 
             return cardList;

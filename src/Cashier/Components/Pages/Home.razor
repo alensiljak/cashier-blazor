@@ -2,6 +2,8 @@
 
 @inject NavigationManager NavMan
 @inject AppState State
+@inject ISettingsService Settings
+@inject NotificationService Notification
 
 @using MudBlazor
 
@@ -21,9 +23,9 @@
 
 @* todo: sort cards based on user preferences *@
 <MudStack Spacing="3">
-    @foreach(var card in _cards.OrderBy(c => c.Item2))
+    @foreach(var card in _cards)
     {
-        <DynamicComponent Type="@card.Item1"></DynamicComponent>
+        <DynamicComponent Type="@card"></DynamicComponent>
     }
 </MudStack>
 
@@ -31,28 +33,33 @@
         Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 
 @code {
-    private List<(Type, int)> _cards = new List<(Type, int)>();
+    private List<Type> _cards = new List<Type>();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        _cards = CreateCardList();
-
+        _cards = await CreateCardList();
     }
 
-    private List<(Type, int)> CreateCardList()
+    private async Task<List<Type>> CreateCardList()
     {
-        var list = new List<(Type, int)>
+        var visibleCardNames = await Settings.GetVisibleCards();
+        var visibleCards = new List<Type>();
+        foreach(var cardName in visibleCardNames)
         {
-            (typeof(FavouritesCard), 1),
-            (typeof(ForecastCard), 2),
-            (typeof(JournalCard), 3),
-            (typeof(ScheduledXactCard), 4),
-            (typeof(SyncCard), 5)
-        };
+            var type = Type.GetType(cardName);
+            if (type == null)
+            {
+                Notification.Error($"Could not create type {cardName}");
+                continue;
+            } else
+            {
+                visibleCards.Add(type);
+            }
+        }
 
-        return list;
+        return visibleCards;
     }
 
     void OnFab()

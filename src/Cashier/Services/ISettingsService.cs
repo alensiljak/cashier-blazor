@@ -18,6 +18,7 @@ namespace Cashier.Services
         Task<bool> GetSyncAaValues();
         Task<bool> GetSyncAccounts();
         Task<bool> GetSyncPayees();
+        Task<List<string>> GetVisibleCards();
         
         Task<string> SetDefaultCurrency(string value);
         Task<string> SetRootInvestmentAccount(string value);
