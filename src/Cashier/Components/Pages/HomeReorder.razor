@@ -5,6 +5,7 @@
 
 @inject ISettingsService Settings
 @inject IJSRuntime _js
+@inject NavigationManager NavMan
 
 <ToolbarMud>
     Reorder Cards
@@ -89,6 +90,7 @@ else
         // save the order
         await Settings.SetSetting(SettingsKeys.visibleCards, _cards);
 
-        await AppService.NavigateBack(_js);
+        // await AppService.NavigateBack(_js);
+        NavMan.NavigateTo("/");
     }
 }
