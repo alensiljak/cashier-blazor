@@ -13,11 +13,11 @@
 <h3>Show Cards:</h3>
 
 <MudListItem>
-    <MudCheckBox Value="_showFavourites">Favourites</MudCheckBox>
-    <MudCheckBox Value="_showForecast">Financial Forecast</MudCheckBox>
-    <MudCheckBox Value="_showJournal">Journal</MudCheckBox>
-    <MudCheckBox Value="_showScheduled">Scheduled Transactions</MudCheckBox>
-    <MudCheckBox Value="_showSync">Synchronization</MudCheckBox>
+    <MudCheckBox @bind-Value="_showFavourites">Favourites</MudCheckBox>
+    <MudCheckBox @bind-Value="_showForecast">Financial Forecast</MudCheckBox>
+    <MudCheckBox @bind-Value="_showJournal">Journal</MudCheckBox>
+    <MudCheckBox @bind-Value="_showScheduled">Scheduled Transactions</MudCheckBox>
+    <MudCheckBox @bind-Value="_showSync">Synchronization</MudCheckBox>
 </MudListItem>
 
 <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check" Class="z-100"
