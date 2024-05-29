@@ -18,12 +18,7 @@
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent Class="pa-0">
-        @if (accounts == null || accounts.Count == 0)
-        {
-            <MudText>There are no accounts selected for forecasting</MudText>
-        }
-        else
-        {
+        <div>
             <ul>
                 <li>
                     take the current value of an account: @@AccountName,
@@ -39,6 +34,20 @@
                     show a line chart with the balance
                 </li>
             </ul>
+        </div>
+
+        @if (_accounts.Count == 0)
+        {
+            <MudText>There are no accounts selected for forecasting</MudText>
+        }
+        else
+        {
+            <MudList>
+                @foreach (var account in _accounts)
+                {
+                    <MudListItem>@account.Name</MudListItem>
+                }
+            </MudList>
         }
     </MudCardContent>
 </MudCard>
@@ -47,7 +56,7 @@
     [Parameter]
     public string? Class { get; set; }
 
-    List<Account> accounts = [];
+    List<Account> _accounts = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,27 +64,52 @@
 
         await LoadData();
 
-        // todo: Add local transactions
-        // todo: project scheduled transactions
         // todo: draw a chart
-
     }
 
     async Task LoadData()
     {
-        var accountName = "Cash";
+        // get account names
+        var accountNames = await _settings.GetSetting<List<string>>(SettingsKeys.ForecastAccounts);
+        if (accountNames == null) return;
 
+        foreach (var accountName in accountNames)
+        {
+            // todo: Add local transactions
+            // todo: project scheduled transactions
+
+            var account = await LoadAccount(accountName);
+            if (account != null)
+            {
+                _accounts.Add(account);
+            }
+            else
+            {
+                Console.WriteLine("Could not load account {}", accountName);
+            }
+        }
+
+    }
+
+    private async Task<AccountViewModel?> LoadAccount(string accountName)
+    {
+        AccountViewModel? result = null;
         try
         {
             var currency = await _settings.GetDefaultCurrency();
 
             var calc = new ForecastCalculator(_db);
             var account = await calc.GetAccountBalance(accountName, currency);
+            if (account != null)
+            {
+                result = account;
+            }
         }
         catch (Exception e)
         {
             Notification.Error(e.Message);
         }
+        return result;
     }
 
     void OnCardClick()
