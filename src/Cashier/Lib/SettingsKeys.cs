@@ -2,24 +2,27 @@
 {
     public class SettingsKeys
     {
-        public static string assetAllocationDefinition = "aa.definition";
-        public static string backupServerUrl = "backupServerUrl";
-        public static string currency = "currency";
-        public static string favouriteAccounts = "favouriteAccounts";
-        public static string dbInitialized = "dbInitialized"; // Marks that the db has been initialized
-        public static string pCloudToken = "pCloudToken";
-        public static string syncServerUrl = "syncServerUrl";
+        public const string assetAllocationDefinition = "aa.definition";
+        public const string backupServerUrl = "backupServerUrl";
+        public const string currency = "currency";
+        public const string favouriteAccounts = "favouriteAccounts";
+        public const string dbInitialized = "dbInitialized"; // Marks that the db has been initialized
+        public const string pCloudToken = "pCloudToken";
+        public const string syncServerUrl = "syncServerUrl";
         // path to the prices repository for CashierSync.
-        public static string pricesRepositoryPath = "pricesRepositoryPath";
+        public const string pricesRepositoryPath = "pricesRepositoryPath";
         // path to the book repository for CashierSync.
-        public static string repositoryPath = "repositoryPath";
-        public static string rootInvestmentAccount = "aa.rootAccount";
-        public static string rememberLastTransaction = "rememberLastTransaction";
-        public static string writeableJournalFilePath = "writeableJournalFilePath";
+        public const string repositoryPath = "repositoryPath";
+        public const string rootInvestmentAccount = "aa.rootAccount";
+        public const string rememberLastTransaction = "rememberLastTransaction";
+        public const string writeableJournalFilePath = "writeableJournalFilePath";
         // synchronization choices
-        public static string syncAccounts = "syncAccounts";
-        public static string syncAaValues = "syncAaValues";
-        public static string syncPayees = "syncPayees";
-        public static string visibleCards = "home.visibleCards";
+        public const string syncAccounts = "syncAccounts";
+        public const string syncAaValues = "syncAaValues";
+        public const string syncPayees = "syncPayees";
+        // home
+        public const string visibleCards = "home.visibleCards";
+        // forecast
+        public const string ForecastAccounts = "forecast.accounts";
     }
 }

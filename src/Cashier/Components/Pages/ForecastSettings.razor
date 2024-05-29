@@ -4,6 +4,7 @@
 
 @inject NavigationManager NavMan
 @inject AppState State
+@inject ISettingsService Settings
 
 <ToolbarMud>
     <Title>Financial Forecast Settings</Title>
@@ -12,17 +13,28 @@
     </ContextMenuItems>
 </ToolbarMud>
 
-<h3>ForecastSettings</h3>
-<h4>Incomplete!</h4>
+@if (_accountNames.Count == 0)
+{
+    <MudText>No accounts selected for forecasting. Please use the menu to add.</MudText>
+}
+else
+{
+    <MudList>
+        @foreach (var accountName in _accountNames)
+        {
+            <MudListItem>@accountName</MudListItem>
+        }
+    </MudList>
+}
 
-<p>Select accounts</p>
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus" Class="z-100"
+        Style="@Constants.DefaultFabPosition" @onclick="OnFabClicked" />
 
-<MudList>
-    <MudListItem>account 1</MudListItem>
-    <MudListItem>account 2</MudListItem>
-</MudList>
 
 @code {
+    private List<string> _accountNames = [];
+    private string? _account;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -32,7 +44,8 @@
         await HandleAccountSelection();
     }
 
-    void OnAddAccountClick() {
+    void OnAddAccountClick()
+    {
         var selectionMode = new SelectionModeMetadata()
             {
 
@@ -44,11 +57,36 @@
         NavMan.NavigateTo("/accounts");
     }
 
-    private async Task LoadData() {
+    private async Task LoadData()
+    {
         // load accounts
+        var accounts = await Settings.GetSetting<List<string>>(SettingsKeys.ForecastAccounts);
+        if (accounts == null) return; 
+
+        _accountNames = accounts;
     }
 
-    private async Task HandleAccountSelection() {
+    private async Task HandleAccountSelection()
+    {
+        var meta = State.SelectionModeMetadata;
+        if (meta == null) return;
+        if (meta.SelectionType != SelectionType.Account) return;
 
+        var result = meta.SelectedId;
+        if (result == null || result.Length == 0) return;
+        // clear selection
+        State.SelectionModeMetadata = null;
+
+        _accountNames.Add(result);
+
+        // save
+        await Settings.SetSetting(SettingsKeys.ForecastAccounts, _accountNames);
+
+        StateHasChanged();
+    }
+
+    void OnFabClicked()
+    {
+        OnAddAccountClick();
     }
 }

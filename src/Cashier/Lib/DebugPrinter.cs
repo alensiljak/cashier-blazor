@@ -10,8 +10,14 @@ namespace Cashier.Lib
     public class DebugPrinter
     {
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-        public static void Print(object obj)
+        public static void Print(object? obj)
         {
+            if (obj == null)
+            {
+                Console.WriteLine("null");
+                return;
+            }
+
             foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(obj))
             {
                 string name = descriptor.Name;

@@ -1,12 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using Cashier.Lib;
+﻿using Cashier.Lib;
 using Cashier.Model;
-using BlazorDexie.JsModule;
-using Microsoft.JSInterop;
 using Cashier.Data;
 using Newtonsoft.Json;
-using BlazorDexie.Database;
 
 namespace Cashier.Services
 {
@@ -132,7 +127,7 @@ namespace Cashier.Services
             if (record == null)
             {
                 var msg = string.Format("Setting with the given key {0} not found.", key);
-                //throw new NullReferenceException(msg);
+                
                 Console.WriteLine(msg);
 
                 return default(T);
