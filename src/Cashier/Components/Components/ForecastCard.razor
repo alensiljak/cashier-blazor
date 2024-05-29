@@ -2,13 +2,14 @@
     Favourites card
 *@
 @using MudBlazor
+@using MudBlazor.Charts
 
 @inject NavigationManager NavMan
 @inject IDexieDAL _db
 @inject NotificationService Notification
 @inject ISettingsService _settings
 
-<MudCard Class="@Class" @onclick="OnCardClick" Outlined="true" Style="background-color: transparent;">
+<MudCard @onclick="OnCardClick" Outlined="true" Style="background-color: transparent;">
     <MudCardHeader Style="@($"background: {Cashier.Lib.Palette.Primary};")" Class="px-2 pt-2 pb-1">
         <CardHeaderAvatar>
             <MudIcon Icon="@IconsMud.Star" Size="Size.Medium" />
@@ -31,7 +32,7 @@
                     project the scheduled transactions related to the account
                 </li>
                 <li>
-                    show a line chart with the balance
+                    show a bar chart with the balance (Bar or StackedBar for multiple accounts).
                 </li>
             </ul>
         </div>
@@ -48,15 +49,25 @@
                     <MudListItem>@account.Name</MudListItem>
                 }
             </MudList>
+
+            <MudChart ChartType="ChartType.StackedBar" ChartSeries="@ChartSeries" LegendPosition="@Position.Top"
+                      XAxisLabels="@XAxisLabels" CanHideSeries="true" 
+                      InputLabels="@InputLabels" ChartOptions="@_chartOptions"
+                      @bind-SelectedIndex="SelectedIndex"></MudChart>
         }
     </MudCardContent>
 </MudCard>
 
 @code {
-    [Parameter]
-    public string? Class { get; set; }
-
+    List<ChartSeries> ChartSeries = [];
     List<Account> _accounts = [];
+    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct" };
+    private int SelectedIndex = -1; //default value cannot be 0 -> first selected index is 0.
+    string[] InputLabels = { "yo", "blah" };
+    ChartOptions _chartOptions = new ChartOptions
+        {
+            MaxNumYAxisTicks = 5
+        };
 
     protected override async Task OnInitializedAsync()
     {
@@ -65,6 +76,21 @@
         await LoadData();
 
         // todo: draw a chart
+        CreateDummyData();
+    }
+
+    private List<ChartSeries> CreateDummyData()
+    {
+        var series = new List<ChartSeries> {
+            new ChartSeries { Name = "Cash", Data = new double[] { 125, 20, 50, 75, 1200, 350, 24, 17, 712 } },
+            new ChartSeries { Name = "N26", Data = new double[] { 36, 20, 50, 75, 1200, 350, 24, 350, 0 } }
+        };
+
+        ChartSeries = series;
+
+        StateHasChanged();
+
+        return series;
     }
 
     async Task LoadData()
