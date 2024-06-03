@@ -6,12 +6,6 @@
 @inject IDexieDAL _db
 @inject ISettingsService _settings
 
-<h3>Daily Forecast Chart</h3>
-
-<div>
-    This chart is projecting the forecast in day units, within the given period.
-</div>
-
 <MudChart ChartType="ChartType.StackedBar" ChartSeries="@ChartSeries" LegendPosition="@Position.Top"
           ChartOptions="@_chartOptions" XAxisLabels="@XAxisLabels"
           @bind-SelectedIndex="SelectedIndex"></MudChart>
