@@ -13,8 +13,8 @@
 </div>
 
 <MudChart ChartType="ChartType.StackedBar" ChartSeries="@ChartSeries" LegendPosition="@Position.Top"
-          CanHideSeries="true" ChartOptions="@_chartOptions" XAxisLabels="@XAxisLabels"
-            @bind-SelectedIndex="SelectedIndex"></MudChart>
+           ChartOptions="@_chartOptions" XAxisLabels="@XAxisLabels"
+           @bind-SelectedIndex="SelectedIndex"></MudChart>
 @*  *@
 
 @code {
@@ -38,7 +38,7 @@
     private ChartOptions _chartOptions = new ChartOptions
     {
         YAxisTicks = 250,
-        MaxNumYAxisTicks = 5
+        MaxNumYAxisTicks = 3
     };
 
     protected override async Task OnInitializedAsync()
@@ -118,6 +118,8 @@
         // todo: Add local transactions
 
         // todo: project scheduled transactions
+        await LoadScheduledXactsFor(accountName);
+
 
         for(var day = 1; day < DaysCount; day++)
         {
@@ -128,18 +130,29 @@
         // AccountViewModel? result = null;
         try
         {
-            var currency = await _settings.GetDefaultCurrency();
+            // var currency = await _settings.GetDefaultCurrency();
 
-            var calc = new ForecastCalculator(_db, currency);
+            // var calc = new ForecastCalculator(_db, currency);
             // var account = await calc.GetAccountBalance(accountName);
-            // if (account != null)
-            // {
-            //     result = account;
-            // }
         }
         catch (Exception e)
         {
             // Notification.Error(e.Message);
         }
+    }
+
+    private async Task LoadScheduledXactsFor(string accountName)
+    {
+        // var x = await _db.ScheduledXacts.Where(nameof(ScheduledXact.Transaction.Postings))
+        // var regex = new ListSearch().GetJsFilterFunction("name");
+        // var records = _db.Payees.Filter(regex, new[] { searchTerm });
+
+        // Load all scheduled transactions for now
+        var list = await _db.ScheduledXacts.ToList();
+        var xactsForAccount = list.Where(sx =>
+            sx.Transaction != null && sx.Transaction.Postings != null &&
+            sx.Transaction.Postings.Any(p => p.Account != null && p.Account.Contains(accountName)));
+        
+        Log.debug(xactsForAccount);
     }
 }
