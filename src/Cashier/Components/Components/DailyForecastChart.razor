@@ -124,12 +124,9 @@
         // project scheduled transactions
         var scheduledXacts = await LoadScheduledXactsFor(accountName, maxDate);
         // calculate values for subsequent days
-        ApplyScheduledXactsAsync(accountName, entry.Data, scheduledXacts);
-
-        // AccountViewModel? result = null;
-        // var currency = await _settings.GetDefaultCurrency();
-        // var calc = new ForecastCalculator(_db, currency);
-        // var account = await calc.GetAccountBalance(accountName);
+        AddScheduledXactsAsync(accountName, entry.Data, scheduledXacts);
+        // Perform the calculation.
+        CalculateDailyAmounts(entry.Data);
     }
 
     private double GetInitialValue(Account? account)
@@ -163,7 +160,7 @@
     /// </summary>
     /// <param name="amounts"></param>
     /// <param name="xacts"></param>
-    private void ApplyScheduledXactsAsync(string accountName, double[] amounts, List<ScheduledXact> schXacts)
+    private void AddScheduledXactsAsync(string accountName, double[] amounts, List<ScheduledXact> schXacts)
     {
         // prepare transactions
         var xacts = schXacts.Select(sx => sx.Transaction).ToList();
@@ -189,6 +186,22 @@
             }
 
             amounts[index] += ((double)schDailyAmount);
+        }
+    }
+
+    /// <summary>
+    /// A kind of a hack. Since the daily amounts have been inserted already, just recalculate the daily balance
+    /// based on the balance of the previous day.
+    /// </summary>
+    /// <param name="amounts"></param>
+    private void CalculateDailyAmounts(double[] amounts)
+    {
+        double balance = 0; // balance on the previous day. Current balance.
+        for(var i = 0; i < amounts.Length; i++)
+        {
+            var dailyBalance = balance + amounts[i];    // add today's transactions to the current balance.
+            amounts[i] = dailyBalance;  // set the value in the daily cell, in the array.
+            balance = dailyBalance;     // update the current balance.
         }
     }
 }
