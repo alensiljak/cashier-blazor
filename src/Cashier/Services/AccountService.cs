@@ -41,6 +41,12 @@ namespace Cashier.Services
             return result!;
         }
 
+        public static string GetShortAccountName(string fullAccountName)
+        {
+            var parts = fullAccountName.Split(':');
+            return parts[parts.Length - 1];
+        }
+
         public async Task<List<Account>> LoadInvestmentAccounts(ISettingsService settings, IDexieDAL db)
         {
             var root = await settings.GetRootInvestmentAccount();

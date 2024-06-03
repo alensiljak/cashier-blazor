@@ -100,7 +100,7 @@
     async Task LoadAccountAsync(string accountName)
     {
         var entry = new ChartSeries();
-        entry.Name = accountName;
+        entry.Name = AccountService.GetShortAccountName(accountName);
         entry.Data = new double[DaysCount + 1];
         ChartSeries.Add(entry);
 
