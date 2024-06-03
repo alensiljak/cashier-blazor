@@ -49,6 +49,21 @@
         await loadDataAsync();
     }
 
+    private double CalculateMaxAmount()
+    {
+        // Set the max Y value to be the max value in the series.
+        double[] maximums = new double[ChartSeries.Count];
+        double maxValue = 0;
+        for (var i = 0; i < ChartSeries.Count; i++)
+        {
+            // get Max for each series.
+            maximums[i] = ChartSeries[i].Data.Max();
+        }
+        // Get Max value for all series.
+        maxValue = maximums.Max();
+        return maxValue;
+    }
+
     private void CreateXAxis()
     {
         // Create labels for the days ahead.
@@ -76,18 +91,11 @@
         // load the account.
         foreach (var accountName in this.AccountNames)
         {
-            await LoadAccountAsync(accountName);
+            await PopulateAccountAsync(accountName);
         }
 
-        // Set the max Y value to be the max value in the series.
-        double maxValue = 0;
-        foreach (var item in ChartSeries)
-        {
-            var max = item.Data.Max();
-            maxValue = max > maxValue ? max : maxValue;
-        }
-
-        const int TickNumber = 5;
+        var maxValue = CalculateMaxAmount();
+        const int TickNumber = 5;  // maximum number of lines.
         _chartOptions.YAxisTicks = Convert.ToInt32(maxValue / TickNumber);
         _chartOptions.MaxNumYAxisTicks = Convert.ToInt32(maxValue);
     }
@@ -97,7 +105,7 @@
     /// </summary>
     /// <param name="accountName"></param>
     /// <returns></returns>
-    async Task LoadAccountAsync(string accountName)
+    async Task PopulateAccountAsync(string accountName)
     {
         var entry = new ChartSeries();
         entry.Name = AccountService.GetShortAccountName(accountName);
@@ -105,11 +113,7 @@
         ChartSeries.Add(entry);
 
         // load account record, with balance.
-        var account = await _db.Accounts.Get(accountName);
-        if (account == null)
-        {
-            throw new Exception("Account could not be loaded!");
-        }
+        var account = await LoadAccountAsync(accountName);
 
         // get initial balance
         var initialValue = GetInitialValue(account);
@@ -117,10 +121,19 @@
 
         // todo: Add local transactions
 
+        await AddScheduledXacts(accountName, entry);
+    }
+
+    private async Task AddScheduledXacts(string accountName, ChartSeries entry)
+    {
         // calculate max date
         var maxDate = DateOnly.FromDateTime(DateTime.Today.AddDays(DaysCount));
         // project scheduled transactions
         var scheduledXacts = await LoadScheduledXactsFor(accountName, maxDate);
+
+        // todo: project the schedule into the selected period (i.e. if a xact repeats daily, it should be
+        // included 7 times in a weekly forecast).
+
         // calculate values for subsequent days
         AddScheduledXactsAsync(accountName, entry.Data, scheduledXacts);
         // Perform the calculation.
@@ -135,6 +148,16 @@
         if (balanceAmount == null) return 0;
 
         return (double)balanceAmount;
+    }
+
+    private async Task<Account> LoadAccountAsync(string accountName)
+    {
+        var account = await _db.Accounts.Get(accountName);
+        if (account == null)
+        {
+            throw new Exception("Account could not be loaded!");
+        }
+        return account;
     }
 
     private async Task<List<ScheduledXact>> LoadScheduledXactsFor(string accountName, DateOnly maxDate)
