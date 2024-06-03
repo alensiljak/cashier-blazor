@@ -22,24 +22,6 @@
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent Class="pa-0">
-        <div>
-            <ul>
-                <li>
-                    take the current value of an account: @@AccountName,
-                    @@Account?.AccountBalance?.Quantity @@Account?.AccountBalance?.Currency
-                </li>
-                <li>
-                    add any local transactions
-                </li>
-                <li>
-                    project the scheduled transactions related to the account
-                </li>
-                <li>
-                    show a bar chart with the balance (Bar or StackedBar for multiple accounts).
-                </li>
-            </ul>
-        </div>
-
         @if (_accountNames.Count == 0)
         {
             <MudText>There are no accounts selected for forecasting</MudText>
