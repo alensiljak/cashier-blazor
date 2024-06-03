@@ -5,8 +5,8 @@
 @inject IDexieDAL db
 @inject AppState State
 @inject NavigationManager NavMan
-@inject IJSRuntime _js
 @inject NotificationService Notification
+@inject RouterService _router
 
 <ToolbarMud>
     <Title>Payees</Title>
@@ -162,6 +162,6 @@ else
 
         meta.SelectedId = payeeName;
 
-        await AppService.NavigateBack(_js);
+        await _router.Back();
     }
 }

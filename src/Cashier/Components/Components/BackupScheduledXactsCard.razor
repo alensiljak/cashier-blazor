@@ -4,7 +4,7 @@
 @using MudBlazor
 @inject NotificationService Notification
 @inject ISettingsService _settings
-@inject NavigationManager NavMan
+@inject RouterService _router
 @inject IDexieDAL _db
 
 <MudCard Outlined="true" Style="background-color: transparent;" Class="@Class">
@@ -62,7 +62,7 @@
         if (string.IsNullOrWhiteSpace(serverUrl))
         {
             Notification.Warning("Backup server URL not set.");
-            NavMan.NavigateTo("/cloud-backup-settings");
+            _router.GoTo("/cloud-backup-settings");
             return;
         }
 

@@ -77,11 +77,6 @@ namespace Cashier.Services
             return result;
         }
 
-        public static async Task NavigateBack(IJSRuntime js)
-        {
-            await new RouterService(js).Back();
-        }
-
         // instance methods
 
         public async Task CopyToClipboard(IJSRuntime jsRuntime, string text)

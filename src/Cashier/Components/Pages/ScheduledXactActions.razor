@@ -8,6 +8,7 @@
 @inject IDialogService DialogService
 @inject NavigationManager NavMan
 @inject IJSRuntime _js
+@inject RouterService _router
 
 <ToolbarMud>
     Scheduled Transaction Actions
@@ -154,7 +155,7 @@ else
 
         Notification.Info("Scheduled transaction deleted");
 
-        await AppService.NavigateBack(_js);
+        await _router.Back();
     }
 
     void OnEditClick()
@@ -193,7 +194,7 @@ else
 
             Notification.Success("Transaction skipped to next iteration");
 
-            await AppService.NavigateBack(_js);
+            await _router.Back();
         }
         catch (Exception ex)
         {

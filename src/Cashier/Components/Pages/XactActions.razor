@@ -9,6 +9,7 @@
 @inject IJSRuntime _js
 @inject NotificationService Notification
 @inject IDialogService DialogService
+@inject RouterService _router
 
 <MudContainer>
 
@@ -108,7 +109,7 @@
         Notification.Success("Transaction deleted");
 
         // go back
-        await new RouterService(_js).Back();
+        await _router.Back();
     }
 
     async Task OnDuplicateClick()

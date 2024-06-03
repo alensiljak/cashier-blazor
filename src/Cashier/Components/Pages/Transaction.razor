@@ -13,6 +13,7 @@
 @inject IDexieDAL _db
 @inject IJSRuntime _js
 @inject IDialogService DialogService
+@inject RouterService _router
 
 @using MudBlazor
 
@@ -118,6 +119,6 @@
             await app.saveLastTransaction(_db, xact);
         }
 
-        await new RouterService(_js).Back();
+        await _router.Back();
     }
 }

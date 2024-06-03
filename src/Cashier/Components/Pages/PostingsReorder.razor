@@ -4,7 +4,7 @@
 @inject NavigationManager NavMan
 @inject AppState _state
 @inject NotificationService Notification
-@inject IJSRuntime _js
+@inject RouterService _router
 
 <ToolbarMud>
     <Title>
@@ -65,7 +65,7 @@
         if (_state.Xact is null)
         {
             Notification.Warning("No transaction found in app state");
-            await AppService.NavigateBack(_js);
+            await _router.Back();
             return;
         }
         if (_state.Xact.Postings == null)
@@ -86,7 +86,7 @@
         // save order
         _state.Xact.Postings = _postings.ToList();
 
-        await AppService.NavigateBack(_js);
+        await _router.Back();
     }
 
     void OnDownClick(Posting posting)

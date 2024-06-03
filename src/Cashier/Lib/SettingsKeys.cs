@@ -24,5 +24,6 @@
         public const string visibleCards = "home.visibleCards";
         // forecast
         public const string ForecastAccounts = "forecast.accounts";
+        public const string ForecastDays = "forecast.days";
     }
 }

@@ -5,6 +5,7 @@
 @inject NavigationManager NavMan
 @inject AppState State
 @inject ISettingsService Settings
+@inject RouterService _router
 
 <ToolbarMud>
     <Title>Financial Forecast Settings</Title>
@@ -13,11 +14,12 @@
     </ContextMenuItems>
 </ToolbarMud>
 
-<MudText>Period</MudText>
+<MudText Typo="Typo.h4">Forecast for days:</MudText>
 
-<MudRadio T="ushort">Monthly</MudRadio>
+@* <MudRadio T="ushort">Monthly</MudRadio> *@
+<MudTextField @bind-Value="_days" DebounceInterval="300" />
 
-<MudText>Accounts</MudText>
+<MudText Typo="Typo.h4">Accounts</MudText>
 
 @if (_accountNames.Count == 0)
 {
@@ -43,14 +45,19 @@ else
         }
     </MudList>
 }
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-10 align-center d-flex flex-column gap-8">
+    <MudButton StartIcon="@IconsMud.PlusCircle" Variant="Variant.Filled" Color="Color.Tertiary"
+               @onclick="OnAddAccountClick">Add Account</MudButton>
+</MudContainer>
 
-<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus" Class="z-100"
+<MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check" Class="z-100"
         Style="@Constants.DefaultFabPosition" @onclick="OnFabClicked" />
 
 
 @code {
     private List<string> _accountNames = [];
     private string? _account;
+    private int _days = Constants.DefaultForecastDays;
 
     protected override async Task OnInitializedAsync()
     {
@@ -81,6 +88,9 @@ else
         if (accounts == null) return;
 
         _accountNames = accounts;
+
+        // number of days
+        _days = await Settings.GetSetting<int>(SettingsKeys.ForecastDays);
     }
 
     private async Task HandleAccountSelection()
@@ -108,15 +118,17 @@ else
         await SaveSettingsAsync();
     }
 
-    void OnFabClicked()
+    async Task OnFabClicked()
     {
-        OnAddAccountClick();
+        // OnAddAccountClick();
+        await SaveSettingsAsync();
+
+        await _router.Back();
     }
 
     async Task SaveSettingsAsync()
     {
         await Settings.SetSetting(SettingsKeys.ForecastAccounts, _accountNames);
-
-        // StateHasChanged();
+        await Settings.SetSetting(SettingsKeys.ForecastDays, _days);
     }
 }

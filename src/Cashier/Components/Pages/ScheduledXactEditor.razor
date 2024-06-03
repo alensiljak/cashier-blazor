@@ -5,7 +5,7 @@
 @inject NotificationService Notification
 @inject AppState _state
 @inject IDexieDAL _db
-@inject IJSRuntime _js
+@inject RouterService _router
 
 <ToolbarMud>
     Scheduled Transaction Edit
@@ -68,6 +68,6 @@
         var result = await new AppService().SaveScheduledXact(_db, stx);
 
         Notification.Success("Scheduled transaction saved");
-        await AppService.NavigateBack(_js);
+        await _router.Back();
     }
 }

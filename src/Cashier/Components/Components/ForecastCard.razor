@@ -46,13 +46,14 @@
         }
         else
         {
-            <DailyForecastChart DaysCount="14" AccountNames="@_accountNames" />
+            <DailyForecastChart DaysCount="@_days" AccountNames="@_accountNames" />
         }
     </MudCardContent>
 </MudCard>
 
 @code {
     List<string> _accountNames = [];
+    ushort _days = Constants.DefaultForecastDays;
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,6 +71,12 @@
         if (accountNames == null) return;
 
         _accountNames = accountNames;
+
+        _days = await _settings.GetSetting<ushort>(SettingsKeys.ForecastDays);
+        if(_days == 0)
+        {
+            _days = Constants.DefaultForecastDays;
+        }
     }
 
     void OnCardClick()

@@ -3,7 +3,7 @@
 @using System.Collections.ObjectModel
 
 @inject ISettingsService _settings
-@inject IJSRuntime _js
+@inject RouterService _router
 
 <ToolbarMud>
     Reorder Favourites
@@ -71,6 +71,6 @@ else
         // save the order
         await _settings.SetSetting(SettingsKeys.favouriteAccounts, _accounts);
 
-        await AppService.NavigateBack(_js);
+        await _router.Back();
     }
 }
