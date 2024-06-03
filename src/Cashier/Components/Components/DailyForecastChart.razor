@@ -13,8 +13,8 @@
 </div>
 
 <MudChart ChartType="ChartType.StackedBar" ChartSeries="@ChartSeries" LegendPosition="@Position.Top"
-           ChartOptions="@_chartOptions" XAxisLabels="@XAxisLabels"
-           @bind-SelectedIndex="SelectedIndex"></MudChart>
+          ChartOptions="@_chartOptions" XAxisLabels="@XAxisLabels"
+          @bind-SelectedIndex="SelectedIndex"></MudChart>
 @*  *@
 
 @code {
@@ -36,10 +36,10 @@
     // private string[] InputLabels = { "yo", "blah" };
     private List<ChartSeries> ChartSeries = [];
     private ChartOptions _chartOptions = new ChartOptions
-    {
-        YAxisTicks = 250,
-        MaxNumYAxisTicks = 3
-    };
+        {
+            YAxisTicks = 250,
+            MaxNumYAxisTicks = 3
+        };
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,17 +51,19 @@
         await loadDataAsync();
     }
 
-    private void CreateXAxis() {
+    private void CreateXAxis()
+    {
         // Create labels for the days ahead.
-        var labels = new string[DaysCount+1];
+        var labels = new string[DaysCount + 1];
 
         for (var x = 0; x <= DaysCount; x++)
         {
             // labels on weeks only
-            if ((x+1) % 7 == 0)
+            if ((x + 1) % 7 == 0)
             {
-                labels[x] = (x+1).ToString();
-            } else
+                labels[x] = (x + 1).ToString();
+            }
+            else
             {
                 labels[x] = string.Empty;
             }
@@ -74,14 +76,14 @@
     async Task loadDataAsync()
     {
         // load the account.
-        foreach(var accountName in this.AccountNames)
+        foreach (var accountName in this.AccountNames)
         {
             await LoadAccountAsync(accountName);
         }
 
         // Set the max Y value to be the max value in the series.
         double maxValue = 0;
-        foreach(var item in ChartSeries)
+        foreach (var item in ChartSeries)
         {
             var max = item.Data.Max();
             maxValue = max > maxValue ? max : maxValue;
@@ -106,7 +108,7 @@
 
         // load account record, with balance.
         var account = await _db.Accounts.Get(accountName);
-        if(account == null)
+        if (account == null)
         {
             throw new Exception("Account could not be loaded!");
         }
@@ -117,42 +119,67 @@
 
         // todo: Add local transactions
 
+        // calculate max date
+        var maxDate = DateOnly.FromDateTime(DateTime.Today.AddDays(DaysCount));
         // todo: project scheduled transactions
-        await LoadScheduledXactsFor(accountName);
-
-
-        for(var day = 1; day < DaysCount; day++)
-        {
-            // todo: calculate values for subsequent days
-            entry.Data[day] = 10 + day * 2;
-        }
+        var scheduledXacts = await LoadScheduledXactsFor(accountName, maxDate);
+        // todo: calculate values for subsequent days
+        ApplyScheduledXactsAsync(accountName, entry.Data, scheduledXacts);
 
         // AccountViewModel? result = null;
-        try
-        {
-            // var currency = await _settings.GetDefaultCurrency();
+        // var currency = await _settings.GetDefaultCurrency();
 
-            // var calc = new ForecastCalculator(_db, currency);
-            // var account = await calc.GetAccountBalance(accountName);
-        }
-        catch (Exception e)
-        {
-            // Notification.Error(e.Message);
-        }
+        // var calc = new ForecastCalculator(_db, currency);
+        // var account = await calc.GetAccountBalance(accountName);
     }
 
-    private async Task LoadScheduledXactsFor(string accountName)
+    private async Task<List<ScheduledXact>> LoadScheduledXactsFor(string accountName, DateOnly maxDate)
     {
-        // var x = await _db.ScheduledXacts.Where(nameof(ScheduledXact.Transaction.Postings))
-        // var regex = new ListSearch().GetJsFilterFunction("name");
-        // var records = _db.Payees.Filter(regex, new[] { searchTerm });
-
         // Load all scheduled transactions for now
-        var list = await _db.ScheduledXacts.ToList();
+        var list = await _db.ScheduledXacts
+            .OrderBy(nameof(ScheduledXact.NextDate))
+            .ToList();
         var xactsForAccount = list.Where(sx =>
             sx.Transaction != null && sx.Transaction.Postings != null &&
-            sx.Transaction.Postings.Any(p => p.Account != null && p.Account.Contains(accountName)));
-        
-        Log.debug(xactsForAccount);
+            sx.Transaction.Postings.Any(p => p.Account != null && p.Account.Contains(accountName))
+            // limit by date
+            && sx.Transaction.Date <= maxDate
+        );
+
+        return xactsForAccount.ToList();
+    }
+
+    /// <summary>
+    /// Applies scheduled transactions to the data series.
+    /// </summary>
+    /// <param name="amounts"></param>
+    /// <param name="xacts"></param>
+    private void ApplyScheduledXactsAsync(string accountName, double[] amounts, List<ScheduledXact> schXacts)
+    {
+        // prepare transactions
+        var xacts = schXacts.Select(sx => sx.Transaction).ToList();
+        if (xacts == null) return;
+        XactAugmenter.calculateEmptyPostingAmounts(xacts);
+
+        var today = DateTime.Today;
+        // starting from today
+        foreach (var sx in schXacts)
+        {
+            var diff = sx.NextDate.ToDateTime(TimeOnly.MinValue) - today;
+            var index = Convert.ToInt16(diff.TotalDays);
+
+            var postings = sx.Transaction?.Postings?.Where(p => p.Account == accountName);
+            if (postings == null) continue;
+
+            // add all the posting amounts
+            var amount = new decimal(0);
+            foreach (var posting in postings)
+            {
+                amount += posting.Amount.GetValueOrDefault();
+            }
+
+            amounts[index] += ((double)amount);
+            Log.debug(amount);
+        }
     }
 }

@@ -137,8 +137,8 @@ else
         var data = await app.LoadFavouriteAccounts(_db);
         accounts = data.ConvertAll(acc => new AccountViewModel(acc));
 
-        var aug = new TransactionAugmenter();
-        await aug.AdjustAccountBalances(_db, accounts);
+        var aug = new XactAugmenter();
+        await aug.AddLocalXacts(_db, accounts);
     }
 
     // void CreateTreeView()

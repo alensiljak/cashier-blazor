@@ -10,11 +10,11 @@ namespace Cashier.Tests.Tests
 {
     public class TransactionAugmenterTests
     {
-        private TransactionAugmenter _out;  // object under test
+        private XactAugmenter _out;  // object under test
 
         public TransactionAugmenterTests()
         {
-            _out = new TransactionAugmenter();
+            _out = new XactAugmenter();
         }
 
         [Fact]
@@ -24,7 +24,7 @@ namespace Cashier.Tests.Tests
             var xacts = CreateDummyXactList();
 
             // Act
-            _out.calculateEmptyPostingAmounts(xacts);
+            XactAugmenter.calculateEmptyPostingAmounts(xacts);
 
             // Assert
             Assert.NotNull(xacts);

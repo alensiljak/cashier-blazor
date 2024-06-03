@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Cashier.Lib
 {
-    public class TransactionAugmenter
+    public class XactAugmenter
     {
         /// <summary>
         /// Corrects the account balance by adding the local transactions into the calculation.
@@ -16,7 +16,7 @@ namespace Cashier.Lib
         /// The records are modified in-place.
         /// </summary>
         /// <param name="accounts">List of Accounts</param>
-        public async Task AdjustAccountBalances(IDexieDAL db, List<AccountViewModel> accounts)
+        public async Task AddLocalXacts(IDexieDAL db, List<AccountViewModel> accounts)
         {
             if(accounts.Count == 0)
             {
@@ -127,10 +127,10 @@ namespace Cashier.Lib
         /// Calculates and adds the amounts for the empty postings. This "completes" the Postings
         /// so that they have an amount and a currency.
         /// </summary>
-        public void calculateEmptyPostingAmounts(List<Xact> xacts)
+        public static void calculateEmptyPostingAmounts(List<Xact?> xacts)
         {
             foreach (var xact in xacts) {
-                if (xact.Postings == null || xact.Postings.Count == 0) continue;
+                if (xact == null || xact.Postings == null || xact.Postings.Count == 0) continue;
 
                 var postings = xact.Postings;
 
