@@ -114,23 +114,32 @@
         }
 
         // get initial balance
-        var initialValue = account.CurrentValue == null ? 0 : Double.Parse(account.CurrentValue);
+        var initialValue = GetInitialValue(account);
         entry.Data[0] = initialValue;
 
         // todo: Add local transactions
 
         // calculate max date
         var maxDate = DateOnly.FromDateTime(DateTime.Today.AddDays(DaysCount));
-        // todo: project scheduled transactions
+        // project scheduled transactions
         var scheduledXacts = await LoadScheduledXactsFor(accountName, maxDate);
-        // todo: calculate values for subsequent days
+        // calculate values for subsequent days
         ApplyScheduledXactsAsync(accountName, entry.Data, scheduledXacts);
 
         // AccountViewModel? result = null;
         // var currency = await _settings.GetDefaultCurrency();
-
         // var calc = new ForecastCalculator(_db, currency);
         // var account = await calc.GetAccountBalance(accountName);
+    }
+
+    private double GetInitialValue(Account? account)
+    {
+        if (account == null) return 0;
+
+        var balanceAmount = new AccountService().GetAccountBalance(account).Quantity;
+        if (balanceAmount == null) return 0;
+
+        return (double)balanceAmount;
     }
 
     private async Task<List<ScheduledXact>> LoadScheduledXactsFor(string accountName, DateOnly maxDate)
@@ -161,8 +170,9 @@
         if (xacts == null) return;
         XactAugmenter.calculateEmptyPostingAmounts(xacts);
 
-        var today = DateTime.Today;
         // starting from today
+        var today = DateTime.Today;
+
         foreach (var sx in schXacts)
         {
             var diff = sx.NextDate.ToDateTime(TimeOnly.MinValue) - today;
@@ -172,14 +182,13 @@
             if (postings == null) continue;
 
             // add all the posting amounts
-            var amount = new decimal(0);
+            var schDailyAmount = new decimal(0);
             foreach (var posting in postings)
             {
-                amount += posting.Amount.GetValueOrDefault();
+                schDailyAmount += posting.Amount.GetValueOrDefault();
             }
 
-            amounts[index] += ((double)amount);
-            Log.debug(amount);
+            amounts[index] += ((double)schDailyAmount);
         }
     }
 }

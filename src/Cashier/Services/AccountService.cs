@@ -7,12 +7,12 @@ namespace Cashier.Services
     public class AccountService : IAccountService
     {
         /// <summary>
-        /// gets the account balance
+        /// Gets the account balance in the requested currency. If none exists, the first balance is returned.
         /// </summary>
         /// <param name="account"></param>
-        /// <param name="defaultCurrency"></param>
+        /// <param name="defaultCurrency">The currency in which to retrieve the balance.</param>
         /// <returns></returns>
-        public Money GetAccountBalance(Account account, string defaultCurrency)
+        public Money GetAccountBalance(Account account, string? defaultCurrency = null)
         {
             // the default value.
             var result = new Money(0, defaultCurrency);
@@ -23,13 +23,16 @@ namespace Cashier.Services
                 return result;
             }
 
-            // Do we have a balance in the default currency?
-            var defaultBalance = account.Balances.FirstOrDefault(account => account.Currency == defaultCurrency);
-            if (defaultBalance != null)
+            if (!string.IsNullOrEmpty(defaultCurrency))
             {
-                result.Quantity = defaultBalance.Quantity;
-                result.Currency = defaultBalance.Currency;
-                return result;
+                // Do we have a balance in the default currency?
+                var defaultBalance = account.Balances.FirstOrDefault(account => account.Currency == defaultCurrency);
+                if (defaultBalance != null)
+                {
+                    result.Quantity = defaultBalance.Quantity;
+                    result.Currency = defaultBalance.Currency;
+                    return result;
+                }
             }
 
             // Otherwise take the first balance/currency.

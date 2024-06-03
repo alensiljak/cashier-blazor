@@ -16,19 +16,19 @@ namespace Cashier.Model
 
         public Money() { }
 
-        public Money(decimal amount, string currency)
+        public Money(decimal amount, string? currency)
         {
             Quantity = amount;
             Currency = currency;
         }
 
-        public Money(int amount, string currency)
+        public Money(int amount, string? currency)
         {
             Quantity = (decimal)amount;
             Currency = currency;
         }
 
-        public Money(float amount, string currency)
+        public Money(float amount, string? currency)
         {
             Quantity = (decimal)amount;
             Currency = currency;
