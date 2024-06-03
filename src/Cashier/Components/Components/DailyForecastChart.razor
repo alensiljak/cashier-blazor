@@ -7,7 +7,8 @@
 @inject ISettingsService _settings
 
 <MudChart ChartType="ChartType.StackedBar" ChartSeries="@ChartSeries" LegendPosition="@Position.Top"
-          ChartOptions="@_chartOptions" XAxisLabels="@XAxisLabels" Width="100%"
+          ChartOptions="@_chartOptions" XAxisLabels="@XAxisLabels" 
+          Width="100%"
           @bind-SelectedIndex="SelectedIndex"></MudChart>
 @*  *@
 
@@ -23,6 +24,9 @@
     /// </summary>
     [Parameter]
     public List<string> AccountNames { get; set; } = [];
+
+    [Parameter]
+    public int Height{ get; set; }
 
     private int SelectedIndex = -1; //default value cannot be 0 -> first selected index is 0.
     public string[] XAxisLabels = [];
@@ -53,9 +57,9 @@
         for (var x = 0; x <= DaysCount; x++)
         {
             // labels on weeks only
-            if ((x + 1) % 7 == 0)
+            if (x % 7 == 0)
             {
-                labels[x] = (x + 1).ToString();
+                labels[x] = x.ToString();
             }
             else
             {
@@ -97,7 +101,7 @@
     {
         var entry = new ChartSeries();
         entry.Name = accountName;
-        entry.Data = new double[DaysCount];
+        entry.Data = new double[DaysCount + 1];
         ChartSeries.Add(entry);
 
         // load account record, with balance.
