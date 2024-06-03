@@ -7,7 +7,7 @@
 @inject ISettingsService _settings
 
 <MudChart ChartType="ChartType.StackedBar" ChartSeries="@ChartSeries" LegendPosition="@Position.Top"
-          ChartOptions="@_chartOptions" XAxisLabels="@XAxisLabels"
+          ChartOptions="@_chartOptions" XAxisLabels="@XAxisLabels" Width="100%"
           @bind-SelectedIndex="SelectedIndex"></MudChart>
 @*  *@
 
