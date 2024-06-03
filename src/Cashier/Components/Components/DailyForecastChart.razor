@@ -1,0 +1,54 @@
+﻿@*
+    This is a monthly forecast chart for one account.
+*@
+@using MudBlazor
+
+<h3>Daily Forecast Chart</h3>
+
+<div>
+    This chart is projecting the forecast in day units, within the given period.
+</div>
+
+<MudChart ChartType="ChartType.StackedBar" ChartSeries="@ChartSeries" LegendPosition="@Position.Top"
+            XAxisLabels="@XAxisLabels" CanHideSeries="true"
+            InputLabels="@InputLabels" ChartOptions="@_chartOptions"
+            @bind-SelectedIndex="SelectedIndex"></MudChart>
+
+@code {
+    /// <summary>
+    /// Number of days for forecast, starting from the day after today.
+    /// </summary>
+    [Parameter]
+    public ushort Days { get; set; }
+
+    /// <summary>
+    /// Names of the accounts to include.
+    /// </summary>
+    [Parameter]
+    public List<string> AccountNames { get; set; } = [];
+
+    private int SelectedIndex = -1; //default value cannot be 0 -> first selected index is 0.
+    public string[] XAxisLabels = { "1", "7", "14", "21", "28" };
+
+    private string[] InputLabels = { "yo", "blah" };
+    private List<ChartSeries> ChartSeries = [];
+    private ChartOptions _chartOptions = new ChartOptions
+        {
+            MaxNumYAxisTicks = 5
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // set up days
+        CreateXAxis();
+
+        // await loadData();
+    }
+
+    private void CreateXAxis() {
+        // next 30 days?
+        // XAxisLabels = { "1", "7" };
+    }
+}

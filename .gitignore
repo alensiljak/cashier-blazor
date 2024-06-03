@@ -7,9 +7,10 @@
 /src/Cashier/obj/
 /src/Cashier.Tests/bin/
 /src/Cashier.Tests/obj/
-
 /src/Cashier.Tests.E2E/bin/
 /src/Cashier.Tests.E2E/obj/
+/src/ComponentTests/bin/
+/src/ComponentTests/obj/
 
 # Local Netlify folder
 .netlify

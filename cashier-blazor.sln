@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cashier.ComponentTests", "src\ComponentTests\Cashier.ComponentTests.csproj", "{22384CC1-A966-4EE6-BC48-9FED8D45C8F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{905DD9D2-CB15-4F8C-A326-5A1BA78B3087}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{905DD9D2-CB15-4F8C-A326-5A1BA78B3087}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{905DD9D2-CB15-4F8C-A326-5A1BA78B3087}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22384CC1-A966-4EE6-BC48-9FED8D45C8F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22384CC1-A966-4EE6-BC48-9FED8D45C8F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22384CC1-A966-4EE6-BC48-9FED8D45C8F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22384CC1-A966-4EE6-BC48-9FED8D45C8F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

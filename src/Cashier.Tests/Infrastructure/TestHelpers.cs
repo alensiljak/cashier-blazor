@@ -36,10 +36,9 @@ namespace Cashier.Tests.Infrastructure
             return mock;
         }
 
-        public Mock<IDexieDAL> CreateMockDAL()
+        public static Mock<IDexieDAL> CreateMockDAL()
         {
             var mock = new Mock<IDexieDAL>();
-            // var db = new DexieDAL();
 
             var accounts = new Store<Account, string>("name");
             accounts.Add(new Account("Assets:Equity"));

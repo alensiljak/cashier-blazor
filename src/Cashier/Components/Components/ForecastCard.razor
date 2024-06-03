@@ -51,9 +51,11 @@
             </MudList>
 
             <MudChart ChartType="ChartType.StackedBar" ChartSeries="@ChartSeries" LegendPosition="@Position.Top"
-                      XAxisLabels="@XAxisLabels" CanHideSeries="true" 
+                      XAxisLabels="@XAxisLabels" CanHideSeries="true"
                       InputLabels="@InputLabels" ChartOptions="@_chartOptions"
                       @bind-SelectedIndex="SelectedIndex"></MudChart>
+
+            <DailyForecastChart />
         }
     </MudCardContent>
 </MudCard>
@@ -73,6 +75,8 @@
     {
         await base.OnInitializedAsync();
 
+        // TODO: Just load an appropriate chart component.
+
         await LoadData();
 
         // todo: draw a chart
@@ -81,6 +85,7 @@
 
     private List<ChartSeries> CreateDummyData()
     {
+        // monthly?
         var series = new List<ChartSeries> {
             new ChartSeries { Name = "Cash", Data = new double[] { 125, 20, 50, 75, 1200, 350, 24, 17, 712 } },
             new ChartSeries { Name = "N26", Data = new double[] { 36, 20, 50, 75, 1200, 350, 24, 350, 0 } }
@@ -101,18 +106,20 @@
 
         foreach (var accountName in accountNames)
         {
+            var account = await LoadAccount(accountName);
+            if (account == null)
+            {
+                Console.WriteLine("Could not load account {}", accountName);
+                continue;
+            }
+
+            // get initial balance
+            // account.CurrentValue;
+
             // todo: Add local transactions
             // todo: project scheduled transactions
 
-            var account = await LoadAccount(accountName);
-            if (account != null)
-            {
-                _accounts.Add(account);
-            }
-            else
-            {
-                Console.WriteLine("Could not load account {}", accountName);
-            }
+            _accounts.Add(account);
         }
 
     }
@@ -124,8 +131,8 @@
         {
             var currency = await _settings.GetDefaultCurrency();
 
-            var calc = new ForecastCalculator(_db);
-            var account = await calc.GetAccountBalance(accountName, currency);
+            var calc = new ForecastCalculator(_db, currency);
+            var account = await calc.GetAccountBalance(accountName);
             if (account != null)
             {
                 result = account;

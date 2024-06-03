@@ -1,0 +1,18 @@
+﻿@inherits TestContext
+
+<h1>Hello world from Blazor</h1>
+
+<h3>DailyForecastTests</h3>
+
+
+@code {
+    [Fact]
+    public void HelloWorldComponentRendersCorrectly()
+    {
+        // Act
+        var cut = Render(@<HelloWorld />);
+
+        // Assert
+        cut.MarkupMatches(@<h1>Hello world from Blazor</h1>);
+    }
+}

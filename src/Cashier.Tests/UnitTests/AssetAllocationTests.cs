@@ -24,7 +24,7 @@ namespace Cashier.Tests.Tests
 
             var helper = new TestHelpers();
             _settings = helper.CreateMockSettings().Object;
-            _dal = helper.CreateMockDAL().Object;
+            _dal = TestHelpers.CreateMockDAL().Object;
             _accountService = helper.CreateMockAccountService().Object;
         }
 
