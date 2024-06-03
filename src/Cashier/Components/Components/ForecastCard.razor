@@ -17,6 +17,9 @@
         <CardHeaderContent>
             <MudText>Financial Forecast</MudText>
         </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIconButton Icon="@IconsMud.Settings" OnClick="OnSettingsClicked" />
+        </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent Class="pa-0">
         <div>
@@ -146,6 +149,10 @@
     }
 
     void OnCardClick()
+    {
+    }
+
+    void OnSettingsClicked()
     {
         // Open the settings page.
         NavMan.NavigateTo("/forecast-settings");

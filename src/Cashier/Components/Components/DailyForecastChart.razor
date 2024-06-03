@@ -10,9 +10,9 @@
 </div>
 
 <MudChart ChartType="ChartType.StackedBar" ChartSeries="@ChartSeries" LegendPosition="@Position.Top"
-            XAxisLabels="@XAxisLabels" CanHideSeries="true"
-            InputLabels="@InputLabels" ChartOptions="@_chartOptions"
+          CanHideSeries="true" ChartOptions="@_chartOptions" XAxisLabels="@XAxisLabels"
             @bind-SelectedIndex="SelectedIndex"></MudChart>
+@*  *@
 
 @code {
     /// <summary>
@@ -28,14 +28,15 @@
     public List<string> AccountNames { get; set; } = [];
 
     private int SelectedIndex = -1; //default value cannot be 0 -> first selected index is 0.
-    public string[] XAxisLabels = { "1", "7", "14", "21", "28" };
+    public string[] XAxisLabels = { "1", "", "7", "14", "21", "28", "35" };
 
-    private string[] InputLabels = { "yo", "blah" };
+    // private string[] InputLabels = { "yo", "blah" };
     private List<ChartSeries> ChartSeries = [];
     private ChartOptions _chartOptions = new ChartOptions
-        {
-            MaxNumYAxisTicks = 5
-        };
+    {
+        YAxisTicks = 250,
+        MaxNumYAxisTicks = 5
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,10 +46,23 @@
         CreateXAxis();
 
         // await loadData();
+        CreateData();
     }
 
     private void CreateXAxis() {
         // next 30 days?
         // XAxisLabels = { "1", "7" };
+    }
+
+    private void CreateData()
+    {
+        ChartSeries = new List<ChartSeries>
+        {
+            new ChartSeries { Name="account", Data = new double[] { 1, 350, 17, 25, 31, 1200, 4, 773, 258, 491 }},
+            // new ChartSeries { Name="account", Data = new double[] { 1, 5, 17, 25, 31, 4 }}
+        };
+
+        // StateHasChanged();
+
     }
 }

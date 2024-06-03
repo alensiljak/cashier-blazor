@@ -53,10 +53,10 @@
     {
         await base.OnInitializedAsync();
 
-        await loadData();
+        await LoadDataAsync();
     }
 
-    public async Task loadData()
+    public async Task LoadDataAsync()
     {
         var serverUrl = await _settings.GetSetting<string>(SettingsKeys.backupServerUrl);
         if (string.IsNullOrWhiteSpace(serverUrl))
@@ -83,7 +83,7 @@
             await CloudBackupService.BackupJournal(_db);
 
             CloudBackupService.ClearCache();
-            await loadData();
+            await LoadDataAsync();
 
             Notification.Success("Transactions backup complete");
 
