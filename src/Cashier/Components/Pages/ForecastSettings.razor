@@ -28,7 +28,18 @@ else
     <MudList>
         @foreach (var accountName in _accountNames)
         {
-            <MudListItem>@accountName</MudListItem>
+            var index = _accountNames.IndexOf(accountName);
+
+            <MudListItem>
+                <MudStack Row Class="align-center">
+                    <MudText Class="flex-grow-1">
+                        @accountName
+                    </MudText>
+                    <MudIconButton Icon="@IconsMud.Trash" Class="red" Size="Size.Medium"
+                                   OnClick="() => OnDeleteClicked(index)" />
+                </MudStack>
+
+            </MudListItem>
         }
     </MudList>
 }
@@ -67,7 +78,7 @@ else
     {
         // load accounts
         var accounts = await Settings.GetSetting<List<string>>(SettingsKeys.ForecastAccounts);
-        if (accounts == null) return; 
+        if (accounts == null) return;
 
         _accountNames = accounts;
     }
@@ -86,13 +97,26 @@ else
         _accountNames.Add(result);
 
         // save
-        await Settings.SetSetting(SettingsKeys.ForecastAccounts, _accountNames);
+        await SaveSettingsAsync();
+    }
 
-        StateHasChanged();
+    async void OnDeleteClicked(int index)
+    {
+        // var item = _accountNames[index];
+        _accountNames.RemoveAt(index);
+
+        await SaveSettingsAsync();
     }
 
     void OnFabClicked()
     {
         OnAddAccountClick();
+    }
+
+    async Task SaveSettingsAsync()
+    {
+        await Settings.SetSetting(SettingsKeys.ForecastAccounts, _accountNames);
+
+        // StateHasChanged();
     }
 }
