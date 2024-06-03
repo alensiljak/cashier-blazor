@@ -34,6 +34,6 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddSingleton<AppState>();
 builder.Services.AddScoped<IDexieDAL, DexieDAL>();
 builder.Services.AddScoped<ISettingsService, SettingsService>();
-
+builder.Services.AddScoped<RouterService, RouterService>();
 
 await builder.Build().RunAsync();

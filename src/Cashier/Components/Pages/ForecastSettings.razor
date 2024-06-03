@@ -130,5 +130,7 @@ else
     {
         await Settings.SetSetting(SettingsKeys.ForecastAccounts, _accountNames);
         await Settings.SetSetting(SettingsKeys.ForecastDays, _days);
+
+        await _router.Back();
     }
 }
