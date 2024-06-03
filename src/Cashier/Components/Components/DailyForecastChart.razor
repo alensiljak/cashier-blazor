@@ -3,6 +3,9 @@
 *@
 @using MudBlazor
 
+@inject IDexieDAL _db
+@inject ISettingsService _settings
+
 <h3>Daily Forecast Chart</h3>
 
 <div>
@@ -19,7 +22,7 @@
     /// Number of days for forecast, starting from the day after today.
     /// </summary>
     [Parameter]
-    public ushort Days { get; set; }
+    public ushort DaysCount { get; set; } = 7;
 
     /// <summary>
     /// Names of the accounts to include.
@@ -28,7 +31,7 @@
     public List<string> AccountNames { get; set; } = [];
 
     private int SelectedIndex = -1; //default value cannot be 0 -> first selected index is 0.
-    public string[] XAxisLabels = { "1", "", "7", "14", "21", "28", "35" };
+    public string[] XAxisLabels = [];
 
     // private string[] InputLabels = { "yo", "blah" };
     private List<ChartSeries> ChartSeries = [];
@@ -45,24 +48,98 @@
         // set up days
         CreateXAxis();
 
-        // await loadData();
-        CreateData();
+        await loadDataAsync();
     }
 
     private void CreateXAxis() {
-        // next 30 days?
-        // XAxisLabels = { "1", "7" };
+        // Create labels for the days ahead.
+        var labels = new string[DaysCount+1];
+
+        for (var x = 0; x <= DaysCount; x++)
+        {
+            // labels on weeks only
+            if ((x+1) % 7 == 0)
+            {
+                labels[x] = (x+1).ToString();
+            } else
+            {
+                labels[x] = string.Empty;
+            }
+        }
+
+        XAxisLabels = labels;
+        // StateHasChanged();
     }
 
-    private void CreateData()
+    async Task loadDataAsync()
     {
-        ChartSeries = new List<ChartSeries>
+        // load the account.
+        foreach(var accountName in this.AccountNames)
         {
-            new ChartSeries { Name="account", Data = new double[] { 1, 350, 17, 25, 31, 1200, 4, 773, 258, 491 }},
-            // new ChartSeries { Name="account", Data = new double[] { 1, 5, 17, 25, 31, 4 }}
-        };
+            await LoadAccountAsync(accountName);
+        }
 
-        // StateHasChanged();
+        // Set the max Y value to be the max value in the series.
+        double maxValue = 0;
+        foreach(var item in ChartSeries)
+        {
+            var max = item.Data.Max();
+            maxValue = max > maxValue ? max : maxValue;
+        }
 
+        const int TickNumber = 5;
+        _chartOptions.YAxisTicks = Convert.ToInt32(maxValue / TickNumber);
+        _chartOptions.MaxNumYAxisTicks = Convert.ToInt32(maxValue);
+    }
+
+    /// <summary>
+    /// Load account details and create an entry in the bar chart.
+    /// </summary>
+    /// <param name="accountName"></param>
+    /// <returns></returns>
+    async Task LoadAccountAsync(string accountName)
+    {
+        var entry = new ChartSeries();
+        entry.Name = accountName;
+        entry.Data = new double[DaysCount];
+        ChartSeries.Add(entry);
+
+        // load account record, with balance.
+        var account = await _db.Accounts.Get(accountName);
+        if(account == null)
+        {
+            throw new Exception("Account could not be loaded!");
+        }
+
+        // get initial balance
+        var initialValue = account.CurrentValue == null ? 0 : Double.Parse(account.CurrentValue);
+        entry.Data[0] = initialValue;
+
+        // todo: Add local transactions
+
+        // todo: project scheduled transactions
+
+        for(var day = 1; day < DaysCount; day++)
+        {
+            // todo: calculate values for subsequent days
+            entry.Data[day] = 10 + day * 2;
+        }
+
+        // AccountViewModel? result = null;
+        try
+        {
+            var currency = await _settings.GetDefaultCurrency();
+
+            var calc = new ForecastCalculator(_db, currency);
+            // var account = await calc.GetAccountBalance(accountName);
+            // if (account != null)
+            // {
+            //     result = account;
+            // }
+        }
+        catch (Exception e)
+        {
+            // Notification.Error(e.Message);
+        }
     }
 }

@@ -40,39 +40,19 @@
             </ul>
         </div>
 
-        @if (_accounts.Count == 0)
+        @if (_accountNames.Count == 0)
         {
             <MudText>There are no accounts selected for forecasting</MudText>
         }
         else
         {
-            <MudList>
-                @foreach (var account in _accounts)
-                {
-                    <MudListItem>@account.Name</MudListItem>
-                }
-            </MudList>
-
-            <MudChart ChartType="ChartType.StackedBar" ChartSeries="@ChartSeries" LegendPosition="@Position.Top"
-                      XAxisLabels="@XAxisLabels" CanHideSeries="true"
-                      InputLabels="@InputLabels" ChartOptions="@_chartOptions"
-                      @bind-SelectedIndex="SelectedIndex"></MudChart>
-
-            <DailyForecastChart />
+            <DailyForecastChart DaysCount="7" AccountNames="@_accountNames" />
         }
     </MudCardContent>
 </MudCard>
 
 @code {
-    List<ChartSeries> ChartSeries = [];
-    List<Account> _accounts = [];
-    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct" };
-    private int SelectedIndex = -1; //default value cannot be 0 -> first selected index is 0.
-    string[] InputLabels = { "yo", "blah" };
-    ChartOptions _chartOptions = new ChartOptions
-        {
-            MaxNumYAxisTicks = 5
-        };
+    List<string> _accountNames = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -80,72 +60,16 @@
 
         // TODO: Just load an appropriate chart component.
 
-        await LoadData();
-
-        // todo: draw a chart
-        CreateDummyData();
+        await LoadDataAsync();
     }
 
-    private List<ChartSeries> CreateDummyData()
-    {
-        // monthly?
-        var series = new List<ChartSeries> {
-            new ChartSeries { Name = "Cash", Data = new double[] { 125, 20, 50, 75, 1200, 350, 24, 17, 712 } },
-            new ChartSeries { Name = "N26", Data = new double[] { 36, 20, 50, 75, 1200, 350, 24, 350, 0 } }
-        };
-
-        ChartSeries = series;
-
-        StateHasChanged();
-
-        return series;
-    }
-
-    async Task LoadData()
+    async Task LoadDataAsync()
     {
         // get account names
         var accountNames = await _settings.GetSetting<List<string>>(SettingsKeys.ForecastAccounts);
         if (accountNames == null) return;
 
-        foreach (var accountName in accountNames)
-        {
-            var account = await LoadAccount(accountName);
-            if (account == null)
-            {
-                Console.WriteLine("Could not load account {}", accountName);
-                continue;
-            }
-
-            // get initial balance
-            // account.CurrentValue;
-
-            // todo: Add local transactions
-            // todo: project scheduled transactions
-
-            _accounts.Add(account);
-        }
-
-    }
-
-    private async Task<AccountViewModel?> LoadAccount(string accountName)
-    {
-        AccountViewModel? result = null;
-        try
-        {
-            var currency = await _settings.GetDefaultCurrency();
-
-            var calc = new ForecastCalculator(_db, currency);
-            var account = await calc.GetAccountBalance(accountName);
-            if (account != null)
-            {
-                result = account;
-            }
-        }
-        catch (Exception e)
-        {
-            Notification.Error(e.Message);
-        }
-        return result;
+        _accountNames = accountNames;
     }
 
     void OnCardClick()
