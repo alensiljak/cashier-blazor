@@ -5,10 +5,10 @@
 @using MudBlazor
 
 @inject AppState State
-@inject NavigationManager NavMan
 @inject IDexieDAL _db
 @inject ISettingsService _settings
 @inject NotificationService Notification
+@inject RouterService _router
 
 @* Date *@
 <MudDatePicker @ref="_datePicker" Placeholder="Date" DateFormat="@FixedSettings.DateFormat"
@@ -231,7 +231,7 @@
 
         State.SelectionModeMetadata = selectionMode;
 
-        NavMan.NavigateTo("/accounts");
+        _router.GoTo("/accounts");
     }
 
     void OnAddPostingClick()
@@ -252,7 +252,7 @@
 
     void OnDeletePostingsClicked()
     {
-        NavMan.NavigateTo("/postings-delete");
+        _router.GoTo("/postings-delete");
     }
 
     void OnPayeeClick()
@@ -264,12 +264,12 @@
 
         State.SelectionModeMetadata = selectionMode;
 
-        NavMan.NavigateTo("/payees");
+        _router.GoTo("/payees");
     }
 
     void OnReorderPostingsClick()
     {
-        NavMan.NavigateTo("/postings-reorder");
+        _router.GoTo("/postings-reorder");
     }
 
     void RecalculateSum()
