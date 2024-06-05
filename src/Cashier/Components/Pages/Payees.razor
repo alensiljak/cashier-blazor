@@ -46,7 +46,7 @@ else
 @* FAB *@
 @if (ShowNewPayeeButton)
 {
-    <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Check" Class="z-100"
+    <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus" Class="z-100"
             Style="@Constants.DefaultFabPosition" @onclick="OnFab" />
 }
 
@@ -72,7 +72,7 @@ else
     {
         get
         {
-            var show = IsPickerMode && !string.IsNullOrWhiteSpace(searchTerm) && payees.Count == 0;
+            var show = IsPickerMode && !string.IsNullOrWhiteSpace(searchTerm);
             return show;
         }
     }
