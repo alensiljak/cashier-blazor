@@ -6,6 +6,7 @@
 @inject AppState appState
 
 <MudThemeProvider @ref="_mudThemeProvider" @bind-IsDarkMode="_isDarkMode" Theme="@theme" />
+<MudPopoverProvider />
 <MudDialogProvider CloseOnEscapeKey="true" />
 <MudSnackbarProvider />
 <PWAUpdater Align="PWAUpdater.Aligns.Buttom" />
