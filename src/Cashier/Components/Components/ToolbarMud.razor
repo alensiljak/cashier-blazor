@@ -16,7 +16,7 @@
     <MudSpacer />
     @if (ContextMenuItems != null)
     {
-        <MudMenu Icon="@IconsMud.MoreVertical" @ref="mudMenu"
+        <MudMenu T="string" Icon="@IconsMud.MoreVertical" @ref="mudMenu"
                  AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.TopRight" Color="Color.Inherit">
             @ContextMenuItems
         </MudMenu>
@@ -44,7 +44,7 @@
 
     private void CloseMenu()
     {
-        mudMenu?.CloseMenu();
+        mudMenu?.CloseMenuAsync();
     }
 
     private void OnMenuClick()

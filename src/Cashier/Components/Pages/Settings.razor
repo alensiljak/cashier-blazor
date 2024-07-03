@@ -45,11 +45,11 @@
     @* Restore Settings *@
     <MudText Typo="Typo.h5" Class="mt-4">Restore Settings</MudText>
     <MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="RestoreSettings">
-        <ButtonTemplate>
+        <ActivatorContent>
             <div style="text-align: center;">
-                <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" for="@context" />
+                <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" />
             </div>
-        </ButtonTemplate>
+        </ActivatorContent>
         <SelectedTemplate>
             @if (context != null)
             {
@@ -65,11 +65,11 @@
     @* Asset Allocation *@
     <MudText Typo="Typo.h5" Class="mt-4">Asset Allocation</MudText>
     <MudFileUpload T="IBrowserFile" Accept=".toml" FilesChanged="OnAaFileSelected">
-        <ButtonTemplate>
+        <ActivatorContent>
             <div style="text-align: center;">
-                <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" for="@context" />
+                <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" />
             </div>
-        </ButtonTemplate>
+        </ActivatorContent>
         <SelectedTemplate>
             @if (context != null)
             {

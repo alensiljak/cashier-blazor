@@ -16,9 +16,9 @@
 </p>
 
 <MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="OnFileSelected">
-    <ButtonTemplate>
-        <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" for="@context" />
-    </ButtonTemplate>
+    <ActivatorContent>
+        <MudIconButton Icon="@IconsMud.FileUp" Color="Color.Success" HtmlTag="label" />
+    </ActivatorContent>
     <SelectedTemplate>
         @if (context != null)
         {

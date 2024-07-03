@@ -10,9 +10,9 @@
 <div class="@Class">
     <MudText>Repeats</MudText>
 
-    <MudRadioGroup @bind-SelectedOption="@HasRecurrence">
-        <MudRadio Option="false">Never</MudRadio>
-        <MudRadio Option="true">Every ...</MudRadio>
+    <MudRadioGroup @bind-Value="@HasRecurrence">
+        <MudRadio Value="false">Never</MudRadio>
+        <MudRadio Value="true">Every ...</MudRadio>
     </MudRadioGroup>
     @if (HasRecurrence)
     {
@@ -35,9 +35,9 @@
         Ends
     </MudText>
 
-    <MudRadioGroup @bind-SelectedOption="@HasEndDate">
-        <MudRadio Option="false">Never</MudRadio>
-        <MudRadio Option="true">On ...</MudRadio>
+    <MudRadioGroup @bind-Value="@HasEndDate">
+        <MudRadio Value="false">Never</MudRadio>
+        <MudRadio Value="true">On ...</MudRadio>
     </MudRadioGroup>
     @if (HasEndDate)
     {

@@ -57,7 +57,7 @@ namespace Cashier.Lib
                     // ActionDefault = ColourPalette.Sangria,
                     // ActionDefault // --mud-palette-action-default-hover
                 },
-                Palette = new PaletteLight()
+                PaletteLight = new PaletteLight()
                 {
                     Primary = ColourPalette.TropicalRainForest,
                     Secondary = ColourPalette.Sangria,
