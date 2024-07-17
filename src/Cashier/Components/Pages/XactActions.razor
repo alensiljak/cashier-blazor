@@ -135,9 +135,7 @@
             // load the new tx for editing
             State.Xact = xact;
 
-            // navigate to the editor for the new transaction,
-            // resetting the navigation?
-            // do the route.replace here
+            // navigate to the editor for the new transaction, resetting the navigation?
             _router.GoTo("/tx", new NavigationOptions { ReplaceHistoryEntry = true });
         } catch (Exception ex)
         {
