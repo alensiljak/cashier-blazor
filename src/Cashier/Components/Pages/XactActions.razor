@@ -17,9 +17,9 @@
         Transaction Actions
     </ToolbarMud>
 
-    @if (xact != null)
+    @if (_xact != null)
     {
-        <JournalTransactionRow Xact="@xact" />
+        <JournalTransactionRow Xact="@_xact" />
     }
 
     @* Actions *@
@@ -30,7 +30,7 @@
         </MudButton>
 
         <MudButton Color="Color.Primary" Size="Size.Large" Variant="Variant.Filled" FullWidth
-                   IconSize="Size.Large">
+                   IconSize="Size.Large" @onclick="OnDuplicateClicked">
             Duplicate
         </MudButton>
 
@@ -57,7 +57,7 @@
     // [Parameter]
     // public string? xactId { get; set; }
 
-    Xact? xact { get; set; }
+    Xact? _xact { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -68,19 +68,19 @@
 
     void loadData()
     {
-        xact = State.Xact;
+        _xact = State.Xact;
     }
 
     async Task OnCopyClick()
     {
-        if (xact is null)
+        if (_xact is null)
         {
             Notification.Warning("Transaction is empty! Please select a transaction.");
             return;
         }
 
         // get a journal version
-        var text = AppService.TranslateToLedger(xact);
+        var text = AppService.TranslateToLedger(_xact);
 
         // copy to clipboard
         await new AppService().CopyToClipboard(_js, text);
@@ -90,7 +90,7 @@
 
     async Task OnDeleteClick()
     {
-        if (xact is null)
+        if (_xact is null)
         {
             Notification.Warning("Transaction is empty! Please select a transaction.");
             return;
@@ -102,7 +102,7 @@
         if (result.Canceled) return;
 
         // delete Xact
-        await _db.Xacts.Delete(xact.Id!.Value);
+        await _db.Xacts.Delete(_xact.Id!.Value);
 
         State.Xact = null;
 
@@ -112,10 +112,37 @@
         await _router.Back();
     }
 
-    async Task OnDuplicateClick()
+    async Task OnDuplicateClicked()
     {
+        if (_xact == null)
+        {
+            Notification.Warning("The current transaction does not exist!");
+            return;
+        }
 
-        // do the route.replace here
+        try {
+            var app = new AppService();
+
+            // create the transaction
+            var xact = app.CreateNewXactFrom(_xact);
+
+            // save
+            var id = await app.SaveXact(_db, xact);
+
+            // display a notification after or ask before the action.
+            Notification.Success("Created a copy of Transaction");
+
+            // load the new tx for editing
+            State.Xact = xact;
+
+            // navigate to the editor for the new transaction,
+            // resetting the navigation?
+            // do the route.replace here
+            _router.GoTo("/tx", new NavigationOptions { ReplaceHistoryEntry = true });
+        } catch (Exception ex)
+        {
+            Notification.Error(ex.Message);
+        }
     }
 
     void OnEditClick()
