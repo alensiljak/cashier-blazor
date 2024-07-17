@@ -14,7 +14,7 @@
   "author": "Alen Šiljak",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
-    "dexie": "^4.0.7"
+    "dexie": "^4.0.8"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin-js": "^1.8.1",
@@ -24,7 +24,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.2.0",
-    "netlify-cli": "^17.25.0",
+    "netlify-cli": "^17.33.4",
     "typescript": "^5.4.5"
   }
 }
