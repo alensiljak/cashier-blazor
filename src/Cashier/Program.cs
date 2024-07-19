@@ -21,6 +21,8 @@ builder.Services.AddMudServices(cfg =>
 {
     // snackbar at the bottom.
     cfg.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
+    // 3.5 seconds for the message.
+    cfg.SnackbarConfiguration.VisibleStateDuration = 3500;
 });
 
 // PWA updater
