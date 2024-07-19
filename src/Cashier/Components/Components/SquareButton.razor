@@ -1,0 +1,38 @@
+﻿@using MudBlazor
+
+<MudPaper Class="d-flex flex-column align-center justify-center mud-width-full py-8">
+    <MudButton Size="Size.Large" Variant="Variant.Filled" Color=@BackgroundColor
+               Style="width: 90px;height: 90px;"
+               OnClick="OnClick">
+
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; line-height: 1.3;
+            color: @TextColor;">
+            <MudIcon Icon="@Icon" Class="mb-1" />
+            @ChildContent
+            @* @Text *@
+        </div>
+
+    </MudButton>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public Color BackgroundColor { get; set; } = Color.Tertiary;
+
+    /// <summary>
+    /// Text color option examples:
+    ///   * --mud-palette-primary-text
+    ///   * --mud-palette-secondary
+    /// </summary>
+    [Parameter]
+    public string? TextColor { get; set; } = "var(--mud-palette-primary-text)";
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

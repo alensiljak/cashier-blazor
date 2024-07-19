@@ -1,4 +1,6 @@
-﻿namespace Cashier.Data
+﻿using MudBlazor;
+
+namespace Cashier.Data
 {
     public static class Constants
     {
@@ -10,5 +12,8 @@
 
         public const string CardNamespace = "Cashier.Components.Components.";
         public const ushort DefaultForecastDays = 7;
+
+        // design
+        public const string ButtonHeight = "70px";
     }
 }

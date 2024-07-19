@@ -23,33 +23,43 @@
     }
 
     @* Actions *@
-    <MudContainer MaxWidth="MaxWidth.Small" Class="mt-10 align-center d-flex flex-column gap-8">
-        <MudButton Size="Size.Large" Variant="Variant.Filled" Color="Color.Tertiary" FullWidth StartIcon="@IconsMud.PenSquare"
-                   Style="color: var(--mud-palette-secondary);" IconSize="Size.Large" @onclick="OnEditClick">
-            Edit
-        </MudButton>
+    <MudGrid Spacing="20" Justify="Justify.FlexStart" Class="mt-4">
+        <MudItem xs="4">
+            <SquareButton Icon="@IconsMud.PenSquare"
+                          BackgroundColor="@Color.Tertiary" TextColor="var(--mud-palette-secondary)"
+                          @onclick="OnEditClick">
+                Edit
+            </SquareButton>
+        </MudItem>
 
-        <MudButton Color="Color.Primary" Size="Size.Large" Variant="Variant.Filled" FullWidth
-                   IconSize="Size.Large" @onclick="OnDuplicateClicked">
-            Duplicate
-        </MudButton>
+        <MudItem xs="4">
+            <SquareButton Icon="@IconsMud.Copy" BackgroundColor="Color.Primary" TextColor=""
+                          @onclick="OnDuplicateClicked">
+                Duplicate
+            </SquareButton>
+        </MudItem>
 
-        <MudButton Color="Color.Tertiary" Size="Size.Large" Variant="Variant.Filled" FullWidth
-                   Style="color: var(--mud-palette-secondary);" IconSize="Size.Large">
-            Schedule
-        </MudButton>
+        <MudItem xs="4">
+            <SquareButton Icon="@IconsMud.CalendarClock" BackgroundColor="Color.Tertiary" TextColor="var(--mud-palette-secondary)"
+            @onclick="OnScheduleClick">
+                Schedule
+            </SquareButton>
+        </MudItem>
 
-        <MudButton Color="Color.Primary" Size="Size.Large" Variant="Variant.Filled" FullWidth
-                   StartIcon="@IconsMud.Copy" IconSize="Size.Large" OnClick="OnCopyClick">
-            Copy Ledger Entry
-        </MudButton>
+        <MudItem xs="4">
+            <SquareButton Icon="@IconsMud.Copy" BackgroundColor="Color.Primary"
+                          OnClick="OnCopyClick">
+                Copy Ledger
+            </SquareButton>
+        </MudItem>
 
-        <MudButton Color="Color.Secondary" Size="Size.Large" Variant="Variant.Filled" FullWidth
-                   Style="color: var(--mud-palette-tertiary);"
-                   StartIcon="@IconsMud.Trash" IconSize="Size.Large" @onclick="OnDeleteClick">
-            Delete
-        </MudButton>
-    </MudContainer>
+        <MudItem xs="4">
+            <SquareButton Icon="@IconsMud.Trash" BackgroundColor="Color.Secondary" TextColor="var(--mud-palette-tertiary)"
+                          @onclick="OnDeleteClick">
+                Delete
+            </SquareButton>
+        </MudItem>
+    </MudGrid>
 
 </MudContainer>
 
@@ -97,7 +107,7 @@
         }
 
         // confirm with a dialog
-        var result = await AppService.ShowConfirmationDialog(DialogService, 
+        var result = await AppService.ShowConfirmationDialog(DialogService,
             "Do you want to delete the Transaction?", "Confirm Delete", Color.Secondary);
         if (result.Canceled) return;
 
@@ -120,7 +130,8 @@
             return;
         }
 
-        try {
+        try
+        {
             var app = new AppService();
 
             // create the transaction
@@ -137,7 +148,8 @@
 
             // navigate to the editor for the new transaction, resetting the navigation?
             _router.GoTo("/tx", new NavigationOptions { ReplaceHistoryEntry = true });
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             Notification.Error(ex.Message);
         }
@@ -146,5 +158,10 @@
     void OnEditClick()
     {
         NavMan.NavigateTo("/tx");
+    }
+
+    void OnScheduleClick()
+    {
+        Notification.Info("Not implemented");
     }
 }
