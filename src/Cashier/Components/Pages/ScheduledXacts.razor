@@ -10,7 +10,6 @@
     <ContextMenuItems>
         <MudListItem Icon="@IconsMud.Package" @onclick="OnBackupClick">Backup</MudListItem>
         <MudListItem Icon="@IconsMud.PackageOpen" @onclick="OnRestoreClick">Restore</MudListItem>
-
     </ContextMenuItems>
 </ToolbarMud>
 
@@ -32,18 +31,36 @@ else
 {
     @* Items *@
     <MudList Clickable>
+        @{
+            DateOnly? currentDate = null;
+        }
         @foreach (var stx in _list)
         {
+            if (currentDate != stx.NextDate)
+            {
+                @* add a date separator *@
+                currentDate = stx.NextDate;
+                <MudDivider />
+                @* <MudText Typo="Typo.overline" Align="Align.Center" Color="Color.Tertiary">
+    @(currentDate?.ToString(Constants.ISODateFormat))
+    </MudText>    *@
+                <center style="@GetDateStyle(stx)">
+                    <MudIcon Icon="@IconsMud.CalendarDays" Size="Size.Small" />
+                    @(currentDate?.ToString(Constants.ISODateFormat))
+                </center>
+            }
             <MudListItem Class="px-1 py-1" @onclick="@(() => showTx(stx.Id))">
-                <MudStack Row>
-                    <MudText Typo="Typo.body2" Class="mr-1" Style="@GetDateStyle(stx)">
-                        @stx.NextDate.ToString(Constants.ISODateFormat)
-                    </MudText>
-                    <MudItem>
-                        <MudText>@stx.Transaction?.Payee</MudText>
-                        <small>@GetFirstLine(stx.Remarks)</small>
-                    </MudItem>
+                @* <MudText Typo="Typo.body2" Class="mr-1" Style="@GetDateStyle(stx)">
+        @stx.NextDate.ToString(Constants.ISODateFormat)
+        </MudText> *@
+                <MudStack Row AlignItems="AlignItems.Stretch">
+                    <MudText Align="Align.Start">@stx.Transaction?.Payee</MudText>
+                    <MudSpacer />
+                    @* <MudText Align="Align.End">@stx.Transaction</MudText> *@
                 </MudStack>
+                <MudItem>
+                    <small>@GetFirstLine(stx.Remarks)</small>
+                </MudItem>
             </MudListItem>
         }
     </MudList>
@@ -92,7 +109,7 @@ else
             }
 
             // null check
-            if (y.Transaction is null || y.Transaction.Payee is null || 
+            if (y.Transaction is null || y.Transaction.Payee is null ||
                 x.Transaction is null || x.Transaction.Payee is null) return 0;
 
             return x.Transaction.Payee.CompareTo(y.Transaction.Payee);
