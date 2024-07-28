@@ -10,12 +10,11 @@
     Account Transactions
 </ToolbarMud>
 
-<span>@Account.ParentAccountName</span>
+<span>@this.Account.ParentAccountName</span>
 <MudStack Row>
     <h1>@Account.AccountName</h1>
     <MudSpacer />
-    @* todo: use the calculated balance here *@
-    @Account.AccountBalance
+    <h2>@Balance</h2>
 </MudStack>
 
 <MudDivider />
@@ -47,6 +46,7 @@
 
     AccountViewModel Account { get; set; } = new AccountViewModel(new Account());
     List<Xact> Xacts { get; set; } = new List<Xact>();
+    Money Balance = Money.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,9 +76,9 @@
 
         var xact = new Xact(DateOnly.Parse("1900-01-01"), "Initial Balance", null,
         new List<Posting>()
-                        {
+                                    {
             new Posting(accountName, Account.AccountBalance)
-                        });
+                                    });
         Xacts.Add(xact);
     }
 
@@ -110,9 +110,8 @@
         // get all the transactions that have a posting for this account.
         await LoadTransactions();
 
-        // fill the transactions.
-
-        // sum the amount for the account
+        // sum the amount for the account.
+        CalculateCurrentBalance();
 
         // apply to the initial balance
 
@@ -123,12 +122,39 @@
         var list = await _db.Xacts
             .OrderBy(nameof(Xact.Date))
             .ToList();
+
+        // add the missing amounts on Postings.
+        XactAugmenter.calculateEmptyPostingAmounts(list);
+
         var xactsForAccount = list.Where(x =>
             x.Postings != null &&
-            x.Postings.Any(p => p.Account != null && p.Account.Contains(accountName))
+            x.Postings.Any(p => p.Account != null && p.Account == accountName)
         );
 
-        // var xacts = xactsForAccount.ToList();
         Xacts.AddRange(xactsForAccount);
+    }
+
+    void CalculateCurrentBalance()
+    {
+        var balance = Money.Empty;
+        balance.Currency = Account?.AccountBalance?.Currency;
+
+        foreach (var xact in Xacts)
+        {
+            var postings = xact.Postings?.Where(p => p.Account == accountName);
+            if (postings == null) continue;
+
+            foreach (var posting in postings)
+            {
+                if (posting.Currency == balance.Currency)
+                {
+                    balance.Quantity += posting.Amount;
+                }
+            }
+        }
+
+        this.Balance = balance;
+        
+        StateHasChanged();
     }
 }
