@@ -11,7 +11,14 @@
 </ToolbarMud>
 
 <span>@Account.ParentAccountName</span>
-<h1>@Account.AccountName</h1>
+<MudStack Row>
+    <h1>@Account.AccountName</h1>
+    <MudSpacer />
+    @* todo: use the calculated balance here *@
+    @Account.AccountBalance
+</MudStack>
+
+<MudDivider />
 
 <MudList>
     @foreach (var xact in Xacts)
@@ -23,8 +30,11 @@
                 </MudItem>
                 <MudSpacer />
                 <MudItem>
-                    @xact?.Postings?.FirstOrDefault()?.Amount
-                    @xact?.Postings?.FirstOrDefault()?.Currency
+                    @{
+                        var posting = @xact?.Postings?.Find(p => p.Account == accountName);
+                    }
+                    @posting?.Amount
+                    @posting?.Currency
                 </MudItem>
             </MudStack>
         </MudListItem>
@@ -35,8 +45,8 @@
     [Parameter]
     public string? accountName { get; set; }
 
-    AccountViewModel Account { get; set; }
-    List<Xact> Xacts { get; set; }
+    AccountViewModel Account { get; set; } = new AccountViewModel(new Account());
+    List<Xact> Xacts { get; set; } = new List<Xact>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,13 +54,9 @@
 
         if (accountName == null)
         {
-            // throw new ArgumentNullException(accountName);
             Notification.Error("Account not set!");
             return;
         }
-
-        Account = new AccountViewModel(new Account());
-        Xacts = new List<Xact>();
 
         try
         {
@@ -70,9 +76,9 @@
 
         var xact = new Xact(DateOnly.Parse("1900-01-01"), "Initial Balance", null,
         new List<Posting>()
-            {
+                        {
             new Posting(accountName, Account.AccountBalance)
-            });
+                        });
         Xacts.Add(xact);
     }
 
@@ -102,6 +108,7 @@
         await CreateInitialBalanceXact();
 
         // get all the transactions that have a posting for this account.
+        await LoadTransactions();
 
         // fill the transactions.
 
@@ -109,5 +116,19 @@
 
         // apply to the initial balance
 
+    }
+
+    async Task LoadTransactions()
+    {
+        var list = await _db.Xacts
+            .OrderBy(nameof(Xact.Date))
+            .ToList();
+        var xactsForAccount = list.Where(x =>
+            x.Postings != null &&
+            x.Postings.Any(p => p.Account != null && p.Account.Contains(accountName))
+        );
+
+        // var xacts = xactsForAccount.ToList();
+        Xacts.AddRange(xactsForAccount);
     }
 }
