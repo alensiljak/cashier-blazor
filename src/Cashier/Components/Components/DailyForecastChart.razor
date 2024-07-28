@@ -151,7 +151,8 @@
 
     private async Task<Account> LoadAccountAsync(string accountName)
     {
-        var account = await _db.Accounts.Get(accountName);
+        var svc = new AccountService();
+        var account = await svc.LoadAccount(_db, accountName);
         if (account == null)
         {
             throw new Exception("Account could not be loaded!");

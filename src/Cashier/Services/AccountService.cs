@@ -47,6 +47,12 @@ namespace Cashier.Services
             return parts.Last();
         }
 
+        public async Task<Account?> LoadAccount(IDexieDAL db, string accountName)
+        {
+            var account = await db.Accounts.Get(accountName);
+            return account;
+        }
+
         public async Task<List<Account>> LoadInvestmentAccounts(ISettingsService settings, IDexieDAL db)
         {
             var root = await settings.GetRootInvestmentAccount();

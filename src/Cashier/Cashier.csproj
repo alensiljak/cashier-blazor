@@ -35,6 +35,10 @@
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Data\Entities\" />
+	</ItemGroup>
+
 	<!-- Copy Dexie to wwwroot -->
 	<Target Name="CopyDexie" AfterTargets="PreBuildEvent">
 		<ItemGroup>

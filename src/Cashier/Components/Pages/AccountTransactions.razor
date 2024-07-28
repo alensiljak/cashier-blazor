@@ -1,0 +1,95 @@
+﻿@page "/account-xacts/{accountName}"
+
+@using MudBlazor
+
+@inject IDexieDAL _db
+@inject NotificationService Notification
+
+<ToolbarMud>
+    Account Transactions
+</ToolbarMud>
+
+<h1>@accountName</h1>
+
+<MudList>
+    @foreach (var xact in Xacts)
+    {
+        <MudListItem>
+            <MudStack Row>
+                <MudItem>
+            @xact.Payee
+                </MudItem>
+                <MudItem>
+                    
+                </MudItem>
+            </MudStack>
+        </MudListItem>
+    }
+</MudList>
+
+@code {
+    [Parameter]
+    public string? accountName { get; set; }
+
+    List<Xact> Xacts { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        if (accountName == null)
+        {
+            // throw new ArgumentNullException(accountName);
+            Notification.Error("Account not set!");
+            return;
+        }
+
+        Xacts = new List<Xact>();
+
+        try
+        {
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            Notification.Error(ex.Message);
+        }
+    }
+
+    async Task CreateInitialBalanceXact()
+    {
+        // get the account balance.
+        var svc = new AccountService();
+        var account = await svc.LoadAccount(_db, accountName ?? "");
+        if (account == null)
+        {
+            throw new Exception("Account not found!");
+        }
+
+        var balance = svc.GetAccountBalance(account);
+
+        // create the initial transaction
+
+        var xact = new Xact(DateOnly.Parse("1900-01-01"), "Initial Balance", null, null);
+        Xacts.Add(xact);
+    }
+
+    /// <summary>
+    /// Loads transactions for the account.
+    /// </summary>
+    /// <returns></returns>
+    async Task LoadData()
+    {
+        // get the initial balance
+        await CreateInitialBalanceXact();
+
+        // get all the transactions that have a posting for this account.
+
+        // fill the transactions.
+
+        // sum the amount for the account
+
+        // apply to the initial balance
+
+    }
+}
