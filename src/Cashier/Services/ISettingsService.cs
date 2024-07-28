@@ -1,4 +1,4 @@
-﻿using Cashier.Model;
+﻿using Cashier.Data.Entities;
 
 namespace Cashier.Services
 {

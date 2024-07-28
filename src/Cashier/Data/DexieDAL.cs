@@ -1,5 +1,6 @@
 ﻿using BlazorDexie.Database;
 using BlazorDexie.JsModule;
+using Cashier.Data.Entities;
 using Cashier.Model;
 using Microsoft.JSInterop;
 

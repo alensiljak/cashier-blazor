@@ -1,5 +1,6 @@
 ﻿@page "/account-xacts/{accountName}"
 
+@using Cashier.Data.Entities
 @using MudBlazor
 
 @inject IDexieDAL _db
@@ -9,7 +10,8 @@
     Account Transactions
 </ToolbarMud>
 
-<h1>@accountName</h1>
+<span>@Account.ParentAccountName</span>
+<h1>@Account.AccountName</h1>
 
 <MudList>
     @foreach (var xact in Xacts)
@@ -17,10 +19,12 @@
         <MudListItem>
             <MudStack Row>
                 <MudItem>
-            @xact.Payee
+                    @xact.Payee
                 </MudItem>
+                <MudSpacer />
                 <MudItem>
-                    
+                    @xact?.Postings?.FirstOrDefault()?.Amount
+                    @xact?.Postings?.FirstOrDefault()?.Currency
                 </MudItem>
             </MudStack>
         </MudListItem>
@@ -31,6 +35,7 @@
     [Parameter]
     public string? accountName { get; set; }
 
+    AccountViewModel Account { get; set; }
     List<Xact> Xacts { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -44,6 +49,7 @@
             return;
         }
 
+        Account = new AccountViewModel(new Account());
         Xacts = new List<Xact>();
 
         try
@@ -58,6 +64,20 @@
 
     async Task CreateInitialBalanceXact()
     {
+        await LoadAccount();
+
+        // create the initial transaction
+
+        var xact = new Xact(DateOnly.Parse("1900-01-01"), "Initial Balance", null,
+        new List<Posting>()
+            {
+            new Posting(accountName, Account.AccountBalance)
+            });
+        Xacts.Add(xact);
+    }
+
+    async Task LoadAccount()
+    {
         // get the account balance.
         var svc = new AccountService();
         var account = await svc.LoadAccount(_db, accountName ?? "");
@@ -66,12 +86,10 @@
             throw new Exception("Account not found!");
         }
 
+        Account = new AccountViewModel(account);
+
         var balance = svc.GetAccountBalance(account);
-
-        // create the initial transaction
-
-        var xact = new Xact(DateOnly.Parse("1900-01-01"), "Initial Balance", null, null);
-        Xacts.Add(xact);
+        Account.AccountBalance = balance;
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿using Cashier.Model;
 
-namespace Cashier.Data
+namespace Cashier.Data.Entities
 {
     public class Account()
     {

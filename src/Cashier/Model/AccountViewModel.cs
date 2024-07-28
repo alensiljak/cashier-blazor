@@ -1,4 +1,4 @@
-﻿using Cashier.Data;
+﻿using Cashier.Data.Entities;
 
 namespace Cashier.Model
 {

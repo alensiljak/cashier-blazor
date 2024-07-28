@@ -18,7 +18,7 @@ namespace Cashier.Lib
         /// <param name="accounts">List of Accounts</param>
         public async Task AddLocalXacts(IDexieDAL db, List<AccountViewModel> accounts)
         {
-            if(accounts.Count == 0)
+            if (accounts.Count == 0)
             {
                 Console.WriteLine("No accounts sent for balance adjustment.");
                 return;
@@ -28,10 +28,10 @@ namespace Cashier.Lib
             var settings = new SettingsService(db);
             var defaultCurrency = await settings.GetDefaultCurrency();
 
-            foreach(var account in accounts)
+            foreach (var account in accounts)
             {
                 // handle empty balances
-                if(account.AccountBalance is null)
+                if (account.AccountBalance is null)
                 {
                     account.AccountBalance = accSvc.GetAccountBalance(account, defaultCurrency);
                 }
@@ -58,69 +58,85 @@ namespace Cashier.Lib
 
             foreach (var xact in xacts)
             {
-                var balance = new Money();
+                var balance = calculateXactAmount(xact);
 
-                // Get the assets and liabilities posting(s) from the transaction.
-                var postings = xact.Postings?
-                    .Where(p => p.Account != null &&
-                    (p.Account.StartsWith("Assets:") || p.Account.StartsWith("Liabilities:") ));
-                if (postings == null) continue;
-                
-                switch(postings.Count())
-                {
-                    case 0:
-                        // No postings found in Assets or Liabilities!
-                        balance.Quantity = 0;
-                        break;
-
-                    case 1:
-                        // a clear payment case with one source (asset/liability) account.
-                        var posting = postings.First();
-                        if (posting.Amount is null)
-                        {
-                            Console.WriteLine($"Invalid amount encountered! {posting.Account} on {xact.Date} {xact.Payee}");
-                            balance.Quantity = 0;
-                        }
-                        else
-                        {
-                            balance.Quantity = posting.Amount;
-                            balance.Currency = posting.Currency;
-                        }
-                        break;
-                    
-                    case 2:
-                        var firstPosting = postings.First();
-                        if (firstPosting.Amount is null) continue;
-
-                        // involves a transfer
-                        if (firstPosting.Amount != null)
-                        {
-                            balance.Quantity = Math.Abs(firstPosting.Amount.Value);
-                        }
-                        if (firstPosting.Currency != null)
-                        {
-                            balance.Currency = firstPosting.Currency;
-                        }
-
-                        // Treat the liability account as an expense.
-                        var assetPostings = postings.Where(p => p.Account!.StartsWith("Assets:"));
-                        if (assetPostings.Count() > 0 &&
-                            postings.Count(p => p.Account!.StartsWith("Liabilities:")) > 0)
-                        {
-                            // Take the sign from the Asset posting
-                            balance.Quantity = assetPostings.First()!.Amount;
-                        }
-                        break;
-
-                    default:
-                        Console.WriteLine("More than one posting found in Assets!");
-                        break;
-                }
                 // Assemble the output
                 result.Add(balance);
             }
 
             return result;
+        }
+
+        public Money calculateXactAmount(Xact xact)
+        {
+            var balance = new Money();
+
+            // Get the assets and liabilities posting(s) from the transaction.
+            var postings = xact.Postings?
+                .Where(p => p.Account != null &&
+                (p.Account.StartsWith("Assets:") || p.Account.StartsWith("Liabilities:")));
+            if (postings == null)
+            {
+                // continue;
+                return balance;
+            }
+
+            switch (postings.Count())
+            {
+                case 0:
+                    // No postings found in Assets or Liabilities!
+                    balance.Quantity = 0;
+                    break;
+
+                case 1:
+                    // a clear payment case with one source (asset/liability) account.
+                    var posting = postings.First();
+                    if (posting.Amount is null)
+                    {
+                        Console.WriteLine($"Invalid amount encountered! {posting.Account} on {xact.Date} {xact.Payee}");
+                        balance.Quantity = 0;
+                    }
+                    else
+                    {
+                        balance.Quantity = posting.Amount;
+                        balance.Currency = posting.Currency;
+                    }
+                    break;
+
+                case 2:
+                    var firstPosting = postings.First();
+                    if (firstPosting.Amount is null)
+                    {
+                        //continue;
+                        return balance;
+                    }
+
+                    // involves a transfer
+                    if (firstPosting.Amount != null)
+                    {
+                        balance.Quantity = Math.Abs(firstPosting.Amount.Value);
+                    }
+                    if (firstPosting.Currency != null)
+                    {
+                        balance.Currency = firstPosting.Currency;
+                    }
+
+                    // Treat the liability account as an expense.
+                    var assetPostings = postings.Where(p => p.Account!.StartsWith("Assets:"));
+                    if (assetPostings.Count() > 0 &&
+                        postings.Count(p => p.Account!.StartsWith("Liabilities:")) > 0)
+                    {
+                        // Take the sign from the Asset posting
+                        balance.Quantity = assetPostings.First()!.Amount;
+                    }
+                    break;
+
+                default:
+                    Console.WriteLine("More than one posting found in Assets!");
+                    break;
+            }
+
+            return balance;
         }
 
         /// <summary>
@@ -129,56 +145,70 @@ namespace Cashier.Lib
         /// </summary>
         public static void calculateEmptyPostingAmounts(List<Xact?> xacts)
         {
-            foreach (var xact in xacts) {
+            foreach (var xact in xacts)
+            {
                 if (xact == null || xact.Postings == null || xact.Postings.Count == 0) continue;
 
-                var postings = xact.Postings;
-
-                // do we have multiple currencies? Exclude nulls.
-                var currencies = postings
-                    .Where(p => !string.IsNullOrWhiteSpace(p.Currency))
-                    .Select((posting) => posting.Currency)
-                    .Distinct();
-                
-                if (currencies.Count() > 1) {
-                    Console.WriteLine("Multiple currencies fund in a transactions. Ignoring.");
-                    DebugPrinter.PrintJson(currencies);
-                    continue;
-                }
-
-                // use the currency (first?)
-                var currency = currencies.FirstOrDefault();
-
-                // do we have empty postings?
-                var amounts = postings.Select((posting) => posting.Amount);
-                if (amounts.Count() == 0) continue;
-
-                var total = amounts.Sum();
-
-                // put this value into the empty posting.
-                var emptyPostings = postings.Where((posting) => posting.Amount == null);
-
-                switch(emptyPostings.Count())
-                {
-                    case 0:
-                        // no empty postings
-                        continue;
-                    case > 1:
-                        var msg = $"Multiple empty postings found on {xact.Payee}";
-                        Console.WriteLine(msg);
-                        continue;
-                }
-
-                // add the values to the (only) empty posting.
-                var emptyPosting = emptyPostings.First();
-                emptyPosting.Amount = total * (-1);
-                if (string.IsNullOrWhiteSpace(emptyPosting.Currency))
-                {
-                    emptyPosting.Currency = currency;
-                }
+                calculateEmptyPostingAmount(xact);
             }
 
             //return xacts;
+        }
+
+        public static void calculateEmptyPostingAmount(Xact xact)
+        {
+            var postings = xact.Postings;
+
+            // do we have multiple currencies? Exclude nulls.
+            var currencies = postings
+                .Where(p => !string.IsNullOrWhiteSpace(p.Currency))
+                .Select((posting) => posting.Currency)
+                .Distinct();
+
+            if (currencies.Count() > 1)
+            {
+                Console.WriteLine("Multiple currencies fund in a transactions. Ignoring.");
+                DebugPrinter.PrintJson(currencies);
+                // continue;
+                return;
+            }
+
+            // use the currency (first?)
+            var currency = currencies.FirstOrDefault();
+
+            // do we have empty postings?
+            var amounts = postings.Select((posting) => posting.Amount);
+            if (amounts.Count() == 0)
+            {
+                // continue;
+                return;
+            }
+
+            var total = amounts.Sum();
+
+            // put this value into the empty posting.
+            var emptyPostings = postings.Where((posting) => posting.Amount == null);
+
+            switch (emptyPostings.Count())
+            {
+                case 0:
+                    // no empty postings
+                    //continue;
+                    return;
+                case > 1:
+                    var msg = $"Multiple empty postings found on {xact.Payee}";
+                    Console.WriteLine(msg);
+                    // continue;
+                    return;
+            }
+
+            // add the values to the (only) empty posting.
+            var emptyPosting = emptyPostings.First();
+            emptyPosting.Amount = total * (-1);
+            if (string.IsNullOrWhiteSpace(emptyPosting.Currency))
+            {
+                emptyPosting.Currency = currency;
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using Cashier.Components;
 using Cashier.Components.Components;
 using Cashier.Components.Pages;
 using Cashier.Data;
+using Cashier.Data.Entities;
 using Cashier.Lib;
 using Cashier.Model;
 using Microsoft.JSInterop;

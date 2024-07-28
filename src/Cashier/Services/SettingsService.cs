@@ -1,6 +1,7 @@
 ﻿using Cashier.Lib;
 using Cashier.Model;
 using Cashier.Data;
+using Cashier.Data.Entities;
 using Newtonsoft.Json;
 
 namespace Cashier.Services

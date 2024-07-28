@@ -11,6 +11,7 @@ using Cashier.Data;
 using Cashier.Services;
 using BlazorDexie.Database;
 using Cashier.Model;
+using Cashier.Data.Entities;
 
 namespace Cashier.Tests.Infrastructure
 {

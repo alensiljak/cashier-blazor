@@ -1,5 +1,6 @@
 ﻿using BlazorDexie.Database;
 using Cashier.Data;
+using Cashier.Data.Entities;
 using Cashier.Model;
 
 namespace Cashier.Services
