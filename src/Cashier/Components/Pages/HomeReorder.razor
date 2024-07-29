@@ -21,7 +21,7 @@ else
                       ItemsSelector="@((item,dropzone) => true)"
                       ItemDropped="ItemUpdated">
         <ChildContent>
-            <MudList draggable="true">
+            <MudList T="string" draggable="true">
                 <MudDropZone T="string" Identifier="dropzone" Class="flex-grow-1" AllowReorder="true" />
             </MudList>
         </ChildContent>

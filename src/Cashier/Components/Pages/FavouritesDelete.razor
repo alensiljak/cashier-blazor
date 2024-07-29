@@ -15,7 +15,7 @@
 }
 else
 {
-    <MudList Clickable>
+    <MudList T="string" Clickable>
         @foreach (var accountName in _accounts)
         {
             var index = _accounts.IndexOf(accountName);
