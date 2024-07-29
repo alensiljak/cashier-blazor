@@ -33,14 +33,19 @@
                     <col style="flex-grow: 1;" />
                 </colgroup>
                 <tbody>
-                    @foreach(var schXact in _scheduledXacts)
+                    @foreach(var sx in _scheduledXacts)
                     {
+                        var index = _scheduledXacts.IndexOf(sx);
+
                         <tr>
-                            <td class="pl-2 pr-1" style="color: @GetDateColour(schXact.NextDate)">
-                                @schXact.NextDate.ToString(Constants.ISODateFormat)
+                            <td class="pl-2 pr-1" style="color: @GetDateColour(sx.NextDate)">
+                                @sx.NextDate.ToString(Constants.ISODateFormat)
                             </td>
                             <td class="pl-2">
-                                @schXact.Transaction?.Payee
+                                @sx.Transaction?.Payee
+                            </td>
+                            <td style="text-align: end;">
+                                @_amounts[index]
                             </td>
                         </tr>
                     }
@@ -60,6 +65,7 @@
     public string? Class { get; set; }
 
     List<ScheduledXact> _scheduledXacts { get; set; } = [];
+    List<Money> _amounts = [];
     AppService _appService = default!;
 
     protected override async Task OnInitializedAsync()
@@ -69,6 +75,15 @@
         _appService = new AppService();
 
         await loadData();
+
+        CalculateAmounts();
+    }
+
+    void CalculateAmounts()
+    {
+        var xacts = this._scheduledXacts.Select(sx => sx.Transaction);
+        var augmenter = new XactAugmenter();
+        _amounts = augmenter.calculateXactAmounts(xacts);
     }
 
     string GetDateColour(DateOnly date)
