@@ -12,7 +12,7 @@
 <MudList T="string">
     @foreach (var posting in _postings)
     {
-        <MudListItem>
+        <MudListItem T="string">
             <MudStack Row="true">
                 <MudText Class="flex-grow-1">@posting.Account</MudText>
                 <MudIconButton Icon="@IconsMud.Trash" Color="Color.Secondary" @onclick="@((e) => OnDeleteClick(posting))" />

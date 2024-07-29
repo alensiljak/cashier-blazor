@@ -8,8 +8,8 @@
 <ToolbarMud>
     <Title>Scheduled</Title>
     <ContextMenuItems>
-        <MudListItem Icon="@IconsMud.Package" @onclick="OnBackupClick">Backup</MudListItem>
-        <MudListItem Icon="@IconsMud.PackageOpen" @onclick="OnRestoreClick">Restore</MudListItem>
+        <MudListItem T="string" Icon="@IconsMud.Package" @onclick="OnBackupClick">Backup</MudListItem>
+        <MudListItem T="string" Icon="@IconsMud.PackageOpen" @onclick="OnRestoreClick">Restore</MudListItem>
     </ContextMenuItems>
 </ToolbarMud>
 
@@ -46,7 +46,7 @@ else
                     @(currentDate?.ToString(Constants.ISODateFormat))
                 </center>
             }
-            <MudListItem Class="px-1 py-1" @onclick="@(() => showTx(stx.Id))">
+            <MudListItem T="string" Class="px-1 py-1" @onclick="@(() => showTx(stx.Id))">
                 <MudStack Row AlignItems="AlignItems.Stretch">
                     <MudText Align="Align.Start">@stx.Transaction?.Payee</MudText>
                     <MudSpacer />

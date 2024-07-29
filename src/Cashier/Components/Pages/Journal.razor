@@ -12,8 +12,8 @@
         Journal
     </Title>
     <ContextMenuItems>
-        <MudListItem Icon="@IconsMud.FileDown" @onclick="OnExportClick">Export</MudListItem>
-        <MudListItem Icon="@IconsMud.Trash" OnClick="onDeleteAllClicked">Delete All</MudListItem>
+        <MudListItem T="string" Icon="@IconsMud.FileDown" @onclick="OnExportClick">Export</MudListItem>
+        <MudListItem T="string" Icon="@IconsMud.Trash" OnClick="onDeleteAllClicked">Delete All</MudListItem>
     </ContextMenuItems>
 </ToolbarMud>
 

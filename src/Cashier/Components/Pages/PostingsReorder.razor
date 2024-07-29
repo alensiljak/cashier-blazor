@@ -20,7 +20,7 @@
         <div>yo 3</div>
     </ChildContent>
     <ItemRenderer>
-        <MudListItem>yo -list item</MudListItem>
+        <MudListItem T="string">yo -list item</MudListItem>
     </ItemRenderer>
 </MudDropContainer>
 *@
@@ -28,7 +28,7 @@
 <MudList T="string">
     @foreach (var post in _postings)
     {
-        <MudListItem Class="">
+        <MudListItem T="string" Class="">
             <MudStack Row Class="d-flex flex-grow-1">
                 <div class="flex-grow-1 mr-2">
                     <div>
