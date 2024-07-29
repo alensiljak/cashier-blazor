@@ -24,7 +24,7 @@ namespace Cashier.Tests.Tests
             var xacts = CreateDummyXactList();
 
             // Act
-            XactAugmenter.calculateEmptyPostingAmounts(xacts);
+            XactAugmenter.CalculateEmptyPostingAmounts(xacts);
 
             // Assert
             Assert.NotNull(xacts);

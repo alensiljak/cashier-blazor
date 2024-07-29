@@ -187,7 +187,7 @@
         // prepare transactions
         var xacts = schXacts.Select(sx => sx.Transaction).ToList();
         if (xacts == null) return;
-        XactAugmenter.calculateEmptyPostingAmounts(xacts);
+        XactAugmenter.CalculateEmptyPostingAmounts(xacts);
 
         // starting from today
         var today = DateTime.Today;

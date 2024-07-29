@@ -138,7 +138,7 @@ else
         accounts = data.ConvertAll(acc => new AccountViewModel(acc));
 
         var aug = new XactAugmenter();
-        await aug.AddLocalXacts(_db, accounts);
+        await aug.AddLocalXactsToBalance(_db, accounts);
     }
 
     // void CreateTreeView()

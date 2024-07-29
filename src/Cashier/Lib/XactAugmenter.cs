@@ -16,7 +16,7 @@ namespace Cashier.Lib
         /// The records are modified in-place.
         /// </summary>
         /// <param name="accounts">List of Accounts</param>
-        public async Task AddLocalXacts(IDexieDAL db, List<AccountViewModel> accounts)
+        public async Task AddLocalXactsToBalance(IDexieDAL db, List<AccountViewModel> accounts)
         {
             if (accounts.Count == 0)
             {
@@ -46,13 +46,12 @@ namespace Cashier.Lib
         /// <summary>
         /// Identifies the amount to display, from the user's perspective - a debit, credit, transfer for
         /// a Transaction.
-        /// Appends {amount, currency} to the Transaction record.
-        /// It is normally useful to run calculateEmptyPostingAmounts() to populate the blank Postings.
+        /// It runs calculateEmptyPostingAmounts() beforehand, to populate the blank Postings.
         /// </summary>
-        /// <returns>An array of balance records that matches the transactions.</returns>
-        public List<Money> calculateXactAmounts(List<Xact> xacts)
+        /// <returns>An array of Money records that matches the transactions list.</returns>
+        public List<Money> calculateXactAmounts(IEnumerable<Xact> xacts)
         {
-            calculateEmptyPostingAmounts(xacts);
+            CalculateEmptyPostingAmounts(xacts);
 
             var result = new List<Money>();
 
@@ -143,21 +142,30 @@ namespace Cashier.Lib
         /// Calculates and adds the amounts for the empty postings. This "completes" the Postings
         /// so that they have an amount and a currency.
         /// </summary>
-        public static void calculateEmptyPostingAmounts(List<Xact?> xacts)
+        public static void CalculateEmptyPostingAmounts(IEnumerable<Xact?> xacts)
         {
             foreach (var xact in xacts)
             {
                 if (xact == null || xact.Postings == null || xact.Postings.Count == 0) continue;
 
-                calculateEmptyPostingAmount(xact);
+                CalculateEmptyPostingAmount(xact);
             }
 
             //return xacts;
         }
 
-        public static void calculateEmptyPostingAmount(Xact xact)
+        /// <summary>
+        /// Calculates the amounts for any postings without them. For one transaction.
+        /// </summary>
+        /// <param name="xact"></param>
+        public static void CalculateEmptyPostingAmount(Xact xact)
         {
             var postings = xact.Postings;
+            if (postings == null)
+            {
+                // nothing to do here.
+                return;
+            }
 
             // do we have multiple currencies? Exclude nulls.
             var currencies = postings

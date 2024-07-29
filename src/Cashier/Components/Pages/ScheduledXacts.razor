@@ -36,6 +36,8 @@ else
         }
         @foreach (var stx in _list)
         {
+            var index = _list.IndexOf(stx);
+
             if (currentDate != stx.NextDate)
             {
                 @* add a date separator *@
@@ -50,7 +52,9 @@ else
                 <MudStack Row AlignItems="AlignItems.Stretch">
                     <MudText Align="Align.Start">@stx.Transaction?.Payee</MudText>
                     <MudSpacer />
-                    @* <MudText Align="Align.End">@stx.Transaction</MudText> *@
+                    @if(_amounts.Count > 0) {
+                        <MudText Align="Align.End">@_amounts[index]</MudText>
+                    }
                 </MudStack>
                 <MudItem>
                     <small>@GetFirstLine(stx.Remarks)</small>
@@ -65,6 +69,7 @@ else
 
 @code {
     List<ScheduledXact> _list = [];
+    List<Money> _amounts = [];
     AppService _appService = new AppService();
     string? searchTerm;
 
@@ -73,6 +78,18 @@ else
         await base.OnInitializedAsync();
 
         await loadData();
+
+        // calculate amounts
+        CalculateAmounts();
+    }
+
+    void CalculateAmounts()
+    {
+        var xacts = this._list.Select(sx => sx.Transaction);
+        var augmenter = new XactAugmenter();
+        _amounts = augmenter.calculateXactAmounts(xacts);
+
+        // StateHasChanged();
     }
 
     async Task loadData()

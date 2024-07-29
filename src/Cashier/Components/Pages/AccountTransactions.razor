@@ -124,7 +124,7 @@
             .ToList();
 
         // add the missing amounts on Postings.
-        XactAugmenter.calculateEmptyPostingAmounts(list);
+        XactAugmenter.CalculateEmptyPostingAmounts(list);
 
         var xactsForAccount = list.Where(x =>
             x.Postings != null &&
