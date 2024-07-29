@@ -19,13 +19,14 @@ namespace Cashier.Tests.UnitTests
         [Fact]
         public void TestProjection()
         {
+            var startDate = DateOnly.FromDateTime(DateTime.Parse("2024-05-01"));
             var scX = new ScheduledXact
             {
                 NextDate = DateOnly.FromDateTime(DateTime.Parse("2024-05-01"))
             };
             var endDate = DateOnly.FromDateTime(DateTime.Parse("2024-08-30"));
 
-            _scheduler.ProjectSchedule(scX, endDate);
+            _scheduler.ProjectSchedule(scX, startDate, endDate);
 
             // Assert
             Assert.True(false);
