@@ -34,30 +34,30 @@ else
         @{
             DateOnly? currentDate = null;
         }
-        @foreach (var stx in _list)
+        @foreach (var sx in _list)
         {
-            var index = _list.IndexOf(stx);
+            var index = _list.IndexOf(sx);
 
-            if (currentDate != stx.NextDate)
+            if (currentDate != sx.NextDate)
             {
                 @* add a date separator *@
-                currentDate = stx.NextDate;
+                currentDate = sx.NextDate;
                 <MudDivider />
-                <center style="@GetDateStyle(stx)">
+                <center style="@GetDateStyle(sx)">
                     <MudIcon Icon="@IconsMud.CalendarDays" Size="Size.Small" />
                     @(currentDate?.ToString(Constants.ISODateFormat))
                 </center>
             }
-            <MudListItem T="string" Class="px-1 py-1" @onclick="@(() => showTx(stx.Id))">
+            <MudListItem T="string" Class="px-1 py-1" @onclick="@(() => showTx(sx.Id))">
                 <MudStack Row AlignItems="AlignItems.Stretch">
-                    <MudText Align="Align.Start">@stx.Transaction?.Payee</MudText>
+                    <MudText Align="Align.Start">@sx.Transaction?.Payee</MudText>
                     <MudSpacer />
                     @if(_amounts.Count > 0) {
                         <MudText Align="Align.End">@_amounts[index]</MudText>
                     }
                 </MudStack>
                 <MudItem>
-                    <small>@GetFirstLine(stx.Remarks)</small>
+                    <small>@GetFirstLine(sx.Remarks)</small>
                 </MudItem>
             </MudListItem>
         }

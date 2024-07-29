@@ -33,15 +33,30 @@
                     <col style="flex-grow: 1;" />
                 </colgroup>
                 <tbody>
-                    @foreach(var sx in _scheduledXacts)
+                    @{
+                        DateOnly? currentDate = null;
+                        var showDate = true;
+                    }
+
+                    @foreach (var sx in _scheduledXacts)
                     {
+                        if (currentDate != sx.NextDate)
+                        {
+                            currentDate = sx.NextDate;
+                            showDate = true;
+                        } else
+                        {
+                            showDate = false;
+                        }
                         var index = _scheduledXacts.IndexOf(sx);
 
                         <tr>
                             <td class="pl-2 pr-1" style="color: @GetDateColour(sx.NextDate)">
+                                @if(showDate) {
                                 @sx.NextDate.ToString(Constants.ISODateFormat)
+                                }
                             </td>
-                            <td class="pl-2">
+                            <td class="pl-1">
                                 @sx.Transaction?.Payee
                             </td>
                             <td style="text-align: end;">
