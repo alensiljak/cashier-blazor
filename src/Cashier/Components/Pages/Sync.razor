@@ -14,7 +14,7 @@
 <ToolbarMud>
     <Title>Cashier Sync</Title>
     <ContextMenuItems>
-        <MudListItem Icon="@IconsMud.Power" IconSize="Size.Medium" @onclick="OnShutDownClick">
+        <MudListItem T="string" Icon="@IconsMud.Power" IconSize="Size.Medium" @onclick="OnShutDownClick">
             Shut down server</MudListItem>
     </ContextMenuItems>
 </ToolbarMud>
@@ -30,7 +30,7 @@
 @* Sync *@
 
 <MudList T="string">
-    <MudListItem>
+    <MudListItem T="string">
         <MudStack Row="true">
             <div class="flex-grow-1">
                 <MudCheckBox T="bool" Value="syncAccounts" ValueChanged="syncAccounts_Changed">
@@ -44,7 +44,7 @@
             *@
         </MudStack>
     </MudListItem>
-    <MudListItem>
+    <MudListItem T="string">
         <MudStack Row="true">
             <div class="flex-grow-1">
                 <MudCheckBox T="bool" Value="syncAaValues" ValueChanged="syncAaValues_Changed">
@@ -58,7 +58,7 @@
             *@
         </MudStack>
     </MudListItem>
-    <MudListItem>
+    <MudListItem T="string">
         <MudStack Row="true">
             <div class="flex-grow-1">
                 <MudCheckBox T="bool" Value="syncPayees" ValueChanged="syncPayees_Changed">Sync Payees</MudCheckBox>
