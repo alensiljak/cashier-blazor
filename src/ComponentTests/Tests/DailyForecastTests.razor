@@ -1,4 +1,6 @@
-﻿@inherits TestContext
+﻿@using Cashier.Components.Components;
+
+@inherits TestContext
 
 <h1>Hello world from Blazor</h1>
 
@@ -10,7 +12,7 @@
     public void HelloWorldComponentRendersCorrectly()
     {
         // Act
-        var cut = Render(@<HelloWorld />);
+        var cut = Render(@<DailyForecastChart />);
 
         // Assert
         cut.MarkupMatches(@<h1>Hello world from Blazor</h1>);

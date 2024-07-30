@@ -49,7 +49,7 @@ namespace Cashier.Lib
         /// It runs calculateEmptyPostingAmounts() beforehand, to populate the blank Postings.
         /// </summary>
         /// <returns>An array of Money records that matches the transactions list.</returns>
-        public List<Money> calculateXactAmounts(IEnumerable<Xact> xacts)
+        public List<Money> calculateXactAmounts(IEnumerable<Xact?> xacts)
         {
             CalculateEmptyPostingAmounts(xacts);
 
@@ -57,6 +57,8 @@ namespace Cashier.Lib
 
             foreach (var xact in xacts)
             {
+                if (xact == null ) continue;
+
                 var balance = calculateXactAmount(xact);
 
                 // Assemble the output
