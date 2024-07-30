@@ -27,10 +27,25 @@
         }
         else
         {
+            @*<MudList T="string" Dense>
+                @foreach (var sx in _scheduledXacts)
+                {
+                    var index = _scheduledXacts.IndexOf(sx);
+
+                    <MudListItem>
+                    <MudStack Row="true" StretchItems="StretchItems.Middle">
+                        <span>@sx.NextDate</span>
+                        <span>@sx.Transaction?.Payee</span>
+                        <span style="text-align: end; color: @(Formatter.GetMoneyColor(_amounts[index]));">@_amounts[index]</span>
+                    </MudStack>
+                    </MudListItem>
+                }
+            </MudList>*@
+
             <MudSimpleTable Dense Style="background-color: transparent;">
                 <colgroup>
-                    <col style="width: 90px;" />
-                    <col style="flex-grow: 1;" />
+                    @* <col style="width: 90px;" /> *@
+                    @* <col style="flex-grow: 1;" /> *@
                 </colgroup>
                 <tbody>
                     @{
@@ -51,15 +66,15 @@
                         var index = _scheduledXacts.IndexOf(sx);
 
                         <tr>
-                            <td class="pl-2 pr-1" style="color: @GetDateColour(sx.NextDate)">
+                            <td class="pl-1 pr-1" style="color: @GetDateColour(sx.NextDate)">
                                 @if(showDate) {
                                 @sx.NextDate.ToString(Constants.ISODateFormat)
                                 }
                             </td>
-                            <td class="pl-1">
+                            <td class="px-0">
                                 @sx.Transaction?.Payee
                             </td>
-                            <td style="text-align: end; color: @(Formatter.GetMoneyColor(_amounts[index]));">
+                            <td class="pl-0 pr-1" style="text-align: end; color: @(Formatter.GetMoneyColor(_amounts[index]));">
                                 @_amounts[index]
                             </td>
                         </tr>

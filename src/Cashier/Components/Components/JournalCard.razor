@@ -42,9 +42,9 @@
                         var balance = Balances.ElementAtOrDefault(index);
 
                         <tr>
-                            <td class="pl-2 pr-1">@xact.Date.ToString(Constants.ISODateFormat)</td>
-                            <td class="flex-grow-1">@xact?.Payee</td>
-                            <td style="text-align: end; @($"color: {GetXactColour(index)};")" class="pl-1 pr-2">
+                            <td class="px-1">@xact.Date.ToString(Constants.ISODateFormat)</td>
+                            <td class="px-1 flex-grow-1">@xact?.Payee</td>
+                            <td class="px-1" style="text-align: end; @($"color: {GetXactColour(index)};")">
                                 @if (balance?.Quantity != 0)
                                 {
                                     @balance
