@@ -7,6 +7,13 @@ namespace Cashier.Services
 {
     public class AccountService : IAccountService
     {
+        public static async Task<string> CreateAccount(IDexieDAL db, string name)
+        {
+            var acct = new Account(name);
+            var key = await db.Accounts.Add(acct);
+            return key;
+        }
+
         /// <summary>
         /// Gets the account balance in the requested currency. If none exists, the first balance is returned.
         /// </summary>

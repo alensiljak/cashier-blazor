@@ -59,7 +59,7 @@
                             <td class="pl-1">
                                 @sx.Transaction?.Payee
                             </td>
-                            <td style="text-align: end;">
+                            <td style="text-align: end; color: @(Formatter.GetMoneyColor(_amounts[index]));">
                                 @_amounts[index]
                             </td>
                         </tr>
@@ -103,7 +103,7 @@
 
     string GetDateColour(DateOnly date)
     {
-        return _appService.GetDateColour(date);
+        return Formatter.GetDateColour(date);
     }
 
     async Task loadData()

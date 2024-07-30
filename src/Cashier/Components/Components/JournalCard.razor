@@ -88,7 +88,7 @@
         var amount = Balances[index];
         if (amount.Quantity is null) return string.Empty;
 
-        string colour = AppService.GetAmountColour(amount.Quantity.Value);
+        string colour = Formatter.GetAmountColour(amount.Quantity.Value);
 
         // Transfers are yellow
         var tx = Xacts[index];

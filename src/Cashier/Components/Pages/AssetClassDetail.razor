@@ -113,7 +113,7 @@ else
 
         amount = amount.Remove(amount.Length - 1);
         var amt = decimal.Parse(amount);
-        var colour = AppService.GetAmountColour(amt);
+        var colour = Formatter.GetAmountColour(amt);
         return $"color: {colour};";
     }
 
@@ -123,7 +123,7 @@ else
 
         var parts = amount.Split(' ');
         var amt = decimal.Parse(parts[0]);
-        var colour = AppService.GetAmountColour(amt);
+        var colour = Formatter.GetAmountColour(amt);
         return $"color: {colour};";
     }
 

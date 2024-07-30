@@ -52,8 +52,11 @@ else
                 <MudStack Row AlignItems="AlignItems.Stretch">
                     <MudText Align="Align.Start">@sx.Transaction?.Payee</MudText>
                     <MudSpacer />
-                    @if(_amounts.Count > 0) {
-                        <MudText Align="Align.End">@_amounts[index]</MudText>
+                    @if (_amounts.Count > 0)
+                    {
+                        <span class="text-right" style="color: @(Formatter.GetMoneyColor(_amounts[index])); font-size:smaller;">
+                            @_amounts[index]
+                        </span>
                     }
                 </MudStack>
                 <MudItem>
@@ -136,7 +139,7 @@ else
 
     string GetDateColour(DateOnly date)
     {
-        return _appService.GetDateColour(date);
+        return Formatter.GetDateColour(date);
     }
 
     string GetFirstLine(string? text)

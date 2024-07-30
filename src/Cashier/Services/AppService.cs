@@ -85,13 +85,6 @@ namespace Cashier.Services
             await jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
         }
 
-        public static async Task<string> CreateAccount(IDexieDAL db, string name)
-        {
-            var acct = new Account(name);
-            var key = await db.Accounts.Add(acct);
-            return key;
-        }
-
         public Xact CreateNewXact()
         {
             var xact = new Xact(DateUtils.Today)
@@ -145,52 +138,6 @@ namespace Cashier.Services
             }
 
             return output.ToString();
-        }
-
-        /// <summary>
-        /// CSS Colours for amounts (<0, 0, >0).
-        /// </summary>
-        /// <param name="amount"></param>
-        /// <returns></returns>
-        public static string GetAmountColour(decimal amount)
-        {
-            switch (amount)
-            {
-                case var n when n < 0:
-                    return "#E53935"; // red Darken1
-
-                //case var n when n == 0:
-                //    return ""; // yellow
-
-                case var n when n > 0:
-                    return "#43A047"; // green Darken1
-
-                default:
-                    return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// CSS colour for Scheduled Transactions (overdue, due).
-        /// </summary>
-        /// <param name="date"></param>
-        /// <returns></returns>
-        public string GetDateColour(DateOnly date)
-        {
-            var today = DateOnly.FromDateTime(DateTime.Now);
-
-            switch (date)
-            {
-                case var n when n < today:
-                    return "var(--mud-palette-secondary)";
-
-                case var n when n == today:
-                    return "var(--mud-palette-tertiary)";
-
-                case var n when n > today:
-                    return "var(--mud-palette-primary)";
-            }
-            return string.Empty;
         }
 
         public long GetNewId()

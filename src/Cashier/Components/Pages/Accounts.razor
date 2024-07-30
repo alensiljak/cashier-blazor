@@ -78,7 +78,7 @@ else
         var accountName = (string?) result.Data;
         if (string.IsNullOrEmpty(accountName)) return;
 
-        var key = await AppService.CreateAccount(db, accountName);
+        var key = await AccountService.CreateAccount(db, accountName);
 
         if(string.IsNullOrEmpty(key))
         {

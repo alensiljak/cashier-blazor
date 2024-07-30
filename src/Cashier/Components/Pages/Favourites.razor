@@ -128,7 +128,7 @@ else
     {
         if (amount is null) return string.Empty;
 
-        return $"color: {AppService.GetAmountColour(amount.Value)};";
+        return $"color: {Formatter.GetAmountColour(amount.Value)};";
     }
 
     async Task loadData()
