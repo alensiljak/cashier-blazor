@@ -1,9 +1,10 @@
 ﻿@using MudBlazor
 @using System.Drawing
 
-<MudTextField T="string" @bind-Value="Posting!.Account" Placeholder="Account" ReadOnly="true" @onclick="OnAccountClicked" />
+<MudTextField T="string" @bind-Value="Posting!.Account" Placeholder="Account" ReadOnly="true" 
+    @onclick="OnAccountClicked" Class="py-3" />
 
-<MudGrid>
+<MudGrid >
     @* Sign *@
     <MudItem xs="2">
         @if (EditableAmount.HasValue)

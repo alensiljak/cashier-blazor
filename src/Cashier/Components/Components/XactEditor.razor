@@ -13,7 +13,7 @@
 @* Date *@
 <MudDatePicker @ref="_datePicker" Placeholder="Date" DateFormat="@FixedSettings.DateFormat"
                AutoClose Adornment="Adornment.Start" AdornmentIcon="@IconsMud.CalendarDays"
-               @bind-Date="date" PickerVariant="PickerVariant.Dialog">
+               @bind-Date="date" PickerVariant="PickerVariant.Dialog" Class="mb-4">
     <PickerActions>
         <MudButton Class="mr-auto align-self-start" OnClick="Today">Today</MudButton>
     </PickerActions>
@@ -21,13 +21,13 @@
 
 @* Payee *@
 <MudTextField T="string" Placeholder="Payee" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.Users2"
-              @bind-Value="Payee" @onclick="OnPayeeClick" />
+              @bind-Value="Payee" @onclick="OnPayeeClick" Class="my-4" />
 
 <MudTextField T="string" Placeholder="Note" Adornment="Adornment.Start" AdornmentIcon="@IconsMud.FileText"
-              @bind-Value="Note" />
+              @bind-Value="Note" Class="my-4" />
 
 @* Postings *@
-<MudPaper Class="px-4 pt-1 mt-2">
+<MudPaper Class="px-4 pt-1 mt-4">
     <MudStack Row="true">
         <div class="flex-grow-1">
             <MudText Align="Align.Center">Postings</MudText>
