@@ -35,6 +35,27 @@ namespace Cashier.Lib
             }
         }
 
+        public static string GetXactAmountColour(Xact? xact, Money amount)
+        {
+            var colour = string.Empty;
+
+            if (xact == null)
+            {
+                return colour;
+            }
+
+            if (xact.Postings?.Count(p => (p.Account != null) && (p.Account.StartsWith("Assets:"))) == 2)
+            {
+                // Transfers are yellow
+                // colour = ""; // yellow
+            }
+            else
+            {
+                colour = Formatter.GetAmountColour(amount.Quantity.Value);
+            }
+            return colour;
+        }
+
         /// <summary>
         /// CSS colour for Scheduled Transactions (overdue, due).
         /// </summary>

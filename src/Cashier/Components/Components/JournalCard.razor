@@ -88,14 +88,8 @@
         var amount = Balances[index];
         if (amount.Quantity is null) return string.Empty;
 
-        string colour = Formatter.GetAmountColour(amount.Quantity.Value);
-
-        // Transfers are yellow
         var tx = Xacts[index];
-        if (tx.Postings?.Count(p => (p.Account != null) && (p.Account.StartsWith("Assets:"))) == 2)
-        {
-            colour = ""; // yellow
-        }
+        var colour = Formatter.GetXactAmountColour(tx, amount);
 
         return colour;
     }

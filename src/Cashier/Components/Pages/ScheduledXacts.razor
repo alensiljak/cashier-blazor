@@ -54,7 +54,7 @@ else
                     <MudSpacer />
                     @if (_amounts.Count > 0)
                     {
-                        <span class="text-right" style="color: @(Formatter.GetMoneyColor(_amounts[index])); font-size:smaller;">
+                        <span class="text-right" style="color: @(Formatter.GetXactAmountColour(sx.Transaction, _amounts[index])); font-size:smaller;">
                             @_amounts[index]
                         </span>
                     }
