@@ -4,8 +4,12 @@
 
 import { test, expect } from '@playwright/test';
 
-test('navigation on/off', async ({ page }) => {
+test.beforeEach(async ({page}) => {
+    // always start at the home page.
     await page.goto('/');
+});
+
+test('navigation on/off', async ({ page }) => {
 
     // Click on the menu button
     await page.getByRole('toolbar').getByRole('button').first().click();
@@ -19,8 +23,6 @@ test('navigation on/off', async ({ page }) => {
 });
 
 test('has title', async ({ page }) => {
-    await page.goto('/');
-    
     // Expect a title "to contain" a substring.
     await expect(page).toHaveTitle('Cashier');
 });
