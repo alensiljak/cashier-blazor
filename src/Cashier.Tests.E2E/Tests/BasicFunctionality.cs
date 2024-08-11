@@ -23,6 +23,7 @@ namespace Cashier.Tests.E2E.Tests
         /*
          * This sucks because the navbar is not actually hidden but only moved left out of the viewable area.
          * This makes it still visible to any Playwright selector.
+        */
         [Test]
         public async Task NavigationOnOff()
         {
@@ -32,8 +33,8 @@ namespace Cashier.Tests.E2E.Tests
             // confirm there is no Asset Allocation text on the page.
             var aaLink = Page.GetByRole(AriaRole.Link, new() { Name = "Asset Allocation" });
             // await Expect(aaLink).ToBeHiddenAsync();
+            await Expect(aaLink).Not.ToBeVisibleAsync();
             // await Expect(aaLink).ToHaveCountAsync(0);
         }
-        */
     }
 }
