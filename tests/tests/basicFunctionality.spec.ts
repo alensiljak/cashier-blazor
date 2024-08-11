@@ -17,3 +17,10 @@ test('navigation on/off', async ({ page }) => {
     await expect(aaLink).not.toBeInViewport();
     // await Expect(aaLink).ToHaveCountAsync(0);
 });
+
+test('has title', async ({ page }) => {
+    await page.goto('/');
+    
+    // Expect a title "to contain" a substring.
+    await expect(page).toHaveTitle('Cashier');
+});
