@@ -67,7 +67,7 @@
         parameters.Add(x => x.ConfirmationButtonColor, Color.Secondary);
         var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirm Delete", parameters);
         var result = await dialog.Result;
-        if (result.Canceled) return;
+        if (result == null || result.Canceled) return;
 
         //
         State.Xact = new AppService().CreateNewXact();

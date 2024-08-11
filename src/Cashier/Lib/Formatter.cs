@@ -51,7 +51,14 @@ namespace Cashier.Lib
             }
             else
             {
-                colour = Formatter.GetAmountColour(amount.Quantity.Value);
+                if (amount.Quantity != null)
+                {
+                    colour = Formatter.GetAmountColour(amount.Quantity.Value);
+                }
+                else
+                {
+                    Log.log("Quantity not set");
+                }
             }
             return colour;
         }
