@@ -85,7 +85,7 @@ namespace Cashier.Services
             await jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
         }
 
-        public Xact CreateNewXact()
+        public static Xact CreateNewXact()
         {
             var xact = new Xact(DateUtils.Today)
             {

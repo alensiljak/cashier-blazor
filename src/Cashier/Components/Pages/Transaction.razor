@@ -70,7 +70,7 @@
         if (result == null || result.Canceled) return;
 
         //
-        State.Xact = new AppService().CreateNewXact();
+        State.Xact = AppService.CreateNewXact();
 
         _editor.Refresh();
     }

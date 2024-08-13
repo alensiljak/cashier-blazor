@@ -80,7 +80,7 @@ else
     void OnFab()
     {
         // create new transaction in the app store
-        State.Xact = new AppService().CreateNewXact();
+        State.Xact = AppService.CreateNewXact();
 
         NavMan.NavigateTo("/tx");
     }

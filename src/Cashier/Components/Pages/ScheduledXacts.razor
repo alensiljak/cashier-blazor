@@ -160,7 +160,7 @@ else
         var app = new AppService();
 
         _state.ScheduledXact = new ScheduledXact();
-        _state.Xact = app.CreateNewXact();
+        _state.Xact = AppService.CreateNewXact();
 
         NavMan.NavigateTo($"/scheduled-xact-editor");
     }

@@ -41,7 +41,7 @@
 
         <MudItem xs="4">
             <SquareButton Icon="@IconsMud.CalendarClock" BackgroundColor="Color.Tertiary" TextColor="var(--mud-palette-secondary)"
-            @onclick="OnScheduleClick">
+                          @onclick="OnScheduleClick">
                 Schedule
             </SquareButton>
         </MudItem>
@@ -64,9 +64,6 @@
 </MudContainer>
 
 @code {
-    // [Parameter]
-    // public string? xactId { get; set; }
-
     Xact? _xact { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -162,6 +159,15 @@
 
     void OnScheduleClick()
     {
-        Notification.Info("Not implemented");
+        // The current journal transaction stays in the store and is available in the sch.tx editor.
+        State.ScheduledXact = new ScheduledXact();
+        // State.Xact = AppService.CreateNewXact();
+        // just clear the id.
+        if (State.Xact != null)
+        {
+            State.Xact.Id = null;
+        }
+
+        _router.GoTo("/scheduled-xact-editor");
     }
 }

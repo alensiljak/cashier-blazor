@@ -38,6 +38,9 @@ TODO: bUnit + Playwright
 ## E2E Testing
 E2E tests are conducted using Playwright.
 
+Go to the `tests` directory in the root of the repository and run the tests there.
+
+### .Net integrated (deprecated)
 Go to `src/Cashier.Tests.E2E` and run
 
 ```sh
