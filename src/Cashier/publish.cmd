@@ -2,8 +2,8 @@
 
 :: Build
 ::pushd src\Cashier
-
-dotnet publish -c Release
+:: use .Net 8.0
+dotnet publish -c Release -f net8.0
 
 ::popd
 
