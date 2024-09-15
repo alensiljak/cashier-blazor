@@ -27,7 +27,7 @@
               @bind-Value="Note" Class="mt-6" />
 
 @* Postings *@
-<MudPaper Class="px-4 pt-1 mt-5">
+<MudPaper Class="px-4 pt-1 py-2 mt-5">
     <MudStack Row="true">
         <div class="flex-grow-1">
             <MudText Align="Align.Center">Postings</MudText>
@@ -55,7 +55,7 @@
     {
         var index = Postings.IndexOf(posting);
         <PostingEditor Posting="posting" OnAccountClick="@(() => OnAccountClicked(index))" 
-            OnAmountChanged="OnAmountChanged" class="my-2"/>
+            OnAmountChanged="OnAmountChanged"/>
     }
 }
 
