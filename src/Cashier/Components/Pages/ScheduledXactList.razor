@@ -97,7 +97,6 @@ else
 
     async Task loadData()
     {
-        // BlazorDexie.Database.Collection<ScheduledXact, long> records;
         var records = _db.ScheduledXacts
             .OrderBy(nameof(ScheduledXact.NextDate));
 
