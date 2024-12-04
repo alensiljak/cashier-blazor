@@ -58,7 +58,6 @@ else
                     </MudText>
                     <div class="d-flex row">
                         <MudText>
-                            @* Class="pl-3" *@
                             @account.AccountName
                         </MudText>
                         <MudSpacer />
@@ -72,12 +71,6 @@ else
         </MudList>
 
     </MudContainer>
-
-    @*
-    <MudTreeView T="Account" Items="@_accountsHashSet">
-
-    </MudTreeView>
-    *@
 }
 
 <MudFab Color="Color.Tertiary" IconColor="Color.Secondary" StartIcon="@IconsMud.Plus" Class="z-100"
@@ -86,7 +79,6 @@ else
 
 @code {
     List<AccountViewModel> accounts = [];
-    // HashSet<AccountViewModel> _accountsHashSet = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -104,9 +96,6 @@ else
             Console.WriteLine(ex.ToString());
             Notification.Error(ex.Message);
         }
-
-        // create a tree view
-        // CreateTreeView();
     }
 
     async Task AddAccount(string accountName)
@@ -141,11 +130,6 @@ else
         var aug = new XactAugmenter();
         await aug.AddLocalXactsToBalance(_db, accounts);
     }
-
-    // void CreateTreeView()
-    // {
-    //     _accountsHashSet = accounts.ToHashSet();
-    // }
 
     void OnAccountClicked(string? accountName)
     {
