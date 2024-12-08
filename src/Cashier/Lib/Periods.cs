@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Cashier.Lib
 {
-    public enum Periods
+    public enum RecurrencePeriods
     {
         Days,
 
@@ -31,26 +31,26 @@ namespace Cashier.Lib
         public const string EndOfMonth = "end of month";
         public const string Years = "years";
 
-        public static string ToString(Periods value)
+        public static string ToString(RecurrencePeriods value)
         {
             switch (value)
             {
-                case Periods.Days:
+                case RecurrencePeriods.Days:
                     return PeriodNames.Days;
 
-                case Periods.Weeks:
+                case RecurrencePeriods.Weeks:
                     return PeriodNames.Weeks;
 
-                case Periods.Months:
+                case RecurrencePeriods.Months:
                     return PeriodNames.Months;
 
-                case Periods.StartOfMonth:
+                case RecurrencePeriods.StartOfMonth:
                     return PeriodNames.StartOfMonth;
 
-                case Periods.EndOfMonth:
+                case RecurrencePeriods.EndOfMonth:
                     return PeriodNames.EndOfMonth;
 
-                case Periods.Years:
+                case RecurrencePeriods.Years:
                     return PeriodNames.Years;
 
                 default:
@@ -58,27 +58,27 @@ namespace Cashier.Lib
             }
         }
 
-        public static Periods ToEnum(string value)
+        public static RecurrencePeriods ToEnum(string value)
         {
             switch (value)
             {
                 case PeriodNames.Days:
-                    return Periods.Days;
+                    return RecurrencePeriods.Days;
 
                 case PeriodNames.Weeks:
-                    return Periods.Weeks;
+                    return RecurrencePeriods.Weeks;
 
                 case PeriodNames.Months:
-                    return Periods.Months;
+                    return RecurrencePeriods.Months;
 
                 case PeriodNames.StartOfMonth:
-                    return Periods.StartOfMonth;
+                    return RecurrencePeriods.StartOfMonth;
 
                 case PeriodNames.EndOfMonth:
-                    return Periods.EndOfMonth;
+                    return RecurrencePeriods.EndOfMonth;
 
                 case PeriodNames.Years:
-                    return Periods.Years;
+                    return RecurrencePeriods.Years;
 
                 default:
                     throw new InvalidEnumArgumentException(nameof(value));
