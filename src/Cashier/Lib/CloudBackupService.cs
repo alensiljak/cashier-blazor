@@ -49,7 +49,7 @@ namespace Cashier.Lib
 
         }
 
-        public async Task BackupScheduled(IDexieDAL db)
+        public async Task BackupScheduledXacts(IDexieDAL db)
         {
             // get the JSON data for export
             var output = await AppService.GetScheduledXactsForExport(db);

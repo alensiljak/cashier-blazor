@@ -28,7 +28,7 @@
             </MudText>
         </div>
         <MudText>
-            Local transactions: @localTransactions
+            Local transactions: @localXacts
         </MudText>
 
     </MudCardContent>
@@ -41,7 +41,7 @@
 @code {
     string? totalBackups;
     string? lastBackup;
-    string? localTransactions;
+    string? localXacts;
 
     [Parameter]
     public string? Class { get; set; }
@@ -73,14 +73,14 @@
         lastBackup = string.IsNullOrEmpty(lastBackup) ? "n/a" : lastBackup;
 
         var localCount = await _db.ScheduledXacts.Count();
-        localTransactions = localCount.ToString();
+        localXacts = localCount.ToString();
     }
 
     async Task OnBackupClick()
     {
         try
         {
-            await CloudBackupService.BackupScheduled(_db);
+            await CloudBackupService.BackupScheduledXacts(_db);
 
             CloudBackupService.ClearCache();
             await loadData();
