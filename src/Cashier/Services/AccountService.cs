@@ -63,14 +63,14 @@ namespace Cashier.Services
 
         public async Task<List<Account>> LoadInvestmentAccounts(ISettingsService settings, IDexieDAL db)
         {
-            var root = await settings.GetRootInvestmentAccount();
-            if (root == null)
+            var rootAccount = await settings.GetRootInvestmentAccount();
+            if (rootAccount == null)
             {
                 throw new Exception("Root investment account not set!");
             }
 
             var accounts = await db.Accounts
-                .Where("name").StartsWithIgnoreCase(root)
+                .Where("name").StartsWithIgnoreCase(rootAccount)
                 // .Filter
                 .ToList();
 
