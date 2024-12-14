@@ -96,7 +96,7 @@ else
         await securityAnalysis();
     }
 
-    async Task AccAccountBalances()
+    async Task PopulateAccountBalances()
     {
         // add the balance
         var defaultCurrency = await _settings.GetDefaultCurrency();
@@ -138,7 +138,7 @@ else
             Notification.Warning("No investment accounts found");
         }
 
-        await AccAccountBalances();
+        await PopulateAccountBalances();
 
         await LoadAssetClass();
 
@@ -158,7 +158,8 @@ else
         await LoadAssetAllocation();
         _assetClass = _assetAllocation.Find(ac => ac.FullName == fullname) ?? new AssetClass();
 
-        PopulateStocksWithCaching();
+        var stocks = PopulateStocksWithCaching();
+        _stocks = stocks
     }
 
     async Task LoadAssetAllocation()
@@ -182,7 +183,7 @@ else
 
     void PopulateStocksWithCaching()
     {
-        PopulateStocks();
+        var stocks = PopulateStocks();
 
         if (_state.AaStocks == null)
         {
@@ -190,9 +191,9 @@ else
         }
 
         // Get cached version, if available.
-        for (var i = 0; i < _stocks.Count; i++)
+        for (var i = 0; i < stocks.Count; i++)
         {
-            var stock = _stocks[i];
+            var stock = stocks[i];
 
             if (string.IsNullOrEmpty(stock.Name))
             {
@@ -201,7 +202,7 @@ else
 
             if (_state.AaStocks.TryGetValue(stock.Name, out var stockCached))
             {
-                _stocks[i] = stockCached;
+                stocks[i] = stockCached;
             }
             else
             {
@@ -222,16 +223,20 @@ else
         //         _state.AaStocks[stock.Name] = stock;
         //     }
         // }
+
+        return stocks
     }
 
     /// <summary>
     /// Load all constituents - stocks, currencies.
     /// </summary>
-    void PopulateStocks()
+    List<StockSymbol> PopulateStocks()
     {
         var childNames = _assetClass?.Symbols;
         if (childNames is null) return;
         if (childNames.Count == 0) return;
+
+        var stocks = new List<StockSymbol>()
 
         foreach (var childName in childNames)
         {
@@ -248,8 +253,10 @@ else
                 }
             }
 
-            _stocks.Add(stock);
+            stocks.Add(stock);
         }
+
+        return stocks
     }
 
     /// <summary>
